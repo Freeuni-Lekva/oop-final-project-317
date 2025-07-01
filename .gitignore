@@ -72,3 +72,11 @@ coverage/
 # Windows
 Thumbs.db
 ehthumbs.db
+
+/quiz-app/.mvn/
+/quiz-app/target/
+/quiz-app/pom.xml.tag
+/quiz-app/pom.xml.releaseBackup
+/quiz-app/pom.xml.versionsBackup
+/quiz-app/pom.xml.next
+/quiz-app/release.properties
