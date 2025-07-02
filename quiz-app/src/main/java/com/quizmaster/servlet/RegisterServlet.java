@@ -13,7 +13,6 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        // Serve the register page
         request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
     }
     
@@ -67,5 +66,6 @@ public class RegisterServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
         }
 
+        // Add User in database if email and username is unique
     }
 } 
