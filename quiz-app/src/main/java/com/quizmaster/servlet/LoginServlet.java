@@ -1,4 +1,4 @@
-package com.quizmaster.servlet;
+package main.java.com.quizmaster.servlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
