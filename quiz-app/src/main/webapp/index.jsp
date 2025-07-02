@@ -59,7 +59,6 @@
                     </svg>
                 </div>
                 <span class="text-slate-700 font-medium">Achievements</span>
-                <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full notification-pulse">3</span>
             </div>
 
             <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3">
@@ -87,7 +86,6 @@
                     </svg>
                 </div>
                 <span class="text-slate-700 font-medium">Friends</span>
-                <span class="ml-auto bg-green-500 text-white text-xs px-2 py-1 rounded-full">12</span>
             </div>
         </nav>
     </div>
@@ -114,7 +112,8 @@
                 <div class="flex items-center space-x-4 ml-6">
                     <button class="relative p-3 bg-gray-50 rounded-xl border border-gray-200 hover:bg-gray-100 transition-colors">
                         <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5l-5-5h5zm0 0V9a4 4 0 00-8 0v8"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.73 21a2 2 0 0 1-3.46 0"/>
                         </svg>
                         <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center notification-pulse">5</span>
                     </button>
@@ -132,9 +131,6 @@
                 <h2 class="text-3xl font-bold text-slate-700 mb-2">Welcome back, John!</h2>
                 <p class="text-slate-600">Ready to challenge your mind? Discover new quizzes or create your own masterpiece!</p>
                 <div class="mt-4 flex space-x-3">
-                    <button class="px-6 py-3 bg-blue-500 rounded-xl text-white font-medium hover:bg-blue-600 transition-colors">
-                        Take a Quiz
-                    </button>
                     <button class="px-6 py-3 bg-gray-100 border border-gray-200 rounded-xl text-slate-700 font-medium hover:bg-gray-200 transition-colors">
                         Create Quiz
                     </button>
@@ -146,85 +142,57 @@
                 <!-- Quiz Card 1 -->
                 <div class="quiz-card-1 rounded-2xl p-6 card-hover cursor-pointer">
                     <div class="flex items-start justify-between mb-4">
-                        <div class="bg-white/20 rounded-xl p-3">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-                            </svg>
-                        </div>
                         <div class="bg-white/20 rounded-full px-3 py-1">
                             <span class="text-white text-sm font-medium">25 Questions</span>
                         </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">Ultimate Science Challenge</h3>
-                    <p class="text-slate-600 mb-4">Test your knowledge across physics, chemistry, and biology. From quantum mechanics to molecular structures, this comprehensive quiz covers the fascinating world of science.</p>
-                    <div class="flex items-center justify-between">
                         <div class="bg-slate-700 rounded-full px-3 py-1">
                             <span class="text-white text-sm">15 min</span>
                         </div>
                     </div>
+                    <h3 class="text-xl font-bold text-slate-700 mb-2">Ultimate Science Challenge</h3>
+                    <p class="text-slate-600 mb-4">Test your knowledge across physics, chemistry, and biology. From quantum mechanics to molecular structures, this comprehensive quiz covers the fascinating world of science.</p>
                 </div>
 
                 <!-- Quiz Card 2 -->
                 <div class="quiz-card-2 rounded-2xl p-6 card-hover cursor-pointer">
                     <div class="flex items-start justify-between mb-4">
-                        <div class="bg-white/20 rounded-xl p-3">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </div>
                         <div class="bg-white/20 rounded-full px-3 py-1">
                             <span class="text-white text-sm font-medium">30 Questions</span>
                         </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">World Geography Master</h3>
-                    <p class="text-slate-600 mb-4">Explore continents, capitals, and cultures! Journey through countries, landmarks, and natural wonders in this exciting geography adventure that will expand your worldview.</p>
-                    <div class="flex items-center justify-between">
                         <div class="bg-slate-700 rounded-full px-3 py-1">
                             <span class="text-white text-sm">20 min</span>
                         </div>
                     </div>
+                    <h3 class="text-xl font-bold text-slate-700 mb-2">World Geography Master</h3>
+                    <p class="text-slate-600 mb-4">Explore continents, capitals, and cultures! Journey through countries, landmarks, and natural wonders in this exciting geography adventure that will expand your worldview.</p>
                 </div>
 
                 <!-- Quiz Card 3 -->
                 <div class="quiz-card-3 rounded-2xl p-6 card-hover cursor-pointer">
                     <div class="flex items-start justify-between mb-4">
-                        <div class="bg-white/20 rounded-xl p-3">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m3 0a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2h16zM9 9h6m-6 4h6"/>
-                            </svg>
-                        </div>
                         <div class="bg-white/20 rounded-full px-3 py-1">
                             <span class="text-white text-sm font-medium">20 Questions</span>
                         </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">Movie Trivia Extravaganza</h3>
-                    <p class="text-slate-600 mb-4">From classic Hollywood gems to modern blockbusters, test your cinema knowledge! Dive into directors, actors, plot twists, and behind-the-scenes secrets.</p>
-                    <div class="flex items-center justify-between">
                         <div class="bg-slate-700 rounded-full px-3 py-1">
                             <span class="text-white text-sm">12 min</span>
                         </div>
                     </div>
+                    <h3 class="text-xl font-bold text-slate-700 mb-2">Movie Trivia Extravaganza</h3>
+                    <p class="text-slate-600 mb-4">From classic Hollywood gems to modern blockbusters, test your cinema knowledge! Dive into directors, actors, plot twists, and behind-the-scenes secrets.</p>
                 </div>
 
                 <!-- Quiz Card 4 -->
                 <div class="quiz-card-4 rounded-2xl p-6 card-hover cursor-pointer">
                     <div class="flex items-start justify-between mb-4">
-                        <div class="bg-white/20 rounded-xl p-3">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                            </svg>
-                        </div>
                         <div class="bg-white/20 rounded-full px-3 py-1">
                             <span class="text-white text-sm font-medium">35 Questions</span>
                         </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">Ancient Civilizations Quest</h3>
-                    <p class="text-slate-600 mb-4">Uncover the mysteries of ancient Egypt, Greece, Rome, and beyond! Discover pharaohs, philosophers, and legendary empires that shaped our modern world.</p>
-                    <div class="flex items-center justify-between">
                         <div class="bg-slate-700 rounded-full px-3 py-1">
                             <span class="text-white text-sm">25 min</span>
                         </div>
                     </div>
+                    <h3 class="text-xl font-bold text-slate-700 mb-2">Ancient Civilizations Quest</h3>
+                    <p class="text-slate-600 mb-4">Uncover the mysteries of ancient Egypt, Greece, Rome, and beyond! Discover pharaohs, philosophers, and legendary empires that shaped our modern world.</p>
                 </div>
             </div>
         </div>
