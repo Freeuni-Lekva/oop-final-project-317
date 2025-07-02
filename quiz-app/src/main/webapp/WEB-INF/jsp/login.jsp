@@ -1,5 +1,3 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,20 +41,7 @@
             <div class="text-center mb-8">
                 <h1 class="text-3xl font-bold text-slate-700 mb-2">Welcome Back!</h1>
                 <p class="text-slate-500">Sign in to continue your learning journey</p>
-                <div class="w-12 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-3 rounded-full"></div>
             </div>
-
-            <!-- Error Message Display -->
-            <c:if test="${not empty error}">
-                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                        </svg>
-                        <span class="text-red-700 text-sm">${error}</span>
-                    </div>
-                </div>
-            </c:if>
 
             <!-- Login Form -->
             <form action="${pageContext.request.contextPath}/login" method="post" class="space-y-6">
@@ -125,13 +110,6 @@
                     </a>
                 </div>
             </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="text-center mt-6">
-            <p class="text-slate-500 text-sm">
-                © 2024 QuizMaster. Your Learning Adventure Awaits.
-            </p>
         </div>
     </div>
 </body>
