@@ -17,17 +17,23 @@
             <p class="text-slate-500 text-sm">Your Learning Adventure</p>
         </div>
 
-        <!-- User Profile -->
-        <div class="mb-8 p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
-            <div class="flex items-center space-x-3">
-                <div class="w-12 h-12 bg-slate-600 rounded-full flex items-center justify-center">
-                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+        <!-- Authentication Section -->
+        <div class="mb-8 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-100">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-slate-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                     </svg>
                 </div>
-                <div>
-                    <h3 class="text-slate-700 font-medium">John Doe</h3>
-                    <p class="text-slate-500 text-sm">Member since 2024</p>
+                <h3 class="text-slate-700 font-medium mb-1">Welcome to QuizMaster!</h3>
+                <p class="text-slate-500 text-sm mb-4">Join us to track your progress</p>
+                <div class="space-y-2">
+                    <a href="login" class="block w-full bg-slate-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-slate-700 transition-colors text-center">
+                        Sign In
+                    </a>
+                    <a href="register" class="block w-full bg-gray-100 border border-gray-200 text-slate-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors text-center">
+                        Create Account
+                    </a>
                 </div>
             </div>
         </div>
@@ -108,17 +114,20 @@
                     </div>
                 </div>
 
-                <!-- Notifications and Filter -->
+                <!-- Login and Register Buttons -->
                 <div class="flex items-center space-x-4 ml-6">
+                    <a href="login" class="px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-slate-700 font-medium hover:bg-gray-200 transition-colors">
+                        Login
+                    </a>
+                    <a href="register" class="px-4 py-3 bg-slate-600 rounded-xl text-white font-medium hover:bg-slate-700 transition-colors">
+                        Sign Up
+                    </a>
                     <button class="relative p-3 bg-gray-50 rounded-xl border border-gray-200 hover:bg-gray-100 transition-colors">
                         <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.73 21a2 2 0 0 1-3.46 0"/>
                         </svg>
                         <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center notification-pulse">5</span>
-                    </button>
-                    <button class="px-4 py-3 bg-slate-600 rounded-xl text-white font-medium hover:bg-slate-700 transition-colors">
-                        Filters
                     </button>
                 </div>
             </div>
