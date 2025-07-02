@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f2f0e9;
+    min-height: 100vh;
+}
+
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(73, 89, 107, 0.15);
+}
+
+.sidebar-item {
+    transition: all 0.2s ease;
+}
+
+.sidebar-item:hover {
+    background-color: #f8fafc;
+    transform: translateX(2px);
+}
+
+.notification-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.quiz-card-1 {
+    background: linear-gradient(135deg, #49596B 0%, #5a6b7d 100%);
+}
+
+.quiz-card-2 {
+    background: linear-gradient(135deg, #49596B 0%, #6b7b8f 100%);
+}
+
+.quiz-card-3 {
+    background: linear-gradient(135deg, #6ba3d0 0%, #49596B 100%);
+}
+
+.quiz-card-4 {
+    background: linear-gradient(135deg, #7bc142 0%, #49596B 100%);
+}
