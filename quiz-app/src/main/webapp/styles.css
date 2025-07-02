@@ -32,19 +32,32 @@ body {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
 }
-
 .quiz-card-1 {
-    background: linear-gradient(135deg, #49596B 0%, #5a6b7d 100%);
-}
+    background: radial-gradient(
+            circle at center,
+            #8387C3 90%,
+            #676a9c 100%
+    );}
 
 .quiz-card-2 {
-    background: linear-gradient(135deg, #49596B 0%, #6b7b8f 100%);
+    background: radial-gradient(
+            circle at center,
+            #CEB5D4 90%,
+            #a68eab 100%
+    );
 }
 
 .quiz-card-3 {
-    background: linear-gradient(135deg, #6ba3d0 0%, #49596B 100%);
+    background: radial-gradient(
+            circle at center,
+            #537E72 90%,
+            #406358 100%
+    );
 }
 
 .quiz-card-4 {
-    background: linear-gradient(135deg, #7bc142 0%, #49596B 100%);
-}
+    background: radial-gradient(
+            circle at center,
+            #7D9FC0 90%,
+            #5f7b96 100%
+    );
