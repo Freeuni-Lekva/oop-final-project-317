@@ -13,7 +13,6 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        // Serve the login page
         request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
     }
     
@@ -37,14 +36,6 @@ public class LoginServlet extends HttpServlet {
             return;
         }
         
-        // Demo login logic - replace with real authentication later
-        if ("admin@test.com".equals(email) && "password123".equals(password)) {
-            // Successful login - redirect to home
-            response.sendRedirect(request.getContextPath() + "/");
-        } else {
-            // Login failed
-            request.setAttribute("error", "Invalid email or password");
-            request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
-        }
+        // Authentication needed.
     }
 } 
