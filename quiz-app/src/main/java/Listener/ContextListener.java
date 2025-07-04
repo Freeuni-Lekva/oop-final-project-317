@@ -19,7 +19,7 @@ public class ContextListener implements ServletContextListener {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String dbUrl = "jdbc:mysql://localhost:3306/quizmaster_db";
             String dbUser = "root";
-            String dbPassword = "your_password"; // change with your database password
+            String dbPassword = "Gegaong20042222@"; // change with your database password
             Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             context.setAttribute("dbConnection", dbConnection);
             initializeDatabaseTables(dbConnection);
