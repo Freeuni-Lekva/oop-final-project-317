@@ -41,16 +41,17 @@ public class LoginServlet extends HttpServlet {
         Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
 
         try {
-            String query = "SELECT pass_hash FROM users WHERE email = ?";
+            String query = "SELECT name, pass_hash FROM users WHERE email = ?";
             try (PreparedStatement ps = connection.prepareStatement(query)) {
                 ps.setString(1, email);
 
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         String storedHash = rs.getString("pass_hash");
+                        String username = rs.getString("name");
                         String inputHash = PasswordUtil.hashPassword(password);
                         if (storedHash.equals(inputHash)) {
-                            request.getSession().setAttribute("user", email);
+                            request.getSession().setAttribute("user", username);
                             response.sendRedirect(request.getContextPath() + "/index.jsp");
                             return;
                         } else {
