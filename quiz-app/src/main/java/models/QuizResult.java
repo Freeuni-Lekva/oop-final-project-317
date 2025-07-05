@@ -60,16 +60,9 @@ public class QuizResult {
      */
     public double getPercentage() {
         if (totalQuestions == 0) return 0.0;
-        return (double) score / totalQuestions * 100.0;
+        return (double) totalPoints / totalQuestions * 100.0;
     }
 
-    /**
-     * Calculates points percentage based on points earned
-     */
-    public double getPointsPercentage() {
-        if (maxPoints == 0) return 0.0;
-        return (double) totalPoints / maxPoints * 100.0;
-    }
 
     /**
      * Increments score when a question is answered correctly
