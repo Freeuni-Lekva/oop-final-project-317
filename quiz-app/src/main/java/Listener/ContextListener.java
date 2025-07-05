@@ -82,7 +82,7 @@ public class ContextListener implements ServletContextListener {
 
             // Create quiz result table
             String createQuizResultTable = "CREATE TABLE IF NOT EXISTS quiz_results ("
-                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
                     + "user_id BIGINT NOT NULL,"
                     + "quiz_id BIGINT NOT NULL,"
                     + "score INT NOT NULL,"
