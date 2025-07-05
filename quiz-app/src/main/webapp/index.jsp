@@ -74,6 +74,17 @@
                 </div>
                 <span class="text-slate-700 font-medium">Friends</span>
             </div>
+
+            <% if (session.getAttribute("user") != null) { %>
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='profile'">
+                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                </div>
+                <span class="text-slate-700 font-medium">My Profile</span>
+            </div>
+            <% } %>
         </nav>
     </div>
 
@@ -106,7 +117,13 @@
                             Sign Up
                         </a>
                     <% } else { %>
-                        <!-- Sign Out Button (when logged in) -->
+                        <!-- Profile and Sign Out Buttons (when logged in) -->
+                        <a href="profile" class="px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-slate-700 font-medium hover:bg-gray-200 transition-colors">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            Profile
+                        </a>
                         <a href="signout" class="px-4 py-3 bg-slate-600 rounded-xl text-white font-medium hover:bg-slate-700 transition-colors">
                             Sign Out
                         </a>
