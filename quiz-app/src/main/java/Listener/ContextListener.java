@@ -7,7 +7,7 @@ import javax.servlet.annotation.WebListener;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import user.User;
+import models.User;
 
 @WebListener
 public class ContextListener implements ServletContextListener {
@@ -19,7 +19,7 @@ public class ContextListener implements ServletContextListener {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String dbUrl = "jdbc:mysql://localhost:3306/quizmaster_db";
             String dbUser = "root";
-            String dbPassword = "Gegaong20042222@"; // change with your database password
+            String dbPassword = "KoMSHi!!17"; // change with your database password
             Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             context.setAttribute("dbConnection", dbConnection);
             initializeDatabaseTables(dbConnection);

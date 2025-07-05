@@ -55,7 +55,7 @@ public class RegisterServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
             return;
         }
-<<<<<<< HEAD
+
         
         // Demo registration logic - replace with real database save later
         if ("admin@test.com".equals(email)) {
@@ -68,7 +68,6 @@ public class RegisterServlet extends HttpServlet {
         }
 
         // Add User in database if email and username is unique
-=======
 
         Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
 
@@ -118,6 +117,5 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("error", "Database error: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
         }
->>>>>>> 5a6302ee9cb07ab10940d529c19b206b836bd6f7
     }
 }
