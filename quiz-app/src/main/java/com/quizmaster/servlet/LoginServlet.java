@@ -1,4 +1,4 @@
-package com.quizmaster.servlet;
+package main.java.com.quizmaster.servlet;
 
 import com.quizmaster.util.PasswordUtil;
 import javax.servlet.ServletException;
