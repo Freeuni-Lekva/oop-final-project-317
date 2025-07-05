@@ -1,7 +1,6 @@
 package questions;
 
 import models.Question;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,8 +11,8 @@ import java.util.List;
 public class QuestionResponseQuestion extends Question {
 
     //Constructor for Question-Response questions
-    public QuestionResponseQuestion(String questionText, String correctAnswer) {
-        super(questionText, Question.QUESTION_RESPONSE, Arrays.asList(correctAnswer));
+    public QuestionResponseQuestion(String questionText, List<String> acceptableAnswers) {
+        super(questionText, Question.QUESTION_RESPONSE, acceptableAnswers);
     }
     
     /**
@@ -27,7 +26,11 @@ public class QuestionResponseQuestion extends Question {
             return false;
         }
         String userAnswerStr = (String) userAnswer;
-        String correctAnswer = getCorrectAnswers().get(0);
-        return isAnswerMatch(userAnswerStr, correctAnswer);
+        for (String acceptableAnswer : getCorrectAnswers()) {
+            if (isAnswerMatch(userAnswerStr, acceptableAnswer)) {
+                return true;
+            }
+        }
+        return false;
     }
 } 
