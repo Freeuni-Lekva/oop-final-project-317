@@ -22,8 +22,6 @@ public class ContextListener implements ServletContextListener {
 
             String dbPassword = "your_password"; // change with your database password
 
-            String dbPassword = "Wiwibura22."; // change with your database password
-
             Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             context.setAttribute("dbConnection", dbConnection);
             initializeDatabaseTables(dbConnection);
@@ -72,15 +70,35 @@ public class ContextListener implements ServletContextListener {
 
             // Create quizzes table
             String createQuizzesTable = "CREATE TABLE IF NOT EXISTS quizzes ("
-                    + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                    + "title VARCHAR(200) NOT NULL, "
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
+                    + "title VARCHAR(255) NOT NULL, "
                     + "description TEXT, "
-                    + "max_minutes INT NOT NULL, "
-                    + "question_quantity INT NOT NULL"
+                    + "created_by BIGINT, "
+                    + "created_date DATETIME, "
+                    + "last_modified DATETIME, "
+                    + "randomize_questions BOOLEAN, "
+                    + "one_page BOOLEAN, "
+                    + "immediate_correction BOOLEAN, "
+                    + "practice_mode BOOLEAN"
                     + ")";
+
             stmt.executeUpdate(createQuizzesTable);
             System.out.println("Quizzes table created/verified successfully");
 
+            String createQuizHistoryTable = "CREATE TABLE IF NOT EXISTS quiz_history ("
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
+                    + "user_id BIGINT NOT NULL, "
+                    + "quiz_id BIGINT NOT NULL, "
+                    + "score INT NOT NULL, "
+                    + "time_taken INT NOT NULL, "
+                    + "completed_date DATETIME NOT NULL, "
+                    + "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, "
+                    + "FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE"
+                    + ")";
+
+            stmt.executeUpdate(createQuizHistoryTable);
+
+            System.out.println("Quiz history table created/verified successfully");
             System.out.println("All database tables initialized successfully");
 
         } catch (SQLException e) {
