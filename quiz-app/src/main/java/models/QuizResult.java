@@ -18,8 +18,6 @@ public class QuizResult {
     private int totalPoints;       // Total points earned
     private int maxPoints;
     private long completionTime;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
     private boolean isPracticeMode;      // Whether this was a practice attempt
 
     public QuizResult(Long userId, Long quizId, int totalQuestions, int maxPoints) {
@@ -29,7 +27,6 @@ public class QuizResult {
         this.maxPoints = maxPoints;
         this.score = 0;
         this.totalPoints = 0;
-        this.startTime = LocalDateTime.now();
         this.isPracticeMode = false;
     }
 
@@ -60,12 +57,6 @@ public class QuizResult {
         this.completionTime = completionTimeSeconds;
     }
 
-    public LocalDateTime getStartTime() { return startTime; }
-    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
-
-    public LocalDateTime getEndTime() { return endTime; }
-    public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
-
     public boolean isPracticeMode() { return isPracticeMode; }
     public void setPracticeMode(boolean practiceMode) { this.isPracticeMode = practiceMode; }
 
@@ -84,17 +75,6 @@ public class QuizResult {
     public double getPointsPercentage() {
         if (maxPoints == 0) return 0.0;
         return (double) totalPoints / maxPoints * 100.0;
-    }
-
-    /**
-     * Completes the quiz and calculates final time
-     */
-    public void completeQuiz() {
-        this.endTime = LocalDateTime.now();
-        if (startTime != null) {
-            Duration duration = Duration.between(startTime, endTime);
-            this.completionTime = duration.getSeconds();
-        }
     }
 
     /**

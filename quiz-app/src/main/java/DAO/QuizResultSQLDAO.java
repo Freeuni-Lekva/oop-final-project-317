@@ -11,7 +11,7 @@ public class QuizResultSQLDAO implements QuizResultDAO {
     // SQL Queries
     private static final String INSERT_QUIZ_RESULT =
             "INSERT INTO " + TABLE_NAME + " (user_id, quiz_id, score, total_questions, total_points, max_points, " +
-                    "completion_time_seconds, start_time, end_time, is_completed, is_practice_mode) " +
+                    "completion_time_seconds, is_practice_mode) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String SELECT_BY_ID =
@@ -56,9 +56,7 @@ public class QuizResultSQLDAO implements QuizResultDAO {
             statement.setInt(5, quizResult.getTotalPoints());
             statement.setInt(6, quizResult.getMaxPoints());
             statement.setLong(7, quizResult.getCompletionTimeSeconds());
-            statement.setTimestamp(8, quizResult.getStartTime() != null ? Timestamp.valueOf(quizResult.getStartTime()) : null);
-            statement.setTimestamp(9, quizResult.getEndTime() != null ? Timestamp.valueOf(quizResult.getEndTime()) : null);
-            statement.setBoolean(10, quizResult.isPracticeMode());
+            statement.setBoolean(8, quizResult.isPracticeMode());
 
             statement.executeUpdate();
 
@@ -193,16 +191,6 @@ public class QuizResultSQLDAO implements QuizResultDAO {
         quizResult.setScore(rs.getInt("score"));
         quizResult.setTotalPoints(rs.getInt("total_points"));
         quizResult.setCompletionTimeSeconds(rs.getLong("completion_time_seconds"));
-
-        Timestamp startTime = rs.getTimestamp("start_time");
-        if (startTime != null) {
-            quizResult.setStartTime(startTime.toLocalDateTime());
-        }
-
-        Timestamp endTime = rs.getTimestamp("end_time");
-        if (endTime != null) {
-            quizResult.setEndTime(endTime.toLocalDateTime());
-        }
 
         quizResult.setPracticeMode(rs.getBoolean("is_practice_mode"));
 
