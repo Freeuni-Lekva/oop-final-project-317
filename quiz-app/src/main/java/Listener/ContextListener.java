@@ -76,8 +76,24 @@ public class ContextListener implements ServletContextListener {
                     + "max_minutes INT NOT NULL, "
                     + "question_quantity INT NOT NULL"
                     + ")";
+
             stmt.executeUpdate(createQuizzesTable);
             System.out.println("Quizzes table created/verified successfully");
+
+            // Create quiz result table
+            String createQuizResultTable = "CREATE TABLE IF NOT EXISTS quiz_results ("
+                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
+                    + "user_id BIGINT NOT NULL,"
+                    + "quiz_id BIGINT NOT NULL,"
+                    + "score INT NOT NULL,"
+                    + "total_questions INT NOT NULL,"
+                    + "total_points INT NOT NULL,"
+                    + "max_points INT NOT NULL,"
+                    + "is_practice_mode BOOLEAN NOT NULL"
+                    + ")";
+
+            stmt.executeUpdate(createQuizResultTable);
+            System.out.println("Quizz Result table created/verified successfully");
 
             System.out.println("All database tables initialized successfully");
 
