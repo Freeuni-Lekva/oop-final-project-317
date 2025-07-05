@@ -12,7 +12,7 @@ public class QuizResultSQLDAO implements QuizResultDAO {
     private static final String INSERT_QUIZ_RESULT =
             "INSERT INTO " + TABLE_NAME + " (user_id, quiz_id, score, total_questions, total_points, max_points, " +
                     "completion_time_seconds, is_practice_mode) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String SELECT_BY_ID =
             "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
