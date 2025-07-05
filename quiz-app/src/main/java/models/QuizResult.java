@@ -17,7 +17,6 @@ public class QuizResult {
     private int totalQuestions;
     private int totalPoints;       // Total points earned
     private int maxPoints;
-    private long completionTime;
     private boolean isPracticeMode;      // Whether this was a practice attempt
 
     public QuizResult(Long userId, Long quizId, int totalQuestions, int maxPoints) {
@@ -52,11 +51,6 @@ public class QuizResult {
     public int getMaxPoints() { return maxPoints; }
     public void setMaxPoints(int maxPoints) { this.maxPoints = maxPoints; }
 
-    public long getCompletionTimeSeconds() { return completionTime; }
-    public void setCompletionTimeSeconds(long completionTimeSeconds) {
-        this.completionTime = completionTimeSeconds;
-    }
-
     public boolean isPracticeMode() { return isPracticeMode; }
     public void setPracticeMode(boolean practiceMode) { this.isPracticeMode = practiceMode; }
 
@@ -75,15 +69,6 @@ public class QuizResult {
     public double getPointsPercentage() {
         if (maxPoints == 0) return 0.0;
         return (double) totalPoints / maxPoints * 100.0;
-    }
-
-    /**
-     * Formats completion time as MM:SS
-     */
-    public String getCompletionTime() {
-        long minutes = completionTime / 60;
-        long seconds = completionTime % 60;
-        return String.format("%02d:%02d", minutes, seconds);
     }
 
     /**
@@ -111,7 +96,8 @@ public class QuizResult {
             return this.score > other.score;
         }
 
-        return this.completionTime < other.completionTime;
+        return false;
+        //return this.completionTime < other.completionTime;
     }
 
     @Override
@@ -123,7 +109,6 @@ public class QuizResult {
                 ", score=" + score + "/" + totalQuestions +
                 ", points=" + totalPoints + "/" + maxPoints +
                 ", percentage=" + String.format("%.1f", getPercentage()) + "%" +
-                ", completionTime=" + getCompletionTime() +
                 ", practiceMode=" + isPracticeMode +
                 '}';
     }

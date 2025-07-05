@@ -11,8 +11,8 @@ public class QuizResultSQLDAO implements QuizResultDAO {
     // SQL Queries
     private static final String INSERT_QUIZ_RESULT =
             "INSERT INTO " + TABLE_NAME + " (user_id, quiz_id, score, total_questions, total_points, max_points, " +
-                    "completion_time_seconds, is_practice_mode) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    "is_practice_mode) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     private static final String SELECT_BY_ID =
             "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
@@ -55,8 +55,7 @@ public class QuizResultSQLDAO implements QuizResultDAO {
             statement.setInt(4, quizResult.getTotalQuestions());
             statement.setInt(5, quizResult.getTotalPoints());
             statement.setInt(6, quizResult.getMaxPoints());
-            statement.setLong(7, quizResult.getCompletionTimeSeconds());
-            statement.setBoolean(8, quizResult.isPracticeMode());
+            statement.setBoolean(7, quizResult.isPracticeMode());
 
             statement.executeUpdate();
 
@@ -190,7 +189,6 @@ public class QuizResultSQLDAO implements QuizResultDAO {
         quizResult.setId(rs.getLong("id"));
         quizResult.setScore(rs.getInt("score"));
         quizResult.setTotalPoints(rs.getInt("total_points"));
-        quizResult.setCompletionTimeSeconds(rs.getLong("completion_time_seconds"));
 
         quizResult.setPracticeMode(rs.getBoolean("is_practice_mode"));
 
