@@ -19,7 +19,7 @@ public class ContextListener implements ServletContextListener {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String dbUrl = "jdbc:mysql://localhost:3306/quizmaster_db";
             String dbUser = "root";
-            String dbPassword = "your_password"; // change with your database password
+            String dbPassword = "likunach1"; // change with your database password
             Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             context.setAttribute("dbConnection", dbConnection);
             initializeDatabaseTables(dbConnection);
@@ -76,6 +76,20 @@ public class ContextListener implements ServletContextListener {
                     + ")";
             stmt.executeUpdate(createQuizzesTable);
             System.out.println("Quizzes table created/verified successfully");
+
+            // Create notifications table
+            String createNotificationsTable = "CREATE TABLE IF NOT EXISTS notifications ("
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
+                    + "from_id BIGINT NOT NULL, "
+                    + "to_id BIGINT NOT NULL, "
+                    + "title VARCHAR(200) NOT NULL, "
+                    + "message TEXT, "
+                    + "question_type VARCHAR(100), "
+                    + "create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+                    + "FOREIGN KEY (from_id) REFERENCES users(id) ON DELETE CASCADE, "
+                    + "FOREIGN KEY (to_id) REFERENCES users(id) ON DELETE CASCADE"
+                    + ")";
+            System.out.println("Notifications table created/verified successfully");
 
             System.out.println("All database tables initialized successfully");
 
