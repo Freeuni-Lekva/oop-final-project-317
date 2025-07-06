@@ -61,8 +61,15 @@ public class ContextListener implements ServletContextListener {
                     + "name VARCHAR(50) NOT NULL, "
                     + "email VARCHAR(255) NOT NULL UNIQUE, "
                     + "pass_hash VARCHAR(255) NOT NULL, "
-                    + "passed_quizzes INT DEFAULT 0"
+                    + "passed_quizzes INT DEFAULT 0, "
+                    + "nof_notifications INT DEFAULT 0, "
+                    + "is_admin BOOLEAN DEFAULT FALSE, "
+                    + "is_banned BOOLEAN DEFAULT FALSE, "
+                    + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
                     + ")";
+
+
+
             stmt.executeUpdate(createUsersTable);
             System.out.println("Users table created/verified successfully");
 
