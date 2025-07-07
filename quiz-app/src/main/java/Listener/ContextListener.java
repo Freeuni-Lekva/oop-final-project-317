@@ -21,7 +21,7 @@ public class ContextListener implements ServletContextListener {
             String dbUser = "root";
 
             String dbPassword = "your_password"; // change with your database password
-
+          
             Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             context.setAttribute("dbConnection", dbConnection);
             initializeDatabaseTables(dbConnection);
