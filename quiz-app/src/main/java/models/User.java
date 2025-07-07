@@ -48,4 +48,6 @@ public class User {
 
     public void setIfBanned(boolean isBanned) { this.isBanned = isBanned; }
     public boolean getIfBanned() { return isBanned; }
+
+    public long getId() {return  userId;}
 }
