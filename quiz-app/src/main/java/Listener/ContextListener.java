@@ -63,10 +63,33 @@ public class ContextListener implements ServletContextListener {
                     + "name VARCHAR(50) NOT NULL, "
                     + "email VARCHAR(255) NOT NULL UNIQUE, "
                     + "pass_hash VARCHAR(255) NOT NULL, "
-                    + "passed_quizzes INT DEFAULT 0"
+                    + "passed_quizzes INT DEFAULT 0, "
+                    + "nof_notifications INT DEFAULT 0, "
+                    + "is_admin BOOLEAN DEFAULT FALSE, "
+                    + "is_banned BOOLEAN DEFAULT FALSE, "
+                    + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
                     + ")";
+
+
+
             stmt.executeUpdate(createUsersTable);
             System.out.println("Users table created/verified successfully");
+
+            // Create Friendsships table
+            String createFriendshipsTable = "CREATE TABLE IF NOT EXISTS friendships ("
+                    + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                    + "user_id1 BIGINT NOT NULL, "
+                    + "user_id2 BIGINT NOT NULL, "
+                    + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+                    + "FOREIGN KEY (user_id1) REFERENCES users(id), "
+                    + "FOREIGN KEY (user_id2) REFERENCES users(id), "
+                    + "UNIQUE KEY unique_friendship (LEAST(user_id1, user_id2), GREATEST(user_id1, user_id2))"
+                    + ")";
+
+
+
+            stmt.executeUpdate(createFriendshipsTable);
+            System.out.println("Frienships table created/verified successfully");
 
             // Create quizzes table
             String createQuizzesTable = "CREATE TABLE IF NOT EXISTS quizzes ("
