@@ -20,8 +20,8 @@ public class ContextListener implements ServletContextListener {
             String dbUrl = "jdbc:mysql://localhost:3306/quizmaster_db";
             String dbUser = "root";
 
-            String dbPassword = "KoMSHi!!17"; // change with your database password
-
+            String dbPassword = "your_password"; // change with your database password
+          
             Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             context.setAttribute("dbConnection", dbConnection);
             initializeDatabaseTables(dbConnection);
@@ -63,22 +63,51 @@ public class ContextListener implements ServletContextListener {
                     + "name VARCHAR(50) NOT NULL, "
                     + "email VARCHAR(255) NOT NULL UNIQUE, "
                     + "pass_hash VARCHAR(255) NOT NULL, "
-                    + "passed_quizzes INT DEFAULT 0"
+                    + "passed_quizzes INT DEFAULT 0, "
+                    + "nof_notifications INT DEFAULT 0, "
+                    + "is_admin BOOLEAN DEFAULT FALSE, "
+                    + "is_banned BOOLEAN DEFAULT FALSE, "
+                    + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
                     + ")";
+
+
+
             stmt.executeUpdate(createUsersTable);
             System.out.println("Users table created/verified successfully");
 
+            // Create Friendsships table
+            String createFriendshipsTable = "CREATE TABLE IF NOT EXISTS friendships ("
+                    + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                    + "user_id1 BIGINT NOT NULL, "
+                    + "user_id2 BIGINT NOT NULL, "
+                    + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+                    + "FOREIGN KEY (user_id1) REFERENCES users(id), "
+                    + "FOREIGN KEY (user_id2) REFERENCES users(id), "
+                    + "UNIQUE KEY unique_friendship (LEAST(user_id1, user_id2), GREATEST(user_id1, user_id2))"
+                    + ")";
+
+
+
+            stmt.executeUpdate(createFriendshipsTable);
+            System.out.println("Frienships table created/verified successfully");
+
             // Create quizzes table
             String createQuizzesTable = "CREATE TABLE IF NOT EXISTS quizzes ("
-                    + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                    + "title VARCHAR(200) NOT NULL, "
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
+                    + "title VARCHAR(255) NOT NULL, "
                     + "description TEXT, "
-                    + "max_minutes INT NOT NULL, "
-                    + "question_quantity INT NOT NULL"
+                    + "created_by BIGINT, "
+                    + "created_date DATETIME, "
+                    + "last_modified DATETIME, "
+                    + "randomize_questions BOOLEAN, "
+                    + "one_page BOOLEAN, "
+                    + "immediate_correction BOOLEAN, "
+                    + "practice_mode BOOLEAN"
                     + ")";
 
             stmt.executeUpdate(createQuizzesTable);
             System.out.println("Quizzes table created/verified successfully");
+
 
             // Create quiz result table
             String createQuizResultTable = "CREATE TABLE IF NOT EXISTS quiz_results ("
@@ -94,6 +123,22 @@ public class ContextListener implements ServletContextListener {
 
             stmt.executeUpdate(createQuizResultTable);
             System.out.println("Quizz Result table created/verified successfully");
+
+
+            String createQuizHistoryTable = "CREATE TABLE IF NOT EXISTS quiz_history ("
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
+                    + "user_id BIGINT NOT NULL, "
+                    + "quiz_id BIGINT NOT NULL, "
+                    + "score INT NOT NULL, "
+                    + "time_taken INT NOT NULL, "
+                    + "completed_date DATETIME NOT NULL, "
+                    + "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, "
+                    + "FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE"
+                    + ")";
+
+            stmt.executeUpdate(createQuizHistoryTable);
+
+            System.out.println("Quiz history table created/verified successfully");
 
             System.out.println("All database tables initialized successfully");
 
