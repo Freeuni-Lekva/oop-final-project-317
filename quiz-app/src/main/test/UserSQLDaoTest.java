@@ -1,9 +1,8 @@
 import DAO.UserSQLDao;
 
+import com.mysql.cj.jdbc.JdbcConnection;
 import models.User;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,25 +11,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserSQLDaoTest {
 
-    private Connection testConnection;
-    private UserSQLDao userSQLDao;
+    private static UserSQLDao userSQLDao;
+    private static Connection dbConnection;
 
-    @BeforeEach
-    void setUp() throws SQLException {
-        testConnection = DriverManager.getConnection("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1", "sa", "");
-        createTestTables();
-        userSQLDao = new UserSQLDao(testConnection);
-    }
+    @BeforeAll
+    static void setUp() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            String dbUrl = "jdbc:mysql://localhost:3306/quizmastertest_db";
+            String dbUser = "root";
+            String dbPassword = "Wiwibura22."; // change with your database password
+            dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            System.out.println("Database connection established successfully");
 
-    @AfterEach
-    void tearDown() throws SQLException {
-        if (testConnection != null && !testConnection.isClosed()) {
-            testConnection.close();
+        } catch (ClassNotFoundException e) {
+            System.err.println("MySQL JDBC Driver not found: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Database connection failed: " + e.getMessage());
         }
-    }
 
-    private void createTestTables() throws SQLException {
-        String createUsersTable = " CREATE TABLE users ( " +
+        String createUsersTable = " CREATE TABLE IF NOT EXISTS users( " +
                 "id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
                 "name VARCHAR(255) NOT NULL, " +
                 "email VARCHAR(255) NOT NULL, " +
@@ -39,23 +39,43 @@ class UserSQLDaoTest {
                 "is_admin BOOLEAN DEFAULT FALSE, " +
                 "is_banned BOOLEAN DEFAULT FALSE)";
 
-        String createFriendshipsTable = " CREATE TABLE friendships ( " +
+        String createFriendshipsTable = " CREATE TABLE IF NOT EXISTS friendships ( " +
                 "id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
                 "user_id1 BIGINT NOT NULL, " +
                 "user_id2 BIGINT NOT NULL, " +
                 "FOREIGN KEY (user_id1) REFERENCES users(id), " +
                 "FOREIGN KEY (user_id2) REFERENCES users(id))";
 
-        try (Statement stmt = testConnection.createStatement()) {
+        try (Statement stmt = dbConnection.createStatement()) {
             stmt.execute(createUsersTable);
             stmt.execute(createFriendshipsTable);
+        }
+
+        userSQLDao = new UserSQLDao(dbConnection);
+    }
+
+    @BeforeEach
+    void cleanDatabase() throws SQLException {
+        try (Statement stmt = dbConnection.createStatement()) {
+            stmt.execute("DELETE FROM friendships");
+            stmt.execute("DELETE FROM users");
+            stmt.execute("ALTER TABLE friendships AUTO_INCREMENT = 1");
+            stmt.execute("ALTER TABLE users       AUTO_INCREMENT = 1");
+        }
+    }
+
+
+    @AfterAll
+    static void tearDown() throws SQLException {
+        if (dbConnection != null && !dbConnection.isClosed()) {
+            dbConnection.close();
         }
     }
 
     private void insertTestUser(long id, String name, String email, String passHash,
                                 int passedQuizzes, boolean isAdmin, boolean isBanned) throws SQLException {
         String sql = "INSERT INTO users (id, name, email, pass_hash, passed_quizzes, is_admin, is_banned) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = testConnection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = dbConnection.prepareStatement(sql)) {
             stmt.setLong(1, id);
             stmt.setString(2, name);
             stmt.setString(3, email);
@@ -69,7 +89,7 @@ class UserSQLDaoTest {
 
     private void insertTestFriendship(long userId1, long userId2) throws SQLException {
         String sql = "INSERT INTO friendships (user_id1, user_id2) VALUES (?, ?)";
-        try (PreparedStatement stmt = testConnection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = dbConnection.prepareStatement(sql)) {
             stmt.setLong(1, userId1);
             stmt.setLong(2, userId2);
             stmt.executeUpdate();
@@ -83,7 +103,7 @@ class UserSQLDaoTest {
         userSQLDao.addUser(user);
 
         String sql = "SELECT * FROM users WHERE name = ? AND email = ?";
-        try (PreparedStatement stmt = testConnection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = dbConnection.prepareStatement(sql)) {
             stmt.setString(1, "John Doe");
             stmt.setString(2, "john@example.com");
             ResultSet rs = stmt.executeQuery();
@@ -105,7 +125,7 @@ class UserSQLDaoTest {
         userSQLDao.addUser(user);
 
         String sql = "SELECT * FROM users WHERE name = ?";
-        try (PreparedStatement stmt = testConnection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = dbConnection.prepareStatement(sql)) {
             stmt.setString(1, "Admin User");
             ResultSet rs = stmt.executeQuery();
 
@@ -254,7 +274,7 @@ class UserSQLDaoTest {
         userSQLDao.addFriendship(1L, 2L);
 
         String sql = "SELECT * FROM friendships WHERE user_id1 = ? AND user_id2 = ?";
-        try (PreparedStatement stmt = testConnection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = dbConnection.prepareStatement(sql)) {
             stmt.setLong(1, 1L);
             stmt.setLong(2, 2L);
             ResultSet rs = stmt.executeQuery();
@@ -275,7 +295,7 @@ class UserSQLDaoTest {
         userSQLDao.addFriendship(1L, 3L);
 
         String sql = "SELECT COUNT(*) as count FROM friendships WHERE user_id1 = ?";
-        try (PreparedStatement stmt = testConnection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = dbConnection.prepareStatement(sql)) {
             stmt.setLong(1, 1L);
             ResultSet rs = stmt.executeQuery();
 
