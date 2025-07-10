@@ -1,6 +1,5 @@
 import DAO.UserSQLDao;
 
-import com.mysql.cj.jdbc.JdbcConnection;
 import models.User;
 import org.junit.jupiter.api.*;
 
@@ -20,7 +19,7 @@ class UserSQLDaoTest {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String dbUrl = "jdbc:mysql://localhost:3306/quizmastertest_db";
             String dbUser = "root";
-            String dbPassword = "Wiwibura22."; // change with your database password
+            String dbPassword = "marikuna12"; // change with your database password
             dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             System.out.println("Database connection established successfully");
 
