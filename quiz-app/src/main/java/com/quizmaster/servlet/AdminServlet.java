@@ -23,26 +23,10 @@ public class AdminServlet extends HttpServlet {
             return;
         }
         // Only allow admin users
-        String username = (String) session.getAttribute("user");
+        models.User user = (models.User) session.getAttribute("user");
+        String username = user.getName();
         Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
-        boolean isAdmin = false;
-        try {
-            String sql = "SELECT is_admin FROM users WHERE name = ?";
-            try (PreparedStatement ps = connection.prepareStatement(sql)) {
-                ps.setString(1, username);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        //isAdmin = rs.getBoolean("is_admin");
-                        isAdmin = true;
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Database error: " + e.getMessage());
-            request.getRequestDispatcher("/WEB-INF/jsp/admin.jsp").forward(request, response);
-            return;
-        }
+        boolean isAdmin = user.getIfAdmin();
         if (!isAdmin) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not authorized to access this page.");
             return;

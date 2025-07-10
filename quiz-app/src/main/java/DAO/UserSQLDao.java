@@ -46,7 +46,7 @@ public class UserSQLDao implements UserDAO{
             if (rs.next()) {
                 return new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
-                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"));
+                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -63,7 +63,7 @@ public class UserSQLDao implements UserDAO{
             if (rs.next()) {
                 return new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
-                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"));
+                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -80,7 +80,7 @@ public class UserSQLDao implements UserDAO{
             if (rs.next()) {
                 return new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
-                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"));
+                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -100,7 +100,7 @@ public class UserSQLDao implements UserDAO{
             while (rs.next()) {
                 friends.add(new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
-                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned")));
+                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"),  rs.getTimestamp("created_at")));
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -1,5 +1,8 @@
 package models;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+
 public class User {
     private String name;
     private String passHash;
@@ -8,9 +11,10 @@ public class User {
     private long userId;
     private boolean isAdmin;
     private boolean isBanned;
+    private Timestamp createdAt;
 
 
-    public User(long userId, String userName, String userEmail, String passwordHash, int passedQuizzes, boolean isAdmin, boolean isBanned) {
+    public User(long userId, String userName, String userEmail, String passwordHash, int passedQuizzes, boolean isAdmin, boolean isBanned, Timestamp createdAt) {
         this.userId = userId;
         this.name = userName;
         this.email = userEmail;
@@ -28,6 +32,7 @@ public class User {
         this.passedQuizzes = passedQuizzes;
         this.isAdmin = isAdmin;
         this.isBanned = isBanned;
+
     }
 
     public void setName(String name) {
@@ -61,4 +66,6 @@ public class User {
     public boolean getIfBanned() { return isBanned; }
 
     public long getId() {return  userId;}
+
+    public Timestamp getCreatedAt() { return createdAt; }
 }

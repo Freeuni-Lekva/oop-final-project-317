@@ -9,7 +9,7 @@ class UserTest {
 
     @BeforeEach
     void setUp() {
-        user = new User(1L, "John Doe", "john@example.com", "hashedPassword", 5, false, false);
+        user = new User(1L, "John Doe", "john@example.com", "hashedPassword", 5, false, false, null);
     }
 
     @Test
@@ -22,7 +22,7 @@ class UserTest {
         boolean isAdmin = true;
         boolean isBanned = false;
 
-        User newUser = new User(userId, userName, userEmail, passwordHash, passedQuizzes, isAdmin, isBanned);
+        User newUser = new User(userId, userName, userEmail, passwordHash, passedQuizzes, isAdmin, isBanned, null);
 
         assertEquals(userId, newUser.getId());
         assertEquals(userName, newUser.getName());
@@ -35,7 +35,7 @@ class UserTest {
 
     @Test
     void testConstructor_WithBannedAdmin() {
-        User bannedAdmin = new User(2L, "Banned Admin", "banned@example.com", "hash", 0, true, true);
+        User bannedAdmin = new User(2L, "Banned Admin", "banned@example.com", "hash", 0, true, true, null);
 
         assertEquals(2L, bannedAdmin.getId());
         assertEquals("Banned Admin", bannedAdmin.getName());
@@ -207,7 +207,7 @@ class UserTest {
 
     @Test
     void testSetIfAdmin_False() {
-        User adminUser = new User(2L, "Admin", "admin@example.com", "hash", 0, true, false);
+        User adminUser = new User(2L, "Admin", "admin@example.com", "hash", 0, true, false, null);
 
         adminUser.setIfAdmin(false);
 
@@ -228,7 +228,7 @@ class UserTest {
 
     @Test
     void testSetIfBanned_False() {
-        User bannedUser = new User(3L, "Banned User", "banned@example.com", "hash", 0, false, true);
+        User bannedUser = new User(3L, "Banned User", "banned@example.com", "hash", 0, false, true, null);
 
         bannedUser.setIfBanned(false);
 
@@ -297,15 +297,15 @@ class UserTest {
     @Test
     void testEdgeCaseValues() {
         // Test with minimum long value for ID
-        User userWithMinId = new User(Long.MIN_VALUE, "Min User", "min@example.com", "hash", 0, false, false);
+        User userWithMinId = new User(Long.MIN_VALUE, "Min User", "min@example.com", "hash", 0, false, false, null);
         assertEquals(Long.MIN_VALUE, userWithMinId.getId());
 
         // Test with maximum long value for ID
-        User userWithMaxId = new User(Long.MAX_VALUE, "Max User", "max@example.com", "hash", 0, false, false);
+        User userWithMaxId = new User(Long.MAX_VALUE, "Max User", "max@example.com", "hash", 0, false, false, null);
         assertEquals(Long.MAX_VALUE, userWithMaxId.getId());
 
         // Test with zero ID
-        User userWithZeroId = new User(0L, "Zero User", "zero@example.com", "hash", 0, false, false);
+        User userWithZeroId = new User(0L, "Zero User", "zero@example.com", "hash", 0, false, false, null);
         assertEquals(0L, userWithZeroId.getId());
     }
 

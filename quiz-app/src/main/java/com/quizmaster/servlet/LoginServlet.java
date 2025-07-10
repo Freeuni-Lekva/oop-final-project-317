@@ -41,6 +41,11 @@ public class LoginServlet extends HttpServlet {
         }
 
         UserSQLDao userSQLDao = (UserSQLDao) getServletContext().getAttribute("userSqlDao");
+        if (userSQLDao == null) {
+            request.setAttribute("error", "Database connection error. Please try again later.");
+            request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+            return;
+        }
         User user = userSQLDao.getUserByEmail(email);
         if (user != null) {
             String storedHash = user.getPassHash();

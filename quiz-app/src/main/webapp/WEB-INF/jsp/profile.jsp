@@ -117,14 +117,6 @@
                     <div class="relative">
                         <div class="w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center profile-picture">
                             <span class="text-white text-4xl font-bold">
-                                <%
-                                    String loggedInUser = (String) session.getAttribute("user");
-                                    if (loggedInUser != null) {
-                                        out.print(loggedInUser.substring(0, 1).toUpperCase());
-                                    } else {
-                                        out.print("U");
-                                    }
-                                %>
                             </span>
                         </div>
                         <button class="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
@@ -137,13 +129,6 @@
                     <!-- Profile Info -->
                     <div class="flex-1">
                         <h2 class="text-3xl font-bold text-slate-700 mb-2">
-                            <%
-                                if (loggedInUser != null) {
-                                    out.print(loggedInUser);
-                                } else {
-                                    out.print("Guest User");
-                                }
-                            %>
                         </h2>
                         <p class="text-slate-500 text-lg mb-4">Quiz enthusiast and knowledge seeker</p>
                         <div class="flex items-center space-x-4 text-sm text-slate-600">

@@ -98,7 +98,7 @@ class UserSQLDaoTest {
 
     @Test
     void testAddUser_Success() throws SQLException {
-        User user = new User(0L, "John Doe", "john@example.com", "hashedPassword", 5, false, false);
+        User user = new User(0L, "John Doe", "john@example.com", "hashedPassword", 5, false, false, null);
 
         userSQLDao.addUser(user);
 
@@ -120,7 +120,7 @@ class UserSQLDaoTest {
 
     @Test
     void testAddUser_WithAdminAndBannedFlags() throws SQLException {
-        User user = new User(0L, "Admin User", "admin@example.com", "adminHash", 10, true, true);
+        User user = new User(0L, "Admin User", "admin@example.com", "adminHash", 10, true, true, null);
 
         userSQLDao.addUser(user);
 
@@ -306,8 +306,8 @@ class UserSQLDaoTest {
 
     @Test
     void testIntegration_AddUserAndCreateFriendship() throws SQLException {
-        User user1 = new User(0L, "Alice", "alice@example.com", "hashA", 2, false, false);
-        User user2 = new User(0L, "Bob", "bob@example.com", "hashB", 4, false, false);
+        User user1 = new User(0L, "Alice", "alice@example.com", "hashA", 2, false, false, null);
+        User user2 = new User(0L, "Bob", "bob@example.com", "hashB", 4, false, false, null);
 
         userSQLDao.addUser(user1);
         userSQLDao.addUser(user2);
