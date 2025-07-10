@@ -20,7 +20,7 @@ public class TestQuizHistorySQLDao extends TestCase {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String dbUrl = "jdbc:mysql://localhost:3306/quizmastertest_db";
             String dbUser = "root";
-            String dbPassword = "marikuna12";
+            String dbPassword = "KoMSHi!!17"; // change with your database password
 
             connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             historyDao = new QuizHistorySQLDao(connection);
