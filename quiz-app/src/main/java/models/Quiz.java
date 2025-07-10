@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Quiz {
     // Database fields
-    private Long id;
+    private long id;
     private String title;
     private String description;
     private Long createdBy; // User ID who created the quiz
@@ -27,6 +27,7 @@ public class Quiz {
     private List<Question> questions;
 
     public Quiz(String title, String description, Long createdBy) {
+        this.id = 0;
         this.title = title;
         this.description = description;
         this.createdBy = createdBy;

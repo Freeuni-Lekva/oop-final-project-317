@@ -6,7 +6,6 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class QuizHistorySQLDao implements QuizHistoryDAO {
-
     private Connection connection;
 
     public QuizHistorySQLDao(Connection connection) {
@@ -100,6 +99,7 @@ public class QuizHistorySQLDao implements QuizHistoryDAO {
         return null;
     }
 
+
     // Helper method to map ResultSet row to QuizHistory object
     private QuizHistory mapRowToQuizHistory(ResultSet rs) throws SQLException {
         QuizHistory history = new QuizHistory(
@@ -112,4 +112,5 @@ public class QuizHistorySQLDao implements QuizHistoryDAO {
         history.setCompletedDate(rs.getTimestamp("completed_date").toLocalDateTime());
         return history;
     }
+
 }
