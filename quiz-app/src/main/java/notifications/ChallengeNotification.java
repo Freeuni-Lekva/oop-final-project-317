@@ -5,6 +5,7 @@ import models.Notification;
 public class ChallengeNotification extends Notification {
     public ChallengeNotification() {
         super();
+        this.setQuestionType(Notification.CHALLENGE_NOTIFICATION);
     }
 
     public ChallengeNotification(long fromUserId, long toUserId, String title, String message) {

@@ -86,11 +86,16 @@ public class NotificationsSQLDAO implements NotificationDAO {
     }
 
     private Notification createNotificationInstance(String questionType) {
-        return switch (questionType) {
-            case Notification.NOTE_NOTIFICATION -> new NoteNotification();
-            case Notification.CHALLENGE_NOTIFICATION -> new ChallengeNotification();
-            case Notification.FRIEND_REQUEST_NOTIFICATION -> new FriendRequestNotification();
-            default -> null;
-        };
+        switch (questionType) {
+            case Notification.NOTE_NOTIFICATION:
+                return new NoteNotification();
+            case Notification.CHALLENGE_NOTIFICATION:
+                return new ChallengeNotification();
+            case Notification.FRIEND_REQUEST_NOTIFICATION:
+                return new FriendRequestNotification();
+            default:
+                return null;
+        }
     }
+
 }
