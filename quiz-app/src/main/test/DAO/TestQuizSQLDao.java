@@ -19,7 +19,7 @@ public class TestQuizSQLDao extends TestCase {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String dbUrl = "jdbc:mysql://localhost:3306/quizmastertest_db";
             String dbUser = "root";
-            String dbPassword = "marikuna12"; // change with your database password
+            String dbPassword = "KoMSHi!!17"; // change with your database password
 
             connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             System.out.println("Test database connection established successfully");

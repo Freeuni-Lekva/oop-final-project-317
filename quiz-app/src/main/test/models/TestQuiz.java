@@ -100,7 +100,7 @@ public class TestQuiz extends TestCase {
 
         // Small delay to ensure time difference
         try {
-            Thread.sleep(1);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
