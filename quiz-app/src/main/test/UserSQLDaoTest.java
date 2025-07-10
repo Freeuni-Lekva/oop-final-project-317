@@ -20,14 +20,13 @@ class UserSQLDaoTest {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String dbUrl = "jdbc:mysql://localhost:3306/quizmastertest_db";
             String dbUser = "root";
-            String dbPassword = "Wiwibura22."; // change with your database password
-            dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            String dbPassword = "KoMSHi!!17"; // change with your database password
             System.out.println("Database connection established successfully");
+            dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+
 
         } catch (ClassNotFoundException e) {
             System.err.println("MySQL JDBC Driver not found: " + e.getMessage());
-        } catch (SQLException e) {
-            System.err.println("Database connection failed: " + e.getMessage());
         }
 
         String createUsersTable = " CREATE TABLE IF NOT EXISTS users( " +
