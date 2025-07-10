@@ -1,6 +1,5 @@
 package DAO;
 
-
 import models.Quiz;
 
 import java.util.ArrayList;
@@ -10,7 +9,11 @@ public interface QuizDAO {
 
     public void removeQuiz(Quiz quiz);
 
+    public void updateQuiz(Quiz quiz);
+
     public ArrayList<Quiz> getUserQuizzes(long userId);
+
+    ArrayList<Quiz> getUserQuizzes(Long userId);
 
     public Quiz getQuiz(long quizId);
 }

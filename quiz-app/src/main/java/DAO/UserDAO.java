@@ -9,6 +9,8 @@ public interface UserDAO {
 
     public User getUser(long userId);
 
+    public User getUser(String username);
+
     public ArrayList<User> getFriends(long userId);
 
     public void addFriendship(long userId1, long userId2);
