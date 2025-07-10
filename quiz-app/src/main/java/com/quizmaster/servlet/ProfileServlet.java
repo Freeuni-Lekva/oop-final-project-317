@@ -24,7 +24,8 @@ public class ProfileServlet extends HttpServlet {
             return;
         }
         
-        String username = (String) session.getAttribute("user");
+        models.User user = (models.User) session.getAttribute("user");
+        String username = user.getName();
         Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
         
         try {
@@ -65,7 +66,8 @@ public class ProfileServlet extends HttpServlet {
         }
         
         String action = request.getParameter("action");
-        String username = (String) session.getAttribute("user");
+        models.User user = (models.User) session.getAttribute("user");
+        String username = user.getName();
         Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
         
         try {

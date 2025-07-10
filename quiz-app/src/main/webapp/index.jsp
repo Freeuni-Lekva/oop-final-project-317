@@ -1,3 +1,4 @@
+<%@ page import="models.User" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -84,6 +85,25 @@
                 <span class="text-slate-700 font-medium">My Profile</span>
             </div>
             <% } %>
+            <%-- Admin Statistics Button: Only show if user is admin --%>
+            <% 
+            if (session.getAttribute("user") != null) {
+                User user = (User) session.getAttribute("user");
+                boolean isAdmin = user.getIfAdmin();
+                if (isAdmin) {
+            %>
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3 bg-indigo-50" onclick="window.location.href='admin'">
+                <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <span class="text-slate-700 font-medium">Statistics</span>
+            </div>
+            <%
+                }
+            }
+            %>
         </nav>
     </div>
 
@@ -145,10 +165,10 @@
             <!-- Welcome Banner -->
             <div class="mb-8 p-6 bg-white rounded-2xl border border-gray-200 card-hover">
                 <% 
-                String loggedInUser = (String) session.getAttribute("user");
-                if (loggedInUser != null) { 
+                User user = (User) session.getAttribute("user");
+                if (user != null) {
                 %>
-                    <h2 class="text-3xl font-bold text-slate-700 mb-2">Welcome back, <%= loggedInUser %>!</h2>
+                    <h2 class="text-3xl font-bold text-slate-700 mb-2">Welcome back, <%= user.getName() %>!</h2>
                     <p class="text-slate-600">Ready to challenge your mind? Discover new quizzes or create your own masterpiece!</p>
                     <div class="mt-4 flex space-x-3">
                         <button class="px-6 py-3 bg-gray-100 border border-gray-200 rounded-xl text-slate-700 font-medium hover:bg-gray-200 transition-colors">
