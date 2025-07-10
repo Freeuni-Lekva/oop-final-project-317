@@ -80,6 +80,7 @@ public class ContextListener implements ServletContextListener {
             stmt.executeUpdate(createQuizzesTable);
             System.out.println("Quizzes table created/verified successfully");
 
+<<<<<<< HEAD
             // Create quiz result table
             String createQuizResultTable = "CREATE TABLE IF NOT EXISTS quiz_results ("
                     + "id BIGINT AUTO_INCREMENT PRIMARY KEY,"
@@ -94,6 +95,21 @@ public class ContextListener implements ServletContextListener {
 
             stmt.executeUpdate(createQuizResultTable);
             System.out.println("Quizz Result table created/verified successfully");
+=======
+            // Create notifications table
+            String createNotificationsTable = "CREATE TABLE IF NOT EXISTS notifications ("
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
+                    + "from_id BIGINT NOT NULL, "
+                    + "to_id BIGINT NOT NULL, "
+                    + "title VARCHAR(200) NOT NULL, "
+                    + "message TEXT, "
+                    + "question_type VARCHAR(100), "
+                    + "create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+                    + "FOREIGN KEY (from_id) REFERENCES users(id) ON DELETE CASCADE, "
+                    + "FOREIGN KEY (to_id) REFERENCES users(id) ON DELETE CASCADE"
+                    + ")";
+            System.out.println("Notifications table created/verified successfully");
+>>>>>>> 640690a339c3b9f47b8ec454a4b274704f26e3ef
 
             System.out.println("All database tables initialized successfully");
 
