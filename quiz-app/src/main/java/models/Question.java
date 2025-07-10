@@ -12,6 +12,8 @@ public abstract class Question {
     public static final String MULTIPLE_CHOICE = "MULTIPLE_CHOICE";
     public static final String FILL_IN_BLANK = "FILL_IN_BLANK";
     public static final String PICTURE_RESPONSE = "PICTURE_RESPONSE";
+    public static final String MULTI_ANSWER = "MULTI_ANSWER";
+    public static final String MULTIPLE_CHOICE_MULTIPLE_ANSWERS = "MULTIPLE_CHOICE_MULTIPLE_ANSWERS";
 
     // Database fields
     private Long id;
@@ -73,6 +75,10 @@ public abstract class Question {
                 return "Fill in the Blank";
             case PICTURE_RESPONSE:
                 return "Picture-Response";
+            case MULTI_ANSWER:
+                return "Multi-Answer";
+            case MULTIPLE_CHOICE_MULTIPLE_ANSWERS:
+                return "Multiple Choice with Multiple Answers";
             default:
                 return questionType;
         }
