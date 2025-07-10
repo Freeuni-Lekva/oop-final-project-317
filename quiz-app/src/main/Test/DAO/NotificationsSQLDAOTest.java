@@ -18,7 +18,7 @@ public class NotificationsSQLDAOTest {
     static void setupDatabase() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
         connection = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/quizmastertest_db", "root", "your-password");
+                "jdbc:mysql://localhost:3306/quizmastertest_db", "root", "your-password");
     }
 
     @AfterAll
@@ -31,8 +31,20 @@ public class NotificationsSQLDAOTest {
     @BeforeEach
     void setUp() {
         dao = new NotificationsSQLDAO(connection);
-        // Clean up table before each test
+        // Create notifications table if it does not exist
         try (Statement stmt = connection.createStatement()) {
+            stmt.execute("CREATE TABLE IF NOT EXISTS notifications (" +
+                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                    "from_id BIGINT NOT NULL, " +
+                    "to_id BIGINT NOT NULL, " +
+                    "title VARCHAR(200) NOT NULL, " +
+                    "message TEXT, " +
+                    "question_type VARCHAR(100), " +
+                    "create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
+                    "FOREIGN KEY (from_id) REFERENCES users(id) ON DELETE CASCADE, " +
+                    "FOREIGN KEY (to_id) REFERENCES users(id) ON DELETE CASCADE" +
+                    ")");
+            // Clean up table before each test
             stmt.execute("DELETE FROM notifications");
         } catch (SQLException e) {
             throw new RuntimeException(e);
