@@ -16,7 +16,8 @@ public class QuizResultDAOSQLTest {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/quizmastertest_db";
     private static final String DB_USER = "root"; // Change to your MySQL username
-    private static final String DB_PASSWORD = "Gegaong20042222@"; // Change to your MySQL password
+  
+    private static final String DB_PASSWORD = "marikuna12"; // Change to your MySQL password
 
     private static Connection connection;
     private QuizResultSQLDAO dao;
