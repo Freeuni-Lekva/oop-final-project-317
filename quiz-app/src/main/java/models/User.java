@@ -19,6 +19,17 @@ public class User {
         this.isAdmin = isAdmin;
         this.isBanned = isBanned;
     }
+
+    public User(String userName, String userEmail, String passwordHash, int passedQuizzes, boolean isAdmin, boolean isBanned) {
+        this.userId = 0;
+        this.name = userName;
+        this.email = userEmail;
+        this.passHash = passwordHash;
+        this.passedQuizzes = passedQuizzes;
+        this.isAdmin = isAdmin;
+        this.isBanned = isBanned;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

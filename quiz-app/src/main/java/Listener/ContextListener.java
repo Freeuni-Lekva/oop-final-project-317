@@ -7,7 +7,11 @@ import javax.servlet.annotation.WebListener;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import DAO.UserSQLDao;
+import com.quizmaster.util.PasswordUtil;
 import models.User;
+import DAO.UserSQLDao;
 
 @WebListener
 public class ContextListener implements ServletContextListener {
@@ -20,11 +24,11 @@ public class ContextListener implements ServletContextListener {
             String dbUrl = "jdbc:mysql://localhost:3306/quizmaster_db";
             String dbUser = "root";
 
-            String dbPassword = "your_password"; // change with your database password
+            String dbPassword = "gegaantroshegetena?"; // change with your database password
           
             Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             context.setAttribute("dbConnection", dbConnection);
-            initializeDatabaseTables(dbConnection);
+            initializeDatabaseTables(dbConnection, sce);
             System.out.println("Database connection established successfully");
 
         } catch (ClassNotFoundException e) {
@@ -36,6 +40,8 @@ public class ContextListener implements ServletContextListener {
         List<User> userList = new ArrayList<>();
         context.setAttribute("userList", userList);
         System.out.println("QuizMaster application initialized successfully");
+
+
     }
 
     @Override
@@ -54,13 +60,13 @@ public class ContextListener implements ServletContextListener {
         System.out.println("QuizMaster application shutting down");
     }
 
-    private void initializeDatabaseTables(Connection dbConnection) {
+    private void initializeDatabaseTables(Connection dbConnection, ServletContextEvent sce) {
         try (Statement stmt = dbConnection.createStatement()) {
-
+            ServletContext context = sce.getServletContext();
             // Create users table
             String createUsersTable = "CREATE TABLE IF NOT EXISTS users ("
                     + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                    + "name VARCHAR(50) NOT NULL, "
+                    + "name VARCHAR(50) NOT NULL UNIQUE, "
                     + "email VARCHAR(255) NOT NULL UNIQUE, "
                     + "pass_hash VARCHAR(255) NOT NULL, "
                     + "passed_quizzes INT DEFAULT 0, "
@@ -70,10 +76,13 @@ public class ContextListener implements ServletContextListener {
                     + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
                     + ")";
 
-
-
             stmt.executeUpdate(createUsersTable);
             System.out.println("Users table created/verified successfully");
+
+            UserSQLDao userSqlDao = new UserSQLDao(dbConnection);
+            context.setAttribute("userSqlDao", userSqlDao);
+            User admin = new User("admin", "admin@admin", PasswordUtil.hashPassword("12341234"), 0, true, false);
+            userSqlDao.addUser(admin);
 
             // Create Friendsships table
             String createFriendshipsTable = "CREATE TABLE IF NOT EXISTS friendships ("
