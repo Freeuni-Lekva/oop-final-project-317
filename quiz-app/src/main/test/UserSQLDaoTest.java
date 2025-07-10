@@ -19,7 +19,10 @@ class UserSQLDaoTest {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String dbUrl = "jdbc:mysql://localhost:3306/quizmastertest_db";
             String dbUser = "root";
-            String dbPassword = "KoMSHi!!17"; // change with your database password
+
+            String dbPassword = "marikuna12"; // change with your database password
+            dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+
             System.out.println("Database connection established successfully");
             dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 
@@ -96,7 +99,7 @@ class UserSQLDaoTest {
 
     @Test
     void testAddUser_Success() throws SQLException {
-        User user = new User(0L, "John Doe", "john@example.com", "hashedPassword", 5, false, false);
+        User user = new User(0L, "John Doe", "john@example.com", "hashedPassword", 5, false, false, null);
 
         userSQLDao.addUser(user);
 
@@ -118,7 +121,7 @@ class UserSQLDaoTest {
 
     @Test
     void testAddUser_WithAdminAndBannedFlags() throws SQLException {
-        User user = new User(0L, "Admin User", "admin@example.com", "adminHash", 10, true, true);
+        User user = new User(0L, "Admin User", "admin@example.com", "adminHash", 10, true, true, null);
 
         userSQLDao.addUser(user);
 
@@ -304,8 +307,8 @@ class UserSQLDaoTest {
 
     @Test
     void testIntegration_AddUserAndCreateFriendship() throws SQLException {
-        User user1 = new User(0L, "Alice", "alice@example.com", "hashA", 2, false, false);
-        User user2 = new User(0L, "Bob", "bob@example.com", "hashB", 4, false, false);
+        User user1 = new User(0L, "Alice", "alice@example.com", "hashA", 2, false, false, null);
+        User user2 = new User(0L, "Bob", "bob@example.com", "hashB", 4, false, false, null);
 
         userSQLDao.addUser(user1);
         userSQLDao.addUser(user2);

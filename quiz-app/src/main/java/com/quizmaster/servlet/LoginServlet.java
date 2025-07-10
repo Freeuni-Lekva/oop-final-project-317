@@ -1,13 +1,15 @@
 package com.quizmaster.servlet;
 
+import DAO.UserSQLDao;
 import com.quizmaster.util.PasswordUtil;
+import models.User;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.*;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -38,34 +40,27 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
-
-        try {
-            String query = "SELECT name, pass_hash FROM users WHERE email = ?";
-            try (PreparedStatement ps = connection.prepareStatement(query)) {
-                ps.setString(1, email);
-
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        String storedHash = rs.getString("pass_hash");
-                        String username = rs.getString("name");
-                        String inputHash = PasswordUtil.hashPassword(password);
-                        if (storedHash.equals(inputHash)) {
-                            request.getSession().setAttribute("user", username);
-                            response.sendRedirect(request.getContextPath() + "/index.jsp");
-                            return;
-                        } else {
-                            request.setAttribute("error", "Invalid password");
-                        }
-                    } else {
-                        request.setAttribute("error", "User not found");
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Database error: " + e.getMessage());
+        UserSQLDao userSQLDao = (UserSQLDao) getServletContext().getAttribute("userSqlDao");
+        if (userSQLDao == null) {
+            request.setAttribute("error", "Database connection error. Please try again later.");
+            request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+            return;
         }
-        request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+        User user = userSQLDao.getUserByEmail(email);
+        if (user != null) {
+            String storedHash = user.getPassHash();
+            String inputHash = PasswordUtil.hashPassword(password);
+            if (storedHash.equals(inputHash)) {
+                request.getSession().setAttribute("user", user);
+                response.sendRedirect(request.getContextPath() + "/index.jsp");
+                return;
+            } else {
+                request.setAttribute("error", "Invalid password");
+            }
+            request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+        }else{
+            request.setAttribute("error", "Invalid email or password");
+        }
+
     }
 }
