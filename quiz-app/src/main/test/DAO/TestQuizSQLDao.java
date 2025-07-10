@@ -1,19 +1,21 @@
 package DAO;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 import models.Quiz;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class TestQuizSQLDao extends TestCase {
-    private Connection connection;
-    private QuizSQLDao quizDao;
+import static org.junit.jupiter.api.Assertions.*;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class TestQuizSQLDao {
+    private static Connection connection;
+    private static QuizSQLDao quizDao;
 
+    @BeforeAll
+    static void setUpClass() throws Exception {
         // Initialize database connection
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -37,7 +39,7 @@ public class TestQuizSQLDao extends TestCase {
         }
     }
 
-    private void initializeDatabaseTables(Connection connection) throws SQLException {
+    private static void initializeDatabaseTables(Connection connection) throws SQLException {
         Statement stmt = connection.createStatement();
 
         // Drop table if it exists to ensure clean state
@@ -64,6 +66,12 @@ public class TestQuizSQLDao extends TestCase {
         stmt.close();
     }
 
+    @BeforeEach
+    void setUp() throws Exception {
+        // Clean up any existing test data before each test
+        cleanupTestData();
+    }
+
     private void cleanupTestData() throws SQLException {
         if (connection != null && !connection.isClosed()) {
             String deleteSQL = "DELETE FROM quizzes WHERE title LIKE '%Test%' OR title LIKE '%JUnit%'";
@@ -73,18 +81,29 @@ public class TestQuizSQLDao extends TestCase {
         }
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @AfterAll
+    static void tearDownClass() throws Exception {
         if (connection != null && !connection.isClosed()) {
             // Clean up test data before closing
-            cleanupTestData();
+            cleanupTestDataStatic();
             connection.close();
             System.out.println("Test database connection closed");
         }
-        super.tearDown();
     }
 
-    public void testAddAndGetQuiz() {
+    private static void cleanupTestDataStatic() throws SQLException {
+        if (connection != null && !connection.isClosed()) {
+            String deleteSQL = "DELETE FROM quizzes WHERE title LIKE '%Test%' OR title LIKE '%JUnit%'";
+            Statement stmt = connection.createStatement();
+            stmt.execute(deleteSQL);
+            stmt.close();
+        }
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Test adding and getting a quiz")
+    void testAddAndGetQuiz() {
         Quiz quiz = new Quiz("JUnit Test Quiz", "A test quiz for JUnit", 1L);
         quizDao.addQuiz(quiz);
 
@@ -96,7 +115,10 @@ public class TestQuizSQLDao extends TestCase {
         assertEquals("A test quiz for JUnit", fetchedQuiz.getDescription());
     }
 
-    public void testUpdateQuiz() {
+    @Test
+    @Order(2)
+    @DisplayName("Test updating a quiz")
+    void testUpdateQuiz() {
         Quiz quiz = new Quiz("Old Title", "Old Description", 1L);
         quizDao.addQuiz(quiz);
 
@@ -111,7 +133,10 @@ public class TestQuizSQLDao extends TestCase {
         assertTrue(updatedQuiz.isPracticeMode());
     }
 
-    public void testRemoveQuiz() {
+    @Test
+    @Order(3)
+    @DisplayName("Test removing a quiz")
+    void testRemoveQuiz() {
         Quiz quiz = new Quiz("Removable Quiz", "This will be deleted", 1L);
         quizDao.addQuiz(quiz);
         Long id = quiz.getId();
@@ -122,7 +147,10 @@ public class TestQuizSQLDao extends TestCase {
         assertNull(deletedQuiz);
     }
 
-    public void testGetUserQuizzes() {
+    @Test
+    @Order(4)
+    @DisplayName("Test getting user quizzes")
+    void testGetUserQuizzes() {
         Quiz quiz1 = new Quiz("User Quiz 1", "First", 42L);
         Quiz quiz2 = new Quiz("User Quiz 2", "Second", 42L);
         Quiz quiz3 = new Quiz("Other User's Quiz", "Should not appear", 100L);

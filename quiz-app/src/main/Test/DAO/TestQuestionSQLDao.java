@@ -1,6 +1,7 @@
 package DAO;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 import models.Question;
 import questions.*;
 
@@ -8,20 +9,21 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TestQuestionSQLDao extends TestCase {
-    private Connection connection;
-    private QuestionSQLDao questionDao;
+import static org.junit.jupiter.api.Assertions.*;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class TestQuestionSQLDao {
+    private static Connection connection;
+    private static QuestionSQLDao questionDao;
 
+    @BeforeAll
+    static void setUpClass() throws Exception {
         // Initialize database connection
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String dbUrl = "jdbc:mysql://localhost:3306/quizmastertest_db";
             String dbUser = "root";
-            String dbPassword = "Gegaong20042222@"; // change with your database password
+            String dbPassword = "KoMSHi!!17"; // change with your database password
 
             connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             System.out.println("Test database connection established successfully");
@@ -39,7 +41,7 @@ public class TestQuestionSQLDao extends TestCase {
         }
     }
 
-    private void initializeDatabaseTables(Connection connection) throws SQLException {
+    private static void initializeDatabaseTables(Connection connection) throws SQLException {
         Statement stmt = connection.createStatement();
 
         // Drop table if it exists to ensure clean state
@@ -64,6 +66,12 @@ public class TestQuestionSQLDao extends TestCase {
         stmt.close();
     }
 
+    @BeforeEach
+    void setUp() throws Exception {
+        // Clean up any existing test data before each test
+        cleanupTestData();
+    }
+
     private void cleanupTestData() throws SQLException {
         if (connection != null && !connection.isClosed()) {
             String deleteSQL = "DELETE FROM questions WHERE question_text LIKE '%Test%' OR question_text LIKE '%JUnit%'";
@@ -73,18 +81,29 @@ public class TestQuestionSQLDao extends TestCase {
         }
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @AfterAll
+    static void tearDownClass() throws Exception {
         if (connection != null && !connection.isClosed()) {
             // Clean up test data before closing
-            cleanupTestData();
+            cleanupTestDataStatic();
             connection.close();
             System.out.println("Test database connection closed");
         }
-        super.tearDown();
     }
 
-    public void testAddAndGetQuestionResponse() {
+    private static void cleanupTestDataStatic() throws SQLException {
+        if (connection != null && !connection.isClosed()) {
+            String deleteSQL = "DELETE FROM questions WHERE question_text LIKE '%Test%' OR question_text LIKE '%JUnit%'";
+            Statement stmt = connection.createStatement();
+            stmt.execute(deleteSQL);
+            stmt.close();
+        }
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Test adding and getting a QuestionResponse question")
+    void testAddAndGetQuestionResponse() {
         QuestionResponseQuestion question = new QuestionResponseQuestion(
                 "What is the capital of France?", 
                 Arrays.asList("Paris", "paris")
@@ -106,7 +125,10 @@ public class TestQuestionSQLDao extends TestCase {
         assertTrue(fetchedQuestion instanceof QuestionResponseQuestion);
     }
 
-    public void testAddAndGetMultipleChoice() {
+    @Test
+    @Order(2)
+    @DisplayName("Test adding and getting a MultipleChoice question")
+    void testAddAndGetMultipleChoice() {
         MultipleChoiceQuestion question = new MultipleChoiceQuestion(
                 "Which planet is closest to the sun?",
                 Arrays.asList("Mercury", "Venus", "Earth", "Mars"),
@@ -124,7 +146,10 @@ public class TestQuestionSQLDao extends TestCase {
         assertTrue(fetchedQuestion instanceof MultipleChoiceQuestion);
     }
 
-    public void testAddAndGetFillInBlank() {
+    @Test
+    @Order(3)
+    @DisplayName("Test adding and getting a FillInBlank question")
+    void testAddAndGetFillInBlank() {
         FillInBlankQuestion question = new FillInBlankQuestion(
                 "The largest ocean is the _____ Ocean.",
                 Arrays.asList("Pacific", "pacific")
@@ -138,7 +163,10 @@ public class TestQuestionSQLDao extends TestCase {
         assertTrue(fetchedQuestion instanceof FillInBlankQuestion);
     }
 
-    public void testAddAndGetPictureResponse() {
+    @Test
+    @Order(4)
+    @DisplayName("Test adding and getting a PictureResponse question")
+    void testAddAndGetPictureResponse() {
         PictureResponseQuestion question = new PictureResponseQuestion(
                 "What animal is shown in this picture?",
                 "http://example.com/dog.jpg",
@@ -154,7 +182,10 @@ public class TestQuestionSQLDao extends TestCase {
         assertTrue(fetchedQuestion instanceof PictureResponseQuestion);
     }
 
-    public void testAddAndGetMultiAnswer() {
+    @Test
+    @Order(5)
+    @DisplayName("Test adding and getting a MultiAnswer question")
+    void testAddAndGetMultiAnswer() {
         MultiAnswerQuestion question = new MultiAnswerQuestion(
                 "Name three primary colors:",
                 Arrays.asList("Red", "Blue", "Yellow"),
@@ -169,7 +200,10 @@ public class TestQuestionSQLDao extends TestCase {
         assertTrue(fetchedQuestion instanceof MultiAnswerQuestion);
     }
 
-    public void testAddAndGetMultipleChoiceMultipleAnswers() {
+    @Test
+    @Order(6)
+    @DisplayName("Test adding and getting a MultipleChoiceMultipleAnswers question")
+    void testAddAndGetMultipleChoiceMultipleAnswers() {
         MultipleChoiceMultipleAnswersQuestion question = new MultipleChoiceMultipleAnswersQuestion(
                 "Which of the following are programming languages?",
                 Arrays.asList("Java", "Python", "C++", "HTML", "CSS"),
@@ -184,7 +218,10 @@ public class TestQuestionSQLDao extends TestCase {
         assertTrue(fetchedQuestion instanceof MultipleChoiceMultipleAnswersQuestion);
     }
 
-    public void testRemoveQuestion() {
+    @Test
+    @Order(7)
+    @DisplayName("Test removing a question")
+    void testRemoveQuestion() {
         QuestionResponseQuestion question = new QuestionResponseQuestion(
                 "JUnit Test Question to Remove",
                 Arrays.asList("answer")
@@ -200,7 +237,10 @@ public class TestQuestionSQLDao extends TestCase {
         assertNull(deletedQuestion);
     }
 
-    public void testGetQuizQuestions() {
+    @Test
+    @Order(8)
+    @DisplayName("Test getting questions for a specific quiz")
+    void testGetQuizQuestions() {
         QuestionResponseQuestion question1 = new QuestionResponseQuestion(
                 "JUnit Test Question 1", Arrays.asList("answer1")
         );
@@ -229,18 +269,27 @@ public class TestQuestionSQLDao extends TestCase {
         assertEquals(1, quiz200Questions.size());
     }
 
-    public void testGetNonexistentQuestion() {
+    @Test
+    @Order(9)
+    @DisplayName("Test getting a non-existent question")
+    void testGetNonexistentQuestion() {
         Question question = questionDao.getQuestion(999999L);
         assertNull(question);
     }
 
-    public void testGetEmptyQuizQuestions() {
+    @Test
+    @Order(10)
+    @DisplayName("Test getting questions for a non-existent quiz")
+    void testGetEmptyQuizQuestions() {
         ArrayList<Question> questions = questionDao.getQuizQuestions(999999L);
         assertNotNull(questions);
         assertEquals(0, questions.size());
     }
 
-    public void testQuestionWithNullImageUrl() {
+    @Test
+    @Order(11)
+    @DisplayName("Test question with null image URL")
+    void testQuestionWithNullImageUrl() {
         QuestionResponseQuestion question = new QuestionResponseQuestion(
                 "Test question with no image",
                 Arrays.asList("test answer")
@@ -254,7 +303,10 @@ public class TestQuestionSQLDao extends TestCase {
         assertNull(fetchedQuestion.getImageUrl());
     }
 
-    public void testQuestionWithEmptyAnswers() {
+    @Test
+    @Order(12)
+    @DisplayName("Test question with empty answers")
+    void testQuestionWithEmptyAnswers() {
         QuestionResponseQuestion question = new QuestionResponseQuestion(
                 "Test question with empty answers",
                 new ArrayList<>()

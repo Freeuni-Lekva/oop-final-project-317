@@ -25,7 +25,7 @@ public class ContextListener implements ServletContextListener {
             String dbUrl = "jdbc:mysql://localhost:3306/quizmaster_db";
             String dbUser = "root";
 
-            String dbPassword = "likunach1"; // change with your database password
+            String dbPassword = "KoMSHi!!17"; // change with your database password
 
             Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             context.setAttribute("dbConnection", dbConnection);
@@ -75,7 +75,7 @@ public class ContextListener implements ServletContextListener {
         context.setAttribute("userDAO", userSqlDao);
 
         try (Statement stmt = dbConnection.createStatement()) {
-            ServletContext context = sce.getServletContext();
+            context = sce.getServletContext();
             // Create users table
             String createUsersTable = "CREATE TABLE IF NOT EXISTS users ("
                     + "id INT AUTO_INCREMENT PRIMARY KEY, "
@@ -92,7 +92,7 @@ public class ContextListener implements ServletContextListener {
             stmt.executeUpdate(createUsersTable);
             System.out.println("Users table created/verified successfully");
 
-            UserSQLDao userSqlDao = new UserSQLDao(dbConnection);
+            userSqlDao = new UserSQLDao(dbConnection);
             context.setAttribute("userSqlDao", userSqlDao);
             User admin = new User("admin", "admin@admin", PasswordUtil.hashPassword("12341234"), 0, true, false);
             userSqlDao.addUser(admin);

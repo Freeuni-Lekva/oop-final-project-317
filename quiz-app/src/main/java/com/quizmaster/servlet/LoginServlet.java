@@ -17,7 +17,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+        request.getRequestDispatcher("/login.jsp").forward(request, response);
     }
 
     @Override
@@ -27,39 +27,46 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
+        // Make login more robust: trim and lowercase email, trim password
+        if (email != null) email = email.trim().toLowerCase();
+        if (password != null) password = password.trim();
+
         // Simple validation for demo purposes
         if (email == null || email.trim().isEmpty()) {
             request.setAttribute("error", "Email is required");
-            request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
             return;
         }
 
         if (password == null || password.trim().isEmpty()) {
             request.setAttribute("error", "Password is required");
-            request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
             return;
         }
 
         UserSQLDao userSQLDao = (UserSQLDao) getServletContext().getAttribute("userSqlDao");
         if (userSQLDao == null) {
             request.setAttribute("error", "Database connection error. Please try again later.");
-            request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
             return;
         }
+        
         User user = userSQLDao.getUserByEmail(email);
         if (user != null) {
             String storedHash = user.getPassHash();
             String inputHash = PasswordUtil.hashPassword(password);
             if (storedHash.equals(inputHash)) {
                 request.getSession().setAttribute("user", user);
-                response.sendRedirect(request.getContextPath() + "/index.jsp");
+                response.sendRedirect(request.getContextPath() + "/profile");
                 return;
             } else {
                 request.setAttribute("error", "Invalid password");
+                request.getRequestDispatcher("/login.jsp").forward(request, response);
+                return;
             }
-            request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
-        }else{
+        } else {
             request.setAttribute("error", "Invalid email or password");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
 
     }

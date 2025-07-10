@@ -110,6 +110,12 @@
 
         <!-- Main Content Area -->
         <div class="flex-1 p-6 overflow-y-auto">
+            <!-- Go to Homepage Button -->
+            <div class="mb-6 flex justify-end">
+                <a href="index.jsp" class="px-6 py-3 bg-blue-600 rounded-xl text-white font-medium hover:bg-blue-700 transition-colors shadow">
+                    Go to Homepage & Make Quizzes
+                </a>
+            </div>
             <!-- Profile Header -->
             <div class="mb-8 p-8 bg-white rounded-2xl border border-gray-200 card-hover">
                 <div class="flex items-center space-x-6">

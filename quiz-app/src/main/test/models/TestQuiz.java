@@ -1,19 +1,24 @@
 package models;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TestQuiz extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class TestQuiz {
     private Quiz quiz;
     private MockQuestion mockQuestion1;
     private MockQuestion mockQuestion2;
     private MockQuestion mockQuestion3;
 
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         quiz = new Quiz("Sample Quiz", "A test quiz", 42L);
 
         // Create mock questions for testing
@@ -30,7 +35,10 @@ public class TestQuiz extends TestCase {
         mockQuestion3.setTimeLimit(180);
     }
 
-    public void testInitialValues() {
+    @Test
+    @Order(1)
+    @DisplayName("Test initial values of quiz")
+    void testInitialValues() {
         assertEquals("Sample Quiz", quiz.getTitle());
         assertEquals("A test quiz", quiz.getDescription());
         assertEquals(Long.valueOf(42), quiz.getCreatedBy());
@@ -42,8 +50,10 @@ public class TestQuiz extends TestCase {
         assertEquals(0, quiz.getTotalTimeLimit());
     }
 
-    // Tests setter and getter methods
-    public void testSettersAndGetters() {
+    @Test
+    @Order(2)
+    @DisplayName("Test setter and getter methods")
+    void testSettersAndGetters() {
         quiz.setId(99L);
         assertEquals(Long.valueOf(99), quiz.getId());
 
@@ -77,7 +87,10 @@ public class TestQuiz extends TestCase {
         assertTrue(quiz.isPracticeMode());
     }
 
-    public void testToString() {
+    @Test
+    @Order(3)
+    @DisplayName("Test toString method")
+    void testToString() {
         String result = quiz.toString();
         assertTrue(result.contains("Sample Quiz"));
         assertTrue(result.contains("A test quiz"));
@@ -86,16 +99,20 @@ public class TestQuiz extends TestCase {
         assertTrue(result.contains("totalTimeLimit=0"));
     }
 
-    // Tests NULL list
-    public void testNullQuestionsList() {
+    @Test
+    @Order(4)
+    @DisplayName("Test null questions list")
+    void testNullQuestionsList() {
         quiz.setQuestions(null);
         assertEquals(0, quiz.getQuestionCount());
         assertEquals(0, quiz.getTotalPoints());
         assertEquals(0, quiz.getTotalTimeLimit());
     }
 
-    // Tests that lastModified timestamp updates when quiz setters are called
-    public void testLastModifiedUpdatesOnSetters() {
+    @Test
+    @Order(5)
+    @DisplayName("Test that lastModified timestamp updates when quiz setters are called")
+    void testLastModifiedUpdatesOnSetters() {
         LocalDateTime originalModified = quiz.getLastModified();
 
         // Small delay to ensure time difference
@@ -129,8 +146,10 @@ public class TestQuiz extends TestCase {
         assertTrue(quiz.getLastModified().isAfter(afterImmediateChange));
     }
 
-    // Tests single question addition
-    public void testAddSingleQuestion() {
+    @Test
+    @Order(6)
+    @DisplayName("Test single question addition")
+    void testAddSingleQuestion() {
         quiz.setId(1L);
 
         assertEquals(0, quiz.getQuestionCount());
@@ -146,8 +165,10 @@ public class TestQuiz extends TestCase {
         assertTrue(quiz.getQuestions().contains(mockQuestion1));
     }
 
-    // Tests multiple questions addition
-    public void testAddMultipleQuestions() {
+    @Test
+    @Order(7)
+    @DisplayName("Test multiple questions addition")
+    void testAddMultipleQuestions() {
         quiz.setId(2L);
 
         quiz.addQuestion(mockQuestion1);
@@ -163,8 +184,10 @@ public class TestQuiz extends TestCase {
         assertEquals(Long.valueOf(2), mockQuestion3.getQuizId());
     }
 
-    // Tests addition with NULL question list
-    public void testAddQuestionWithNullQuestionsList() {
+    @Test
+    @Order(8)
+    @DisplayName("Test addition with null question list")
+    void testAddQuestionWithNullQuestionsList() {
         quiz.setQuestions(null);
 
         quiz.addQuestion(mockQuestion1);
@@ -174,8 +197,10 @@ public class TestQuiz extends TestCase {
         assertEquals(0, quiz.getTotalTimeLimit());
     }
 
-    // Tests that adding a question updates the lastModified timestamp
-    public void testAddQuestionUpdatesLastModified() {
+    @Test
+    @Order(9)
+    @DisplayName("Test that adding a question updates the lastModified timestamp")
+    void testAddQuestionUpdatesLastModified() {
         quiz.setId(3L);
         LocalDateTime originalModified = quiz.getLastModified();
 
@@ -189,8 +214,10 @@ public class TestQuiz extends TestCase {
         assertTrue(quiz.getLastModified().isAfter(originalModified));
     }
 
-    // Verifies that an empty questions list reports all values
-    public void testEmptyQuestionsList() {
+    @Test
+    @Order(10)
+    @DisplayName("Test empty questions list")
+    void testEmptyQuestionsList() {
         quiz.setQuestions(new ArrayList<>());
 
         assertEquals(0, quiz.getQuestionCount());
@@ -198,8 +225,10 @@ public class TestQuiz extends TestCase {
         assertEquals(0, quiz.getTotalTimeLimit());
     }
 
-    // Ensures that questions with zero points and zero time limit are counted correctly
-    public void testQuestionsWithZeroPointsAndTime() {
+    @Test
+    @Order(11)
+    @DisplayName("Test questions with zero points and time")
+    void testQuestionsWithZeroPointsAndTime() {
         quiz.setId(4L);
 
         MockQuestion zeroQuestion = new MockQuestion("Zero Question", "MULTIPLE_CHOICE", Arrays.asList("A"));
@@ -213,8 +242,10 @@ public class TestQuiz extends TestCase {
         assertEquals(0, quiz.getTotalTimeLimit());
     }
 
-    // Tests that toString() reflects accurate quiz metadata
-    public void testToStringWithQuestions() {
+    @Test
+    @Order(12)
+    @DisplayName("Test toString with questions")
+    void testToStringWithQuestions() {
         quiz.setId(5L);
         quiz.addQuestion(mockQuestion1);
         quiz.addQuestion(mockQuestion2);
@@ -227,8 +258,10 @@ public class TestQuiz extends TestCase {
         assertTrue(result.contains("totalTimeLimit=180"));
     }
 
-    // Verifies that all boolean quiz settings default to false upon initialization
-    public void testBooleanDefaults() {
+    @Test
+    @Order(13)
+    @DisplayName("Test boolean defaults")
+    void testBooleanDefaults() {
         // Test that boolean settings default to false
         assertFalse(quiz.isRandomizeQuestions());
         assertFalse(quiz.isOnePage());
@@ -236,8 +269,10 @@ public class TestQuiz extends TestCase {
         assertFalse(quiz.isPracticeMode());
     }
 
-    // Tests id-type consistency
-    public void testIdTypeConsistency() {
+    @Test
+    @Order(14)
+    @DisplayName("Test id type consistency")
+    void testIdTypeConsistency() {
         quiz.setId(100L);
         assertTrue(quiz.getId() instanceof Long);
         assertEquals(Long.valueOf(100), quiz.getId());

@@ -1,11 +1,19 @@
 package questions;
 
-import java.util.*;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
-public class QuestionResponseQuestionTest extends TestCase {
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class QuestionResponseQuestionTest {
     
-    public void testConstructorAndBasicFunctionality() {
+    @Test
+    @Order(1)
+    @DisplayName("Test constructor and basic functionality")
+    void testConstructorAndBasicFunctionality() {
         List<String> answers = Arrays.asList("7", "8", "9", "10");
         QuestionResponseQuestion question = new QuestionResponseQuestion("Name a number between 7 and 10", answers);
         
@@ -14,7 +22,10 @@ public class QuestionResponseQuestionTest extends TestCase {
         assertEquals(answers, question.getCorrectAnswers());
     }
     
-    public void testCorrectAnswers() {
+    @Test
+    @Order(2)
+    @DisplayName("Test correct answers")
+    void testCorrectAnswers() {
         List<String> answers = Arrays.asList("Washington", "George Washington");
         QuestionResponseQuestion question = new QuestionResponseQuestion("First President?", answers);
         
@@ -24,7 +35,10 @@ public class QuestionResponseQuestionTest extends TestCase {
         assertTrue(question.isCorrect(" Washington ")); // Whitespace handling
     }
     
-    public void testIncorrectAnswers() {
+    @Test
+    @Order(3)
+    @DisplayName("Test incorrect answers")
+    void testIncorrectAnswers() {
         List<String> answers = Arrays.asList("Paris", "France");
         QuestionResponseQuestion question = new QuestionResponseQuestion("Capital of France?", answers);
         
@@ -33,7 +47,10 @@ public class QuestionResponseQuestionTest extends TestCase {
         assertFalse(question.isCorrect(""));
     }
     
-    public void testNonStringInputs() {
+    @Test
+    @Order(4)
+    @DisplayName("Test non-string inputs")
+    void testNonStringInputs() {
         List<String> answers = Arrays.asList("4");
         QuestionResponseQuestion question = new QuestionResponseQuestion("What's 2+2?", answers);
         
@@ -44,7 +61,10 @@ public class QuestionResponseQuestionTest extends TestCase {
         assertFalse(question.isCorrect(new ArrayList<>())); // List
     }
     
-    public void testSingleAnswer() {
+    @Test
+    @Order(5)
+    @DisplayName("Test single answer")
+    void testSingleAnswer() {
         List<String> answers = Arrays.asList("Blue");
         QuestionResponseQuestion question = new QuestionResponseQuestion("What color is the sky?", answers);
         

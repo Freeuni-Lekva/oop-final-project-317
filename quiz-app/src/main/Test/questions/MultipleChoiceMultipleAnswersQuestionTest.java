@@ -1,11 +1,19 @@
 package questions;
 
-import java.util.*;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
-public class MultipleChoiceMultipleAnswersQuestionTest extends TestCase {
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class MultipleChoiceMultipleAnswersQuestionTest {
     
-    public void testConstructorAndBasicFunctionality() {
+    @Test
+    @Order(1)
+    @DisplayName("Test constructor and basic functionality")
+    void testConstructorAndBasicFunctionality() {
         List<String> options = Arrays.asList("Option A", "Option B", "Option C", "Option D");
         List<String> correct = Arrays.asList("Option A", "Option C");
         MultipleChoiceMultipleAnswersQuestion question = new MultipleChoiceMultipleAnswersQuestion("Select all correct", options, correct);
@@ -16,7 +24,10 @@ public class MultipleChoiceMultipleAnswersQuestionTest extends TestCase {
         assertEquals(correct, question.getCorrectAnswers());
     }
     
-    public void testCorrectSelections() {
+    @Test
+    @Order(2)
+    @DisplayName("Test correct selections")
+    void testCorrectSelections() {
         List<String> options = Arrays.asList("Stanford established 1891", "Stanford has best CS dept", "Stanford going to bowl game");
         List<String> correct = Arrays.asList("Stanford established 1891", "Stanford has best CS dept");
         MultipleChoiceMultipleAnswersQuestion question = new MultipleChoiceMultipleAnswersQuestion("Mark true statements", options, correct);
@@ -30,7 +41,10 @@ public class MultipleChoiceMultipleAnswersQuestionTest extends TestCase {
         assertTrue(question.isCorrect(userSelections3)); // Case insensitive
     }
     
-    public void testIncorrectSelections() {
+    @Test
+    @Order(3)
+    @DisplayName("Test incorrect selections")
+    void testIncorrectSelections() {
         List<String> options = Arrays.asList("True1", "False1", "True2", "False2");
         List<String> correct = Arrays.asList("True1", "True2");
         MultipleChoiceMultipleAnswersQuestion question = new MultipleChoiceMultipleAnswersQuestion("Select true statements", options, correct);
@@ -46,7 +60,10 @@ public class MultipleChoiceMultipleAnswersQuestionTest extends TestCase {
         assertFalse(question.isCorrect(userSelections4)); // All wrong
     }
     
-    public void testNonListInputs() {
+    @Test
+    @Order(4)
+    @DisplayName("Test non-list inputs")
+    void testNonListInputs() {
         List<String> options = Arrays.asList("A", "B", "C");
         List<String> correct = Arrays.asList("A", "B");
         MultipleChoiceMultipleAnswersQuestion question = new MultipleChoiceMultipleAnswersQuestion("Test", options, correct);
@@ -59,7 +76,10 @@ public class MultipleChoiceMultipleAnswersQuestionTest extends TestCase {
         assertFalse(question.isCorrect(new HashMap<>())); // Map
     }
     
-    public void testOptionsGetterSetter() {
+    @Test
+    @Order(5)
+    @DisplayName("Test options getter and setter")
+    void testOptionsGetterSetter() {
         List<String> options = Arrays.asList("X", "Y", "Z");
         List<String> correct = Arrays.asList("X");
         MultipleChoiceMultipleAnswersQuestion question = new MultipleChoiceMultipleAnswersQuestion("Test", options, correct);
@@ -71,7 +91,10 @@ public class MultipleChoiceMultipleAnswersQuestionTest extends TestCase {
         assertEquals(newOptions, question.getOptions());
     }
     
-    public void testEmptySelections() {
+    @Test
+    @Order(6)
+    @DisplayName("Test empty selections")
+    void testEmptySelections() {
         List<String> options = Arrays.asList("Option1", "Option2");
         List<String> correct = new ArrayList<>();
         MultipleChoiceMultipleAnswersQuestion question = new MultipleChoiceMultipleAnswersQuestion("Select none", options, correct);
@@ -83,7 +106,10 @@ public class MultipleChoiceMultipleAnswersQuestionTest extends TestCase {
         assertFalse(question.isCorrect(someSelections)); // User selected when none correct
     }
     
-    public void testSingleCorrectAnswer() {
+    @Test
+    @Order(7)
+    @DisplayName("Test single correct answer")
+    void testSingleCorrectAnswer() {
         List<String> options = Arrays.asList("Wrong1", "Correct", "Wrong2");
         List<String> correct = Arrays.asList("Correct");
         MultipleChoiceMultipleAnswersQuestion question = new MultipleChoiceMultipleAnswersQuestion("Pick one", options, correct);
@@ -97,7 +123,10 @@ public class MultipleChoiceMultipleAnswersQuestionTest extends TestCase {
         assertFalse(question.isCorrect(userSelections3)); // Extra selection
     }
     
-    public void testAllOptionsCorrect() {
+    @Test
+    @Order(8)
+    @DisplayName("Test all options correct")
+    void testAllOptionsCorrect() {
         List<String> options = Arrays.asList("All True 1", "All True 2", "All True 3");
         List<String> correct = Arrays.asList("All True 1", "All True 2", "All True 3");
         MultipleChoiceMultipleAnswersQuestion question = new MultipleChoiceMultipleAnswersQuestion("All are correct", options, correct);

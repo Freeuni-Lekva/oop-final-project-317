@@ -18,7 +18,7 @@ public class NotificationsSQLDAOTest {
     static void setupDatabase() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
         connection = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/quizmastertest_db", "root", "your-password");
+                "jdbc:mysql://localhost:3306/quizmastertest_db", "root", "KoMSHi!!17");
     }
 
     @AfterAll

@@ -1,11 +1,19 @@
 package questions;
 
-import java.util.*;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
-public class PictureResponseQuestionTest extends TestCase {
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class PictureResponseQuestionTest {
     
-    public void testConstructorAndBasicFunctionality() {
+    @Test
+    @Order(1)
+    @DisplayName("Test constructor and basic functionality")
+    void testConstructorAndBasicFunctionality() {
         List<String> answers = Arrays.asList("Dog", "Canine", "Puppy");
         PictureResponseQuestion question = new PictureResponseQuestion("What animal is this?", "http://example.com/dog.jpg", answers);
         
@@ -15,7 +23,10 @@ public class PictureResponseQuestionTest extends TestCase {
         assertEquals(answers, question.getCorrectAnswers());
     }
     
-    public void testMultipleCorrectAnswers() {
+    @Test
+    @Order(2)
+    @DisplayName("Test multiple correct answers")
+    void testMultipleCorrectAnswers() {
         List<String> answers = Arrays.asList("Bird", "Eagle", "Bald Eagle");
         PictureResponseQuestion question = new PictureResponseQuestion("Identify this bird", "http://example.com/eagle.jpg", answers);
         
@@ -26,7 +37,10 @@ public class PictureResponseQuestionTest extends TestCase {
         assertTrue(question.isCorrect(" Eagle ")); // Whitespace handling
     }
     
-    public void testIncorrectAnswers() {
+    @Test
+    @Order(3)
+    @DisplayName("Test incorrect answers")
+    void testIncorrectAnswers() {
         List<String> answers = Arrays.asList("Rose", "Flower");
         PictureResponseQuestion question = new PictureResponseQuestion("What is this?", "http://example.com/rose.jpg", answers);
         
@@ -36,7 +50,10 @@ public class PictureResponseQuestionTest extends TestCase {
         assertFalse(question.isCorrect("Roses")); // Plural not accepted
     }
     
-    public void testNonStringInputs() {
+    @Test
+    @Order(4)
+    @DisplayName("Test non-string inputs")
+    void testNonStringInputs() {
         List<String> answers = Arrays.asList("Car");
         PictureResponseQuestion question = new PictureResponseQuestion("Vehicle type?", "http://example.com/car.jpg", answers);
         
@@ -47,7 +64,10 @@ public class PictureResponseQuestionTest extends TestCase {
         assertFalse(question.isCorrect(new ArrayList<>())); // List
     }
     
-    public void testImageUrlHandling() {
+    @Test
+    @Order(5)
+    @DisplayName("Test image URL handling")
+    void testImageUrlHandling() {
         List<String> answers = Arrays.asList("Mountain");
         PictureResponseQuestion question = new PictureResponseQuestion("What landscape?", "https://photos.com/mountain.png", answers);
         
@@ -55,7 +75,10 @@ public class PictureResponseQuestionTest extends TestCase {
         assertTrue(question.isCorrect("Mountain"));
     }
     
-    public void testNullImageUrl() {
+    @Test
+    @Order(6)
+    @DisplayName("Test null image URL")
+    void testNullImageUrl() {
         List<String> answers = Arrays.asList("Test");
         PictureResponseQuestion question = new PictureResponseQuestion("Test question", null, answers);
         
@@ -63,7 +86,10 @@ public class PictureResponseQuestionTest extends TestCase {
         assertTrue(question.isCorrect("Test"));
     }
     
-    public void testEmptyAnswerList() {
+    @Test
+    @Order(7)
+    @DisplayName("Test empty answer list")
+    void testEmptyAnswerList() {
         List<String> answers = new ArrayList<>();
         PictureResponseQuestion question = new PictureResponseQuestion("No answers", "http://example.com/image.jpg", answers);
         

@@ -1,11 +1,19 @@
 package questions;
 
-import java.util.*;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
-public class MultipleChoiceQuestionTest extends TestCase {
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class MultipleChoiceQuestionTest {
     
-    public void testConstructorAndBasicFunctionality() {
+    @Test
+    @Order(1)
+    @DisplayName("Test constructor and basic functionality")
+    void testConstructorAndBasicFunctionality() {
         List<String> options = Arrays.asList("London", "Paris", "Berlin");
         MultipleChoiceQuestion question = new MultipleChoiceQuestion("Capital of France?", options, "Paris");
         
@@ -15,7 +23,10 @@ public class MultipleChoiceQuestionTest extends TestCase {
         assertEquals(Arrays.asList("Paris"), question.getCorrectAnswers());
     }
     
-    public void testCorrectAnswer() {
+    @Test
+    @Order(2)
+    @DisplayName("Test correct answer")
+    void testCorrectAnswer() {
         List<String> options = Arrays.asList("A", "B", "C", "D");
         MultipleChoiceQuestion question = new MultipleChoiceQuestion("Which letter comes first?", options, "A");
         
@@ -24,7 +35,10 @@ public class MultipleChoiceQuestionTest extends TestCase {
         assertTrue(question.isCorrect(" A ")); // Whitespace handling
     }
     
-    public void testIncorrectAnswers() {
+    @Test
+    @Order(3)
+    @DisplayName("Test incorrect answers")
+    void testIncorrectAnswers() {
         List<String> options = Arrays.asList("Red", "Blue", "Green");
         MultipleChoiceQuestion question = new MultipleChoiceQuestion("Color of grass?", options, "Green");
         
@@ -34,7 +48,10 @@ public class MultipleChoiceQuestionTest extends TestCase {
         assertFalse(question.isCorrect(""));
     }
     
-    public void testNonStringInputs() {
+    @Test
+    @Order(4)
+    @DisplayName("Test non-string inputs")
+    void testNonStringInputs() {
         List<String> options = Arrays.asList("1", "2", "3");
         MultipleChoiceQuestion question = new MultipleChoiceQuestion("Pick a number", options, "2");
         
@@ -45,7 +62,10 @@ public class MultipleChoiceQuestionTest extends TestCase {
         assertFalse(question.isCorrect(new ArrayList<>())); // List
     }
     
-    public void testOptionsGetterSetter() {
+    @Test
+    @Order(5)
+    @DisplayName("Test options getter and setter")
+    void testOptionsGetterSetter() {
         List<String> options = Arrays.asList("X", "Y", "Z");
         MultipleChoiceQuestion question = new MultipleChoiceQuestion("Test", options, "X");
         
@@ -56,7 +76,10 @@ public class MultipleChoiceQuestionTest extends TestCase {
         assertEquals(newOptions, question.getOptions());
     }
     
-    public void testEmptyOptions() {
+    @Test
+    @Order(6)
+    @DisplayName("Test empty options")
+    void testEmptyOptions() {
         List<String> options = new ArrayList<>();
         MultipleChoiceQuestion question = new MultipleChoiceQuestion("Empty test", options, "None");
         

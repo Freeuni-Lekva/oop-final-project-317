@@ -19,7 +19,7 @@ public class CreateQuizServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Redirect to create-quiz.jsp if accessed directly
-        request.getRequestDispatcher("/WEB-INF/jsp/create-quiz.jsp").forward(request, response);
+        request.getRequestDispatcher("/create-quiz.jsp").forward(request, response);
     }
 
     @Override

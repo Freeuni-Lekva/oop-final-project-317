@@ -20,7 +20,7 @@ class UserSQLDaoTest {
             String dbUrl = "jdbc:mysql://localhost:3306/quizmastertest_db";
             String dbUser = "root";
 
-            String dbPassword = "marikuna12"; // change with your database password
+            String dbPassword = "KoMSHi!!17"; // change with your database password
             dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 
             System.out.println("Database connection established successfully");

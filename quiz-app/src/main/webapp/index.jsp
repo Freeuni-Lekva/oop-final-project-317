@@ -182,17 +182,17 @@
                       </a>
                   </div>
               <%
-                  }
+                  } else {
               %>
-
-                <% } else { %>
                 <p class="text-slate-600 text-lg">Ready to challenge your mind? Discover new quizzes or create your own masterpiece!</p>
                 <div class="mt-4 flex space-x-3">
                     <a href="login" class="px-6 py-3 bg-gray-100 border border-gray-200 rounded-xl text-slate-700 font-medium hover:bg-gray-200 transition-colors">
                         Create Quiz
                     </a>
                 </div>
-                <% } %>
+              <%
+                  }
+              %>
             </div>
 
             <!-- Quiz Grid -->

@@ -1,6 +1,7 @@
 package DAO;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 import models.QuizHistory;
 
 import java.sql.*;
@@ -8,14 +9,16 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
-public class TestQuizHistorySQLDao extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
 
-    private Connection connection;
-    private QuizHistorySQLDao historyDao;
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class TestQuizHistorySQLDao {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    private static Connection connection;
+    private static QuizHistorySQLDao historyDao;
+
+    @BeforeAll
+    static void setUpClass() throws Exception {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String dbUrl = "jdbc:mysql://localhost:3306/quizmastertest_db";
@@ -32,7 +35,7 @@ public class TestQuizHistorySQLDao extends TestCase {
         }
     }
 
-    private void initializeDatabaseTables(Connection connection) throws SQLException {
+    private static void initializeDatabaseTables(Connection connection) throws SQLException {
         Statement stmt = connection.createStatement();
 
         String dropTableSQL = "DROP TABLE IF EXISTS quiz_history";
@@ -50,18 +53,41 @@ public class TestQuizHistorySQLDao extends TestCase {
         stmt.close();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
+        // Clean up any existing test data before each test
+        cleanupTestData();
+    }
+
+    private void cleanupTestData() throws SQLException {
         if (connection != null && !connection.isClosed()) {
             Statement stmt = connection.createStatement();
             stmt.execute("DELETE FROM quiz_history");
             stmt.close();
-            connection.close();
         }
-        super.tearDown();
     }
 
-    public void testAddAndRetrieveQuizHistory() {
+    @AfterAll
+    static void tearDownClass() throws Exception {
+        if (connection != null && !connection.isClosed()) {
+            // Clean up test data before closing
+            cleanupTestDataStatic();
+            connection.close();
+        }
+    }
+
+    private static void cleanupTestDataStatic() throws SQLException {
+        if (connection != null && !connection.isClosed()) {
+            Statement stmt = connection.createStatement();
+            stmt.execute("DELETE FROM quiz_history");
+            stmt.close();
+        }
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Test adding and retrieving quiz history")
+    void testAddAndRetrieveQuizHistory() {
         QuizHistory history = new QuizHistory(1L, 101L, 90, 300);
         history.setCompletedDate(LocalDateTime.now());
 
@@ -73,7 +99,10 @@ public class TestQuizHistorySQLDao extends TestCase {
         assertEquals(90, userHistory.get(0).getScore());
     }
 
-    public void testGetUserQuizAttempts() {
+    @Test
+    @Order(2)
+    @DisplayName("Test getting user quiz attempts")
+    void testGetUserQuizAttempts() {
         LocalDateTime now = LocalDateTime.now();
 
         QuizHistory attempt1 = new QuizHistory(2L, 202L, 70, 400);
@@ -90,7 +119,10 @@ public class TestQuizHistorySQLDao extends TestCase {
                 attempts.get(0).getCompletedDate().isAfter(attempts.get(1).getCompletedDate()));
     }
 
-    public void testGetBestResult() {
+    @Test
+    @Order(3)
+    @DisplayName("Test getting best result")
+    void testGetBestResult() {
         LocalDateTime now = LocalDateTime.now();
 
         QuizHistory result1 = new QuizHistory(3L, 303L, 60, 500);
@@ -110,7 +142,10 @@ public class TestQuizHistorySQLDao extends TestCase {
         assertEquals(90, best.getScore());
     }
 
-    public void testGetLatestAttempt() {
+    @Test
+    @Order(4)
+    @DisplayName("Test getting latest attempt")
+    void testGetLatestAttempt() {
         // Use a fixed 'now' truncated to seconds to prevent tiny timing discrepancies
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
@@ -128,21 +163,29 @@ public class TestQuizHistorySQLDao extends TestCase {
         assertEquals(now, fetched.getCompletedDate().truncatedTo(ChronoUnit.SECONDS));
     }
 
-    public void testGetLatestAttemptWhenNoneExist() {
+    @Test
+    @Order(5)
+    @DisplayName("Test getting latest attempt when none exist")
+    void testGetLatestAttemptWhenNoneExist() {
         QuizHistory result = historyDao.getLatestAttempt(999L, 999L);
         assertNull(result);
     }
 
-    public void testGetBestResultWhenNoneExist() {
+    @Test
+    @Order(6)
+    @DisplayName("Test getting best result when none exist")
+    void testGetBestResultWhenNoneExist() {
         QuizHistory result = historyDao.getBestResult(999L, 999L);
         assertNull(result);
     }
 
-    public void testAddQuizHistoryWithClosedConnection() throws Exception {
+    @Test
+    @Order(7)
+    @DisplayName("Test adding quiz history with closed connection")
+    void testAddQuizHistoryWithClosedConnection() throws Exception {
         connection.close();
         QuizHistory history = new QuizHistory(5L, 505L, 80, 300);
         history.setCompletedDate(LocalDateTime.now());
         historyDao.addQuizHistory(history);
-
     }
 }

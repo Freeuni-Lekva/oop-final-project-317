@@ -37,7 +37,7 @@ public class QuizHistoryServlet extends HttpServlet {
         }
 
         // Forward to quiz history JSP
-        request.getRequestDispatcher("/WEB-INF/jsp/QuizHistory.jsp").forward(request, response);
+        request.getRequestDispatcher("/QuizHistory.jsp").forward(request, response);
     }
 
     // Helper method to get user ID by username

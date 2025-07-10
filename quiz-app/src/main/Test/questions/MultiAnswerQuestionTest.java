@@ -1,11 +1,19 @@
 package questions;
 
-import java.util.*;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
-public class MultiAnswerQuestionTest extends TestCase {
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class MultiAnswerQuestionTest {
     
-    public void testConstructorAndBasicFunctionality() {
+    @Test
+    @Order(1)
+    @DisplayName("Test constructor and basic functionality")
+    void testConstructorAndBasicFunctionality() {
         List<String> answers = Arrays.asList("California", "Texas", "Florida");
         MultiAnswerQuestion question = new MultiAnswerQuestion("List 3 US states", answers, false);
         
@@ -15,7 +23,10 @@ public class MultiAnswerQuestionTest extends TestCase {
         assertFalse(question.isOrderMatters());
     }
     
-    public void testOrderDoesNotMatter() {
+    @Test
+    @Order(2)
+    @DisplayName("Test order does not matter")
+    void testOrderDoesNotMatter() {
         List<String> answers = Arrays.asList("Apple", "Banana", "Cherry");
         MultiAnswerQuestion question = new MultiAnswerQuestion("Name 3 fruits", answers, false);
         
@@ -28,7 +39,10 @@ public class MultiAnswerQuestionTest extends TestCase {
         assertTrue(question.isCorrect(userAnswers3)); // Case insensitive
     }
     
-    public void testOrderMatters() {
+    @Test
+    @Order(3)
+    @DisplayName("Test order matters")
+    void testOrderMatters() {
         List<String> answers = Arrays.asList("China", "India", "USA");
         MultiAnswerQuestion question = new MultiAnswerQuestion("Top 3 countries by population", answers, true);
         
@@ -41,7 +55,10 @@ public class MultiAnswerQuestionTest extends TestCase {
         assertTrue(question.isCorrect(userAnswers3)); // Case insensitive but correct order
     }
     
-    public void testIncorrectAnswers() {
+    @Test
+    @Order(4)
+    @DisplayName("Test incorrect answers")
+    void testIncorrectAnswers() {
         List<String> answers = Arrays.asList("Red", "Blue", "Green");
         MultiAnswerQuestion question = new MultiAnswerQuestion("Name 3 primary colors", answers, false);
         
@@ -54,7 +71,10 @@ public class MultiAnswerQuestionTest extends TestCase {
         assertFalse(question.isCorrect(userAnswers3)); // Too many answers
     }
     
-    public void testNonListInputs() {
+    @Test
+    @Order(5)
+    @DisplayName("Test non-list inputs")
+    void testNonListInputs() {
         List<String> answers = Arrays.asList("Answer1", "Answer2");
         MultiAnswerQuestion question = new MultiAnswerQuestion("Test question", answers, false);
         
@@ -66,7 +86,10 @@ public class MultiAnswerQuestionTest extends TestCase {
         assertFalse(question.isCorrect(new HashMap<>())); // Map
     }
     
-    public void testOrderMattersGetterSetter() {
+    @Test
+    @Order(6)
+    @DisplayName("Test order matters getter and setter")
+    void testOrderMattersGetterSetter() {
         List<String> answers = Arrays.asList("Test1", "Test2");
         MultiAnswerQuestion question = new MultiAnswerQuestion("Test", answers, true);
         
@@ -79,7 +102,10 @@ public class MultiAnswerQuestionTest extends TestCase {
         assertTrue(question.isOrderMatters());
     }
     
-    public void testEmptyAnswerList() {
+    @Test
+    @Order(7)
+    @DisplayName("Test empty answer list")
+    void testEmptyAnswerList() {
         List<String> answers = new ArrayList<>();
         MultiAnswerQuestion question = new MultiAnswerQuestion("Empty test", answers, false);
         
@@ -91,7 +117,10 @@ public class MultiAnswerQuestionTest extends TestCase {
         assertEquals(0, question.getCorrectAnswers().size());
     }
     
-    public void testSingleAnswer() {
+    @Test
+    @Order(8)
+    @DisplayName("Test single answer")
+    void testSingleAnswer() {
         List<String> answers = Arrays.asList("OnlyAnswer");
         MultiAnswerQuestion question = new MultiAnswerQuestion("Single answer test", answers, false);
         

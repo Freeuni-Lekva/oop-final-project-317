@@ -50,7 +50,7 @@ public class ProfileServlet extends HttpServlet {
             request.setAttribute("error", "Database error: " + e.getMessage());
         }
         
-        request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
+        request.getRequestDispatcher("/profile.jsp").forward(request, response);
     }
 
     @Override
