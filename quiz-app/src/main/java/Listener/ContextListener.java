@@ -124,6 +124,21 @@ public class ContextListener implements ServletContextListener {
             stmt.executeUpdate(createQuizResultTable);
             System.out.println("Quizz Result table created/verified successfully");
 
+            // Create notifications table
+            String createNotificationsTable = "CREATE TABLE IF NOT EXISTS notifications ("
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
+                    + "from_id BIGINT NOT NULL, "
+                    + "to_id BIGINT NOT NULL, "
+                    + "title VARCHAR(200) NOT NULL, "
+                    + "message TEXT, "
+                    + "question_type VARCHAR(100), "
+                    + "create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+                    + "FOREIGN KEY (from_id) REFERENCES users(id) ON DELETE CASCADE, "
+                    + "FOREIGN KEY (to_id) REFERENCES users(id) ON DELETE CASCADE"
+                    + ")";
+
+            stmt.executeUpdate(createNotificationsTable);
+            System.out.println("Notifications table created/verified successfully");
 
             String createQuizHistoryTable = "CREATE TABLE IF NOT EXISTS quiz_history ("
                     + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
