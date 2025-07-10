@@ -72,6 +72,23 @@ public class UserSQLDao implements UserDAO{
     }
 
     @Override
+    public User getUserByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
+                        rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
+                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public ArrayList<User> getFriends(long userId) {
         ArrayList<User> friends = new ArrayList<>();
         String sql = "SELECT * FROM users u INNER JOIN friendships f ON (f.user_id1 = u.id OR f.user_id2 = u.id) WHERE (f.user_id1 = ? OR f.user_id2 = ?) AND u.id != ?";

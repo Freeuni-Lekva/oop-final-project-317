@@ -1,3 +1,4 @@
+<%@ page import="models.User" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,22 +89,8 @@
             <%-- Admin Statistics Button: Only show if user is admin --%>
             <% 
             if (session.getAttribute("user") != null) {
-                String adminUsername = (String) session.getAttribute("user");
-                boolean isAdmin = false;
-                java.sql.Connection conn = (java.sql.Connection)application.getAttribute("dbConnection");
-                try {
-                    String sql = "SELECT is_admin FROM users WHERE name = ?";
-                    java.sql.PreparedStatement ps = conn.prepareStatement(sql);
-                    ps.setString(1, adminUsername);
-                    java.sql.ResultSet rs = ps.executeQuery();
-                    if (rs.next()) {
-                        isAdmin = rs.getBoolean("is_admin");
-                    }
-                    rs.close();
-                    ps.close();
-                } catch (Exception e) {
-                    // Optionally log error
-                }
+                User user = (User) session.getAttribute("user");
+                boolean isAdmin = user.getIfAdmin();
                 if (isAdmin) {
             %>
             <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3 bg-indigo-50" onclick="window.location.href='admin'">
@@ -179,10 +166,10 @@
             <!-- Welcome Banner -->
             <div class="mb-8 p-6 bg-white rounded-2xl border border-gray-200 card-hover">
                 <% 
-                String loggedInUser = (String) session.getAttribute("user");
-                if (loggedInUser != null) { 
+                User user = (User) session.getAttribute("user");
+                if (user != null) {
                 %>
-                    <h2 class="text-3xl font-bold text-slate-700 mb-2">Welcome back, <%= loggedInUser %>!</h2>
+                    <h2 class="text-3xl font-bold text-slate-700 mb-2">Welcome back, <%= user.getName() %>!</h2>
                     <p class="text-slate-600">Ready to challenge your mind? Discover new quizzes or create your own masterpiece!</p>
                     <div class="mt-4 flex space-x-3">
                         <button class="px-6 py-3 bg-gray-100 border border-gray-200 rounded-xl text-slate-700 font-medium hover:bg-gray-200 transition-colors">
