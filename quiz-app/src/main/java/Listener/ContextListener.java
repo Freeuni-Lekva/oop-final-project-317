@@ -8,6 +8,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import models.User;
+import DAO.QuizSQLDao;
+import DAO.UserSQLDao;
 
 @WebListener
 public class ContextListener implements ServletContextListener {
@@ -20,11 +22,12 @@ public class ContextListener implements ServletContextListener {
             String dbUrl = "jdbc:mysql://localhost:3306/quizmaster_db";
             String dbUser = "root";
 
-            String dbPassword = "your_password"; // change with your database password
-          
+            String dbPassword = "likunach1"; // change with your database password
+
             Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             context.setAttribute("dbConnection", dbConnection);
-            initializeDatabaseTables(dbConnection);
+
+            initializeDatabaseTables(sce, dbConnection);
             System.out.println("Database connection established successfully");
 
         } catch (ClassNotFoundException e) {
@@ -54,7 +57,16 @@ public class ContextListener implements ServletContextListener {
         System.out.println("QuizMaster application shutting down");
     }
 
-    private void initializeDatabaseTables(Connection dbConnection) {
+    private void initializeDatabaseTables(ServletContextEvent sce, Connection dbConnection) {
+        ServletContext context = sce.getServletContext();
+
+        // Create DAO objects
+        QuizSQLDao quizSqlDao = new QuizSQLDao(dbConnection);
+        UserSQLDao userSqlDao = new UserSQLDao(dbConnection);
+
+        // Set DAO objects as context attributes
+        context.setAttribute("quizDAO", quizSqlDao);
+        context.setAttribute("userDAO", userSqlDao);
         try (Statement stmt = dbConnection.createStatement()) {
 
             // Create users table

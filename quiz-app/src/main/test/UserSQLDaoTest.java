@@ -1,6 +1,5 @@
 import DAO.UserSQLDao;
 
-import com.mysql.cj.jdbc.JdbcConnection;
 import models.User;
 import org.junit.jupiter.api.*;
 
