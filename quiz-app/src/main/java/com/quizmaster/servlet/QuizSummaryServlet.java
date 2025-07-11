@@ -32,7 +32,12 @@ public class QuizSummaryServlet extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         // Initialize your DAOs here
-        // Example: this.quizDAO = DAOFactory.getQuizDAO();
+        this.quizDAO = (QuizDAO) getServletContext().getAttribute("quizDAO");
+        this.quizResultDAO = (QuizResultDAO) getServletContext().getAttribute("quizResultDAO");
+        this.userDAO = (UserDAO) getServletContext().getAttribute("userDAO");
+        if (quizDAO == null || quizResultDAO == null || userDAO == null) {
+            throw new ServletException("DAO objects not found in servlet context");
+        }
     }
 
     @Override
