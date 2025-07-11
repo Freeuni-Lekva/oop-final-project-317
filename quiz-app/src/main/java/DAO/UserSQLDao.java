@@ -129,18 +129,37 @@ public class UserSQLDao implements UserDAO{
     }
 
     @Override
+    public ArrayList<User> searchUsers(String searchTerm, int limit) {
+        ArrayList<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE LOWER(name) LIKE LOWER(?) OR LOWER(email) LIKE LOWER(?) ORDER BY name LIMIT ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            String searchPattern = "%" + searchTerm.toLowerCase().trim() + "%";
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+            stmt.setInt(3, limit);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                users.add(new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
+                        rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
+                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"),
+                        rs.getInt("quiz_created_count"), rs.getInt("quiz_taken_count")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    @Override
     public boolean checkIfFriends(long userId1, long userId2) {
         String sql = "SELECT COUNT(*) as count FROM friendships WHERE " +
-                    "(user_id1 = ? AND user_id2 = ?) OR " +
-                    "(user_id1 = ? AND user_id2 = ?)";
-        
+                "(user_id1 = ? AND user_id2 = ?) OR " +
+                "(user_id1 = ? AND user_id2 = ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            // Check both directions of the friendship
             stmt.setLong(1, userId1);
             stmt.setLong(2, userId2);
             stmt.setLong(3, userId2);
             stmt.setLong(4, userId1);
-            
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return rs.getInt("count") > 0;

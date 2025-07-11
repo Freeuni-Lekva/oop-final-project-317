@@ -165,4 +165,43 @@ public class QuizSQLDao implements QuizDAO {
             e.printStackTrace();
         }
     }
+    
+    @Override
+    public ArrayList<Quiz> searchQuizzes(String searchTerm, int limit) {
+        ArrayList<Quiz> quizzes = new ArrayList<>();
+        String query = "SELECT * FROM quizzes WHERE LOWER(title) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?) ORDER BY created_date DESC LIMIT ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            String searchPattern = "%" + searchTerm + "%";
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+            stmt.setInt(3, limit);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Quiz quiz = extractQuizFromResultSet(rs);
+                quizzes.add(quiz);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return quizzes;
+    }
+    
+    @Override
+    public ArrayList<Quiz> getAllQuizzes(int limit) {
+        ArrayList<Quiz> quizzes = new ArrayList<>();
+        String query = "SELECT * FROM quizzes ORDER BY created_date DESC LIMIT ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Quiz quiz = extractQuizFromResultSet(rs);
+                quizzes.add(quiz);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return quizzes;
+    }
 }
