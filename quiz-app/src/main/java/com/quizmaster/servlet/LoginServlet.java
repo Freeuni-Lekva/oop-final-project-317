@@ -57,7 +57,7 @@ public class LoginServlet extends HttpServlet {
             String inputHash = PasswordUtil.hashPassword(password);
             if (storedHash.equals(inputHash)) {
                 request.getSession().setAttribute("user", user);
-                response.sendRedirect(request.getContextPath() + "/profile");
+                response.sendRedirect(request.getContextPath() + "/index.jsp");
                 return;
             } else {
                 request.setAttribute("error", "Invalid password");
