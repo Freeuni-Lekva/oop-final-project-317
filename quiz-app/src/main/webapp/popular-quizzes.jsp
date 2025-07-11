@@ -115,17 +115,15 @@
 
         <!-- Popular Quizzes Grid -->
         <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <% List<Map<String, Object>> popularQuizzes = (List<Map<String, Object>>) request.getAttribute("popularQuizzes");
-               if (popularQuizzes != null) {
+            <% List<Quiz> popularQuizzes = (List<Quiz>) request.getAttribute("popularQuizzes");
+               if (popularQuizzes != null && !popularQuizzes.isEmpty()) {
                    int rank = 1;
-                   for (Map<String, Object> item : popularQuizzes) {
-                       Quiz quiz = (Quiz) item.get("quiz");
-                       int completions = ((Number) item.get("completions")).intValue();
+                   for (Quiz quiz : popularQuizzes) {
             %>
             <div class="bg-white rounded-2xl p-6 shadow card-hover flex flex-col">
                 <div class="flex items-center justify-between mb-4">
                     <span class="text-sm font-medium text-slate-500">#<%= rank %></span>
-                    <span class="text-xs bg-slate-100 text-slate-600 px-3 py-1 rounded-full"><%= completions %> completions</span>
+                    <span class="text-xs bg-slate-100 text-slate-600 px-3 py-1 rounded-full"><%= quiz.getTimesTaken() %> completions</span>
                 </div>
                 <h3 class="text-lg font-semibold text-slate-700 mb-2"><%= quiz.getTitle() %></h3>
                 <p class="text-slate-500 text-sm flex-1"><%= quiz.getDescription() %></p>

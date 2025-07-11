@@ -15,8 +15,8 @@ public class QuizSQLDao implements QuizDAO {
     @Override
     public void addQuiz(Quiz quiz) {
         String query = "INSERT INTO quizzes (title, description, created_by, created_date, last_modified, " +
-                "randomize_questions, one_page, immediate_correction, practice_mode, time_limit) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "randomize_questions, one_page, immediate_correction, practice_mode, time_limit, times_taken) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, quiz.getTitle());
@@ -29,6 +29,7 @@ public class QuizSQLDao implements QuizDAO {
             stmt.setBoolean(8, quiz.isImmediateCorrection());
             stmt.setBoolean(9, quiz.isPracticeMode());
             stmt.setInt(10, quiz.getTimeLimit());
+            stmt.setInt(11, quiz.getTimesTaken());
             stmt.executeUpdate();
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -93,7 +94,7 @@ public class QuizSQLDao implements QuizDAO {
     @Override
     public void updateQuiz(Quiz quiz) {
         String query = "UPDATE quizzes SET title = ?, description = ?, last_modified = ?, " +
-                "randomize_questions = ?, one_page = ?, immediate_correction = ?, practice_mode = ?, time_limit = ? " +
+                "randomize_questions = ?, one_page = ?, immediate_correction = ?, practice_mode = ?, time_limit = ?, times_taken = ? " +
                 "WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, quiz.getTitle());
@@ -104,7 +105,8 @@ public class QuizSQLDao implements QuizDAO {
             stmt.setBoolean(6, quiz.isImmediateCorrection());
             stmt.setBoolean(7, quiz.isPracticeMode());
             stmt.setInt(8, quiz.getTimeLimit());
-            stmt.setLong(9, quiz.getId());
+            stmt.setInt(9, quiz.getTimesTaken());
+            stmt.setLong(10, quiz.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -129,6 +131,9 @@ public class QuizSQLDao implements QuizDAO {
         try {
             quiz.setTimeLimit(rs.getInt("time_limit"));
         } catch (SQLException ignore) {}
+        try {
+            quiz.setTimesTaken(rs.getInt("times_taken"));
+        } catch (SQLException ignore) {}
         return quiz;
     }
 
@@ -148,5 +153,16 @@ public class QuizSQLDao implements QuizDAO {
             e.printStackTrace();
         }
         return quizzes;
+    }
+
+    @Override
+    public void incrementQuizCompletions(long quizId) {
+        String query = "UPDATE quizzes SET times_taken = times_taken + 1 WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setLong(1, quizId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
