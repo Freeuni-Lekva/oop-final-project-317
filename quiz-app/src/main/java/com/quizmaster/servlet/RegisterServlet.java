@@ -56,17 +56,6 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
-        
-        // Demo registration logic - replace with real database save later
-        if ("admin@test.com".equals(email)) {
-            request.setAttribute("error", "Email already exists");
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
-        } else {
-            // Registration successful
-            request.setAttribute("success", "Account created successfully! You can now login.");
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
-        }
-
         // Add User in database if email and username is unique
 
         Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
