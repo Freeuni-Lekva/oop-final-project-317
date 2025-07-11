@@ -244,14 +244,15 @@ body {
                     <!-- Profile Info -->
                     <div class="flex-1">
                         <h2 class="text-3xl font-bold text-slate-700 mb-2">
+                            <%= session.getAttribute("user") != null ? ((models.User)session.getAttribute("user")).getName() : "" %>
                         </h2>
-                        <p class="text-slate-500 text-lg mb-4">Quiz enthusiast and knowledge seeker</p>
+                        <p class="text-slate-500 text-lg mb-4"><%= request.getAttribute("userEmail") != null ? request.getAttribute("userEmail") : "" %></p>
                         <div class="flex items-center space-x-4 text-sm text-slate-600">
                             <div class="flex items-center">
                                 <svg class="w-4 h-4 mr-1 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
-                                Member since January 2025
+                                Member since <%= request.getAttribute("userCreatedAt") != null ? request.getAttribute("userCreatedAt") : "" %>
                             </div>
                         </div>
                     </div>
@@ -269,7 +270,7 @@ body {
                             </svg>
                         </div>
                         <div class="text-right">
-                            <div class="text-3xl font-bold text-black">12</div>
+                            <div class="text-3xl font-bold text-black"><%= request.getAttribute("quizzesCreated") != null ? request.getAttribute("quizzesCreated") : 0 %></div>
                             <div class="text-black text-sm">Quizzes Made</div>
                         </div>
                     </div>
@@ -284,7 +285,7 @@ body {
                             </svg>
                         </div>
                         <div class="text-right">
-                            <div class="text-3xl font-bold text-black">47</div>
+                            <div class="text-3xl font-bold text-black"><%= request.getAttribute("quizzesTaken") != null ? request.getAttribute("quizzesTaken") : 0 %></div>
                             <div class="text-black text-sm">Quizzes Taken</div>
                         </div>
                     </div>
@@ -299,9 +300,23 @@ body {
                             </svg>
                         </div>
                         <div class="text-right">
-                            <div class="text-3xl font-bold text-black">28</div>
+                            <div class="text-3xl font-bold text-black">
+                                <% java.util.List friendsList = (java.util.List) request.getAttribute("friendsList"); %>
+                                <%= friendsList != null ? friendsList.size() : 0 %>
+                            </div>
                             <div class="text-black text-sm">Friends</div>
                         </div>
+                    </div>
+                    <div class="mt-2">
+                        <% if (friendsList != null && !friendsList.isEmpty()) { %>
+                            <ul class="list-disc ml-6 text-slate-700">
+                            <% for (Object obj : friendsList) { models.User friend = (models.User) obj; %>
+                                <li><%= friend.getName() %></li>
+                            <% } %>
+                            </ul>
+                        <% } else { %>
+                            <div class="text-slate-500">No friends found.</div>
+                        <% } %>
                     </div>
                 </div>
 
@@ -314,9 +329,23 @@ body {
                             </svg>
                         </div>
                         <div class="text-right">
-                            <div class="text-3xl font-bold text-black">15</div>
+                            <div class="text-3xl font-bold text-black">
+                                <% java.util.List achievementsList = (java.util.List) request.getAttribute("achievementsList"); %>
+                                <%= achievementsList != null ? achievementsList.size() : 0 %>
+                            </div>
                             <div class="text-black text-sm">Achievements</div>
                         </div>
+                    </div>
+                    <div class="mt-2">
+                        <% if (achievementsList != null && !achievementsList.isEmpty()) { %>
+                            <ul class="list-disc ml-6 text-slate-700">
+                            <% for (Object obj : achievementsList) { models.Notification ach = (models.Notification) obj; %>
+                                <li><%= ach.getTitle() %> - <%= ach.getMessage() %></li>
+                            <% } %>
+                            </ul>
+                        <% } else { %>
+                            <div class="text-slate-500">No achievements found.</div>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -327,6 +356,12 @@ body {
                 <div class="bg-white rounded-2xl border border-gray-200 p-6 card-hover">
                     <h3 class="text-xl font-bold text-slate-700 mb-4">Recent Activity</h3>
                     <div class="space-y-4">
+                        <% 
+                        java.util.List recentActivities = (java.util.List) request.getAttribute("recentActivities");
+                        if (recentActivities != null && !recentActivities.isEmpty()) {
+                            for (Object obj : recentActivities) {
+                                models.QuizHistory qh = (models.QuizHistory) obj;
+                        %>
                         <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                             <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                                 <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -334,32 +369,14 @@ body {
                                 </svg>
                             </div>
                             <div class="flex-1">
-                                <p class="text-slate-700 font-medium">Completed "Science Quiz"</p>
-                                <p class="text-slate-500 text-sm">Score: 85%,   2 hours ago</p>
+                                <p class="text-slate-700 font-medium">Completed quiz ID: <%= qh.getQuizId() %></p>
+                                <p class="text-slate-500 text-sm">Score: <%= qh.getScore() %>%,   <%= qh.getCompletedDate() %></p>
                             </div>
                         </div>
-                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                                </svg>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-slate-700 font-medium">Created "History Challenge"</p>
-                                <p class="text-slate-500 text-sm">25 questions,   Yesterday</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                </svg>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-slate-700 font-medium">New friend added</p>
-                                <p class="text-slate-500 text-sm">Alex Johnson,   3 days ago</p>
-                            </div>
-                        </div>
+                        <%   }
+                        } else { %>
+                        <div class="text-slate-500">No recent activity found.</div>
+                        <% } %>
                     </div>
                 </div>
 
@@ -367,7 +384,9 @@ body {
                 <div class="bg-white rounded-2xl border border-gray-200 p-6 card-hover">
                     <h3 class="text-xl font-bold text-slate-700 mb-4">Account Settings</h3>
                     <div class="space-y-4">
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <!-- Change Email Form -->
+                        <form method="post" action="profile" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <input type="hidden" name="action" value="changeEmail" />
                             <div class="flex items-center space-x-3">
                                 <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                                     <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -375,45 +394,58 @@ body {
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-slate-700 font-medium">Edit Profile</p>
-                                    <p class="text-slate-500 text-sm">Update your information</p>
+                                    <p class="text-slate-700 font-medium">Change Email</p>
+                                    <input type="email" name="newEmail" placeholder="New email" class="border rounded px-2 py-1 text-sm" required />
                                 </div>
                             </div>
-                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </div>
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium">Change</button>
+                        </form>
+                        <!-- Change Username Form -->
+                        <form method="post" action="profile" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <input type="hidden" name="action" value="changeUsername" />
                             <div class="flex items-center space-x-3">
                                 <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                                     <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5-5-5h5v-5a7.5 7.5 0 000-15h-5"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-slate-700 font-medium">Privacy Settings</p>
-                                    <p class="text-slate-500 text-sm">Control your visibility</p>
+                                    <p class="text-slate-700 font-medium">Change Username</p>
+                                    <input type="text" name="newUsername" placeholder="New username" class="border rounded px-2 py-1 text-sm" required />
                                 </div>
                             </div>
-                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </div>
+                            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-medium">Change</button>
+                        </form>
+                        <!-- Deactivate Account -->
+                        <form method="post" action="profile" onsubmit="return confirm('Are you sure you want to deactivate your account? This cannot be undone.');" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <input type="hidden" name="action" value="deactivateAccount" />
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-slate-700 font-medium">Deactivate Account</p>
+                                    <p class="text-slate-500 text-sm">Permanently delete your account</p>
+                                </div>
+                            </div>
+                            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 font-medium">Deactivate</button>
+                        </form>
+                        <!-- Take a Quiz Button -->
                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <div class="flex items-center space-x-3">
                                 <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
                                     <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5-5-5h5v-5a7.5 7.5 0 000-15h-5"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-slate-700 font-medium">Notifications</p>
-                                    <p class="text-slate-500 text-sm">Manage your alerts</p>
+                                    <p class="text-slate-700 font-medium">Take a Quiz</p>
+                                    <p class="text-slate-500 text-sm">Go to quiz start page</p>
                                 </div>
                             </div>
-                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
+                            <a href="index.jsp" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 font-medium">Go</a>
                         </div>
                     </div>
                 </div>
