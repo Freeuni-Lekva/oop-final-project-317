@@ -5,24 +5,23 @@ import models.Quiz;
 import java.util.ArrayList;
 
 public interface QuizDAO {
-    public void addQuiz(Quiz quiz);
+    void addQuiz(Quiz quiz);
 
-    public void removeQuiz(Quiz quiz);
+    void removeQuiz(Quiz quiz);
 
-    public void updateQuiz(Quiz quiz);
+    void updateQuiz(Quiz quiz);
 
-    public ArrayList<Quiz> getUserQuizzes(long userId);
+    ArrayList<Quiz> getUserQuizzes(long userId);
 
-    ArrayList<Quiz> getUserQuizzes(Long userId);
+    Quiz getQuiz(long quizId);
 
-    public Quiz getQuiz(long quizId);
+    ArrayList<Quiz> getRecentQuizzes(int limit);
 
-    public ArrayList<Quiz> getRecentQuizzes(int limit);
-    
-    public void incrementQuizCompletions(long quizId);
-    
-    // Search methods
-    public ArrayList<Quiz> searchQuizzes(String searchTerm, int limit);
-    
-    public ArrayList<Quiz> getAllQuizzes(int limit);
+    void incrementQuizCompletions(long quizId);
+
+    ArrayList<Quiz> getAllQuizzes();
+
+    ArrayList<Quiz> searchQuizzes(String searchTerm, int limit);
+
+    ArrayList<Quiz> getAllQuizzes(int limit);
 }

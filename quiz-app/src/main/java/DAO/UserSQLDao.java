@@ -2,56 +2,45 @@ package DAO;
 
 import models.User;
 
-import java.util.ArrayList;
 import java.sql.*;
+import java.util.ArrayList;
 
-public class UserSQLDao implements UserDAO{
-    Connection connection;
+public class UserSQLDao implements UserDAO {
+    private Connection connection;
+
     public UserSQLDao(Connection connection) {
         this.connection = connection;
     }
 
+    @Override
     public void addUser(User user) {
-        String name = user.getName();
-        String email = user.getEmail();
-        String passHash = user.getPassHash();
-        int passedQuizzes = user.getPassedQuizzes();
-        boolean isAdmin = user.getIfAdmin();
-        boolean isBanned = user.getIfBanned();
-        int quizCreatedCount = user.getQuizCreatedCount();
-        int quizTakenCount = user.getQuizTakenCount();
-        String addUser = "INSERT INTO users (name, email, pass_hash, passed_quizzes, is_admin, is_banned, quiz_created_count, quiz_taken_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement stmt = connection.prepareStatement(addUser)) {
-            stmt.setString(1, name);
-            stmt.setString(2, email);
-            stmt.setString(3, passHash);
-            stmt.setInt(4, passedQuizzes);
-            stmt.setBoolean(5, isAdmin);
-            stmt.setBoolean(6, isBanned);
-            stmt.setInt(7, quizCreatedCount);
-            stmt.setInt(8, quizTakenCount);
+        String sql = "INSERT INTO users (name, email, pass_hash, passed_quizzes, is_admin, is_banned, quiz_created_count, quiz_taken_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, user.getName());
+            stmt.setString(2, user.getEmail());
+            stmt.setString(3, user.getPassHash());
+            stmt.setInt(4, user.getPassedQuizzes());
+            stmt.setBoolean(5, user.getIfAdmin());
+            stmt.setBoolean(6, user.getIfBanned());
+            stmt.setInt(7, user.getQuizCreatedCount());
+            stmt.setInt(8, user.getQuizTakenCount());
             stmt.executeUpdate();
             System.out.println("User added successfully");
         } catch (SQLException e) {
-            System.out.println("Error adding user");
-            System.out.println(e.getMessage());
+            System.out.println("Error adding user: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
 
     @Override
     public User getUser(long userId) {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, userId);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
-                        rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
-                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"),
-                        rs.getInt("quiz_created_count"), rs.getInt("quiz_taken_count"));
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapUser(rs);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,12 +53,10 @@ public class UserSQLDao implements UserDAO{
         String sql = "SELECT * FROM users WHERE name = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
-                        rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
-                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"),
-                        rs.getInt("quiz_created_count"), rs.getInt("quiz_taken_count"));
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapUser(rs);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,12 +69,10 @@ public class UserSQLDao implements UserDAO{
         String sql = "SELECT * FROM users WHERE LOWER(email) = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email.toLowerCase().trim());
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
-                        rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
-                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"),
-                        rs.getInt("quiz_created_count"), rs.getInt("quiz_taken_count"));
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapUser(rs);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -98,17 +83,17 @@ public class UserSQLDao implements UserDAO{
     @Override
     public ArrayList<User> getFriends(long userId) {
         ArrayList<User> friends = new ArrayList<>();
-        String sql = "SELECT * FROM users u INNER JOIN friendships f ON (f.user_id1 = u.id OR f.user_id2 = u.id) WHERE (f.user_id1 = ? OR f.user_id2 = ?) AND u.id != ?";
+        String sql = "SELECT u.* FROM users u " +
+                     "JOIN friendships f ON (f.user_id1 = u.id OR f.user_id2 = u.id) " +
+                     "WHERE (f.user_id1 = ? OR f.user_id2 = ?) AND u.id != ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, userId);
             stmt.setLong(2, userId);
             stmt.setLong(3, userId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                friends.add(new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
-                        rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
-                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"),  rs.getTimestamp("created_at"),
-                        rs.getInt("quiz_created_count"), rs.getInt("quiz_taken_count")));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    friends.add(mapUser(rs));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -129,20 +114,44 @@ public class UserSQLDao implements UserDAO{
     }
 
     @Override
+    public ArrayList<User> getAllUsers() {
+        ArrayList<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users";
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                users.add(mapUser(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    @Override
+    public void removeUser(User user) {
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, user.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public ArrayList<User> searchUsers(String searchTerm, int limit) {
         ArrayList<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM users WHERE LOWER(name) LIKE LOWER(?) OR LOWER(email) LIKE LOWER(?) ORDER BY name LIMIT ?";
+        String sql = "SELECT * FROM users WHERE LOWER(name) LIKE ? OR LOWER(email) LIKE ? ORDER BY name LIMIT ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            String searchPattern = "%" + searchTerm.toLowerCase().trim() + "%";
-            stmt.setString(1, searchPattern);
-            stmt.setString(2, searchPattern);
+            String pattern = "%" + searchTerm.toLowerCase().trim() + "%";
+            stmt.setString(1, pattern);
+            stmt.setString(2, pattern);
             stmt.setInt(3, limit);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                users.add(new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
-                        rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
-                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"),
-                        rs.getInt("quiz_created_count"), rs.getInt("quiz_taken_count")));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(mapUser(rs));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -152,21 +161,35 @@ public class UserSQLDao implements UserDAO{
 
     @Override
     public boolean checkIfFriends(long userId1, long userId2) {
-        String sql = "SELECT COUNT(*) as count FROM friendships WHERE " +
-                "(user_id1 = ? AND user_id2 = ?) OR " +
-                "(user_id1 = ? AND user_id2 = ?)";
+        String sql = "SELECT COUNT(*) AS cnt FROM friendships WHERE (user_id1 = ? AND user_id2 = ?) OR (user_id1 = ? AND user_id2 = ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, userId1);
             stmt.setLong(2, userId2);
             stmt.setLong(3, userId2);
             stmt.setLong(4, userId1);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("count") > 0;
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("cnt") > 0;
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private User mapUser(ResultSet rs) throws SQLException {
+        return new User(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("email"),
+                rs.getString("pass_hash"),
+                rs.getInt("passed_quizzes"),
+                rs.getBoolean("is_admin"),
+                rs.getBoolean("is_banned"),
+                rs.getTimestamp("created_at"),
+                rs.getInt("quiz_created_count"),
+                rs.getInt("quiz_taken_count")
+        );
     }
 }
