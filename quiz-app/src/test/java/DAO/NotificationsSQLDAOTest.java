@@ -1,5 +1,6 @@
 package DAO;
 
+import DAO.NotificationsSQLDAO;
 import models.Notification;
 import notifications.NoteNotification;
 import notifications.ChallengeNotification;
@@ -31,8 +32,20 @@ public class NotificationsSQLDAOTest {
     @BeforeEach
     void setUp() {
         dao = new NotificationsSQLDAO(connection);
-        // Create notifications table if it does not exist
+        // Create tables if they do not exist
         try (Statement stmt = connection.createStatement()) {
+            // Create users table first (needed for foreign key references)
+            stmt.execute("CREATE TABLE IF NOT EXISTS users (" +
+                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                    "name VARCHAR(255) NOT NULL, " +
+                    "email VARCHAR(255) NOT NULL, " +
+                    "pass_hash VARCHAR(255) NOT NULL, " +
+                    "passed_quizzes INT DEFAULT 0, " +
+                    "is_admin BOOLEAN DEFAULT FALSE, " +
+                    "is_banned BOOLEAN DEFAULT FALSE, " +
+                    "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
+                    ")");
+            
             stmt.execute("CREATE TABLE IF NOT EXISTS notifications (" +
                     "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                     "from_id BIGINT NOT NULL, " +
@@ -44,8 +57,20 @@ public class NotificationsSQLDAOTest {
                     "FOREIGN KEY (from_id) REFERENCES users(id) ON DELETE CASCADE, " +
                     "FOREIGN KEY (to_id) REFERENCES users(id) ON DELETE CASCADE" +
                     ")");
-            // Clean up table before each test
+            
+            // Clean up tables before each test
             stmt.execute("DELETE FROM notifications");
+            stmt.execute("DELETE FROM users");
+            
+            // Insert test users for notification tests
+            stmt.execute("INSERT INTO users (id, name, email, pass_hash) VALUES " +
+                    "(1, 'user1', 'user1@test.com', 'hash1'), " +
+                    "(2, 'user2', 'user2@test.com', 'hash2'), " +
+                    "(3, 'user3', 'user3@test.com', 'hash3'), " +
+                    "(4, 'user4', 'user4@test.com', 'hash4'), " +
+                    "(5, 'user5', 'user5@test.com', 'hash5'), " +
+                    "(6, 'user6', 'user6@test.com', 'hash6'), " +
+                    "(10, 'user10', 'user10@test.com', 'hash10')");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

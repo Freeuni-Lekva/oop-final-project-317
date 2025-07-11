@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * Uses quizmastertest_db database for testing
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class QuizResultDAOSQLTest {
+public class QuizResultSQLDAOTest {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/quizmastertest_db";
     private static final String DB_USER = "root"; // Change to your MySQL username

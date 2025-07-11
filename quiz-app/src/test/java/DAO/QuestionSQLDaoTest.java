@@ -1,5 +1,6 @@
 package DAO;
 
+import DAO.QuestionSQLDao;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import models.Question;
@@ -12,7 +13,7 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class TestQuestionSQLDao {
+class QuestionSQLDaoTest {
     private static Connection connection;
     private static QuestionSQLDao questionDao;
 

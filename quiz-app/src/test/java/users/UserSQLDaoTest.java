@@ -1,3 +1,5 @@
+package users;
+
 import DAO.UserSQLDao;
 
 import models.User;
@@ -38,7 +40,8 @@ class UserSQLDaoTest {
                 "pass_hash VARCHAR(255) NOT NULL, " +
                 "passed_quizzes INT DEFAULT 0, " +
                 "is_admin BOOLEAN DEFAULT FALSE, " +
-                "is_banned BOOLEAN DEFAULT FALSE)";
+                "is_banned BOOLEAN DEFAULT FALSE, " +
+                "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
 
         String createFriendshipsTable = " CREATE TABLE IF NOT EXISTS friendships ( " +
                 "id BIGINT PRIMARY KEY AUTO_INCREMENT, " +

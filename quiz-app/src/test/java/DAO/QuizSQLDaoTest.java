@@ -1,5 +1,6 @@
 package DAO;
 
+import DAO.QuizSQLDao;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import models.Quiz;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class TestQuizSQLDao {
+class QuizSQLDaoTest {
     private static Connection connection;
     private static QuizSQLDao quizDao;
 

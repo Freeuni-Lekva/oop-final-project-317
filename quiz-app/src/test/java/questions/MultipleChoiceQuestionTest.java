@@ -2,6 +2,7 @@ package questions;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
+import questions.MultipleChoiceQuestion;
 
 import java.util.*;
 

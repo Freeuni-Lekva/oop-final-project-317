@@ -1,5 +1,7 @@
 package models;
 
+import models.Question;
+import models.Quiz;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class TestQuiz {
+class QuizTest {
     private Quiz quiz;
     private MockQuestion mockQuestion1;
     private MockQuestion mockQuestion2;
@@ -117,7 +119,7 @@ class TestQuiz {
 
         // Small delay to ensure time difference
         try {
-            Thread.sleep(100);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -125,22 +127,27 @@ class TestQuiz {
         quiz.setTitle("Updated Title");
         assertTrue(quiz.getLastModified().isAfter(originalModified));
 
+        try { Thread.sleep(10); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         LocalDateTime afterTitleChange = quiz.getLastModified();
         quiz.setDescription("Updated Description");
         assertTrue(quiz.getLastModified().isAfter(afterTitleChange));
 
+        try { Thread.sleep(10); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         LocalDateTime afterDescChange = quiz.getLastModified();
         quiz.setRandomizeQuestions(true);
         assertTrue(quiz.getLastModified().isAfter(afterDescChange));
 
+        try { Thread.sleep(10); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         LocalDateTime afterRandomChange = quiz.getLastModified();
         quiz.setOnePage(true);
         assertTrue(quiz.getLastModified().isAfter(afterRandomChange));
 
+        try { Thread.sleep(10); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         LocalDateTime afterOnePageChange = quiz.getLastModified();
         quiz.setImmediateCorrection(true);
         assertTrue(quiz.getLastModified().isAfter(afterOnePageChange));
 
+        try { Thread.sleep(10); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         LocalDateTime afterImmediateChange = quiz.getLastModified();
         quiz.setPracticeMode(true);
         assertTrue(quiz.getLastModified().isAfter(afterImmediateChange));

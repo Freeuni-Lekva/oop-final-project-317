@@ -1,54 +1,55 @@
 package notifications;
 
 import models.Notification;
+import notifications.NoteNotification;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FriendRequestNotificationTest {
+public class NoteNotificationTest {
 
-    private FriendRequestNotification notification;
+    private NoteNotification notification;
 
     @BeforeEach
     void setUp() {
-        notification = new FriendRequestNotification();
+        notification = new NoteNotification();
     }
 
     @Test
     void testDefaultConstructor() {
-        FriendRequestNotification notification = new FriendRequestNotification();
+        NoteNotification notification = new NoteNotification();
 
         assertEquals(0, notification.getId());
         assertEquals(0, notification.getFromUserId());
         assertEquals(0, notification.getToUserId());
         assertNull(notification.getTitle());
         assertNull(notification.getMessage());
-        assertEquals(Notification.FRIEND_REQUEST_NOTIFICATION, notification.getQuestionType());
+        assertEquals(Notification.NOTE_NOTIFICATION, notification.getQuestionType());
     }
 
     @Test
     void testParameterizedConstructor() {
         long fromUserId = 123L;
         long toUserId = 456L;
-        String title = "Friend Request Title";
-        String message = "Friend Request Message";
+        String title = "Note Title";
+        String message = "Note Message";
 
-        FriendRequestNotification notification = new FriendRequestNotification(fromUserId, toUserId, title, message);
+        NoteNotification notification = new NoteNotification(fromUserId, toUserId, title, message);
 
         assertEquals(0, notification.getId()); // ID is set to 0 in parent constructor
         assertEquals(fromUserId, notification.getFromUserId());
         assertEquals(toUserId, notification.getToUserId());
         assertEquals(title, notification.getTitle());
         assertEquals(message, notification.getMessage());
-        assertEquals(Notification.FRIEND_REQUEST_NOTIFICATION, notification.getQuestionType());
+        assertEquals(Notification.NOTE_NOTIFICATION, notification.getQuestionType());
     }
 
     @Test
     void testSettersAndGetters() {
         long fromUserId = 789L;
         long toUserId = 101112L;
-        String title = "New Friend Request";
-        String message = "New Friend Request Message";
+        String title = "New Note";
+        String message = "New Note Message";
         long id = 999L;
 
         notification.setFromUserId(fromUserId);
@@ -62,12 +63,12 @@ public class FriendRequestNotificationTest {
         assertEquals(title, notification.getTitle());
         assertEquals(message, notification.getMessage());
         assertEquals(id, notification.getId());
-        assertEquals(Notification.FRIEND_REQUEST_NOTIFICATION, notification.getQuestionType());
+        assertEquals(Notification.NOTE_NOTIFICATION, notification.getQuestionType());
     }
 
     @Test
     void testQuestionTypeConstant() {
-        assertEquals("FRIEND_REQUEST_NOTIFICATION", Notification.FRIEND_REQUEST_NOTIFICATION);
+        assertEquals("NOTE_NOTIFICATION", Notification.NOTE_NOTIFICATION);
     }
 
     @Test
@@ -79,8 +80,8 @@ public class FriendRequestNotificationTest {
         assertEquals("DIFFERENT_TYPE", notification.getQuestionType());
 
         // Create new instance to verify constructor behavior
-        FriendRequestNotification newNotification = new FriendRequestNotification(1L, 2L, "title", "message");
-        assertEquals(Notification.FRIEND_REQUEST_NOTIFICATION, newNotification.getQuestionType());
+        NoteNotification newNotification = new NoteNotification(1L, 2L, "title", "message");
+        assertEquals(Notification.NOTE_NOTIFICATION, newNotification.getQuestionType());
     }
 
     @Test
@@ -90,38 +91,50 @@ public class FriendRequestNotificationTest {
 
     @Test
     void testWithNullValues() {
-        FriendRequestNotification notification = new FriendRequestNotification(0L, 0L, null, null);
+        NoteNotification notification = new NoteNotification(0L, 0L, null, null);
 
         assertEquals(0L, notification.getFromUserId());
         assertEquals(0L, notification.getToUserId());
         assertNull(notification.getTitle());
         assertNull(notification.getMessage());
-        assertEquals(Notification.FRIEND_REQUEST_NOTIFICATION, notification.getQuestionType());
+        assertEquals(Notification.NOTE_NOTIFICATION, notification.getQuestionType());
     }
 
     @Test
     void testWithEmptyStrings() {
-        FriendRequestNotification notification = new FriendRequestNotification(1L, 2L, "", "");
+        NoteNotification notification = new NoteNotification(1L, 2L, "", "");
 
         assertEquals("", notification.getTitle());
         assertEquals("", notification.getMessage());
-        assertEquals(Notification.FRIEND_REQUEST_NOTIFICATION, notification.getQuestionType());
+        assertEquals(Notification.NOTE_NOTIFICATION, notification.getQuestionType());
     }
 
     @Test
-    void testFriendRequestSpecificScenarios() {
-        // Test typical friend request scenario
-        long senderId = 100L;
-        long receiverId = 200L;
-        String title = "Friend Request";
-        String message = "John Doe wants to be your friend";
+    void testNoteSpecificScenarios() {
+        // Test typical note scenario
+        long senderId = 300L;
+        long receiverId = 400L;
+        String title = "Reminder";
+        String message = "Don't forget about the meeting tomorrow";
 
-        FriendRequestNotification friendRequest = new FriendRequestNotification(senderId, receiverId, title, message);
+        NoteNotification note = new NoteNotification(senderId, receiverId, title, message);
 
-        assertEquals(senderId, friendRequest.getFromUserId());
-        assertEquals(receiverId, friendRequest.getToUserId());
-        assertEquals(title, friendRequest.getTitle());
-        assertEquals(message, friendRequest.getMessage());
-        assertEquals(Notification.FRIEND_REQUEST_NOTIFICATION, friendRequest.getQuestionType());
+        assertEquals(senderId, note.getFromUserId());
+        assertEquals(receiverId, note.getToUserId());
+        assertEquals(title, note.getTitle());
+        assertEquals(message, note.getMessage());
+        assertEquals(Notification.NOTE_NOTIFICATION, note.getQuestionType());
+    }
+
+    @Test
+    void testLongMessageContent() {
+        String longMessage = "This is a very long note message that contains multiple sentences. " +
+                "It might be used for detailed instructions or important information. " +
+                "The system should handle long messages without any issues.";
+
+        NoteNotification note = new NoteNotification(1L, 2L, "Long Note", longMessage);
+
+        assertEquals(longMessage, note.getMessage());
+        assertEquals(Notification.NOTE_NOTIFICATION, note.getQuestionType());
     }
 }

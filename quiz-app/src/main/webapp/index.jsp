@@ -6,7 +6,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuizMaster - Your Learning Adventure</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f2f0e9;
+    min-height: 100vh;
+}
+
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(73, 89, 107, 0.15);
+}
+
+.sidebar-item {
+    transition: all 0.2s ease;
+}
+
+.sidebar-item:hover {
+    background-color: #f8fafc;
+    transform: translateX(2px);
+}
+
+.notification-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.quiz-card-1 {
+    background: radial-gradient(circle at center, #8387C3 90%, #676a9c 100%);
+}
+
+.quiz-card-2 {
+    background: radial-gradient(circle at center, #CEB5D4 90%, #a68eab 100%);
+}
+
+.quiz-card-3 {
+    background: radial-gradient(circle at center, #537E72 90%, #406358 100%);
+}
+
+.quiz-card-4 {
+    background: radial-gradient(circle at center, #7D9FC0 90%, #5f7b96 100%);
+}
+    </style>
 </head>
 <body class="overflow-hidden bg-gray-50">
 <div class="flex h-screen">
@@ -23,10 +74,10 @@
         <!-- Navigation -->
         <nav class="space-y-1 flex-1">
             <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='quiz-history'">                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
-                </div>
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+            </div>
                 <span class="text-slate-700 font-medium">My Quiz History</span>
             </div>
 
@@ -86,11 +137,11 @@
             </div>
             <% } %>
             <%-- Admin Statistics Button: Only show if user is admin --%>
-            <% 
-            if (session.getAttribute("user") != null) {
-                User user = (User) session.getAttribute("user");
-                boolean isAdmin = user.getIfAdmin();
-                if (isAdmin) {
+            <%
+                if (session.getAttribute("user") != null) {
+                    User user = (User) session.getAttribute("user");
+                    boolean isAdmin = user.getIfAdmin();
+                    if (isAdmin) {
             %>
             <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3 bg-indigo-50" onclick="window.location.href='admin'">
                 <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
@@ -101,8 +152,8 @@
                 <span class="text-slate-700 font-medium">Statistics</span>
             </div>
             <%
+                    }
                 }
-            }
             %>
         </nav>
     </div>
@@ -164,35 +215,35 @@
         <div class="flex-1 p-6 overflow-y-auto">
             <!-- Welcome Banner -->
             <div class="mb-8 p-6 bg-white rounded-2xl border border-gray-200 card-hover">
-              
-              <%
-                  User user = (User) session.getAttribute("user");
-                  if (user != null) {
-              %>
-                  <h2 class="text-3xl font-bold text-slate-700 mb-2">
-                      Welcome back, <%= user.getName() %>!
-                  </h2>
-                  <p class="text-slate-600">
-                      Ready to challenge your mind? Discover new quizzes or create your own masterpiece!
-                  </p>
-                  <div class="mt-4 flex space-x-3">
-                      <a href="create-quiz"
-                         class="px-6 py-3 bg-gray-100 border border-gray-200 rounded-xl text-slate-700 font-medium hover:bg-gray-200 transition-colors">
-                          Create Quiz
-                      </a>
-                  </div>
-              <%
-                  } else {
-              %>
+
+                <%
+                    User user = (User) session.getAttribute("user");
+                    if (user != null) {
+                %>
+                <h2 class="text-3xl font-bold text-slate-700 mb-2">
+                    Welcome back, <%= user.getName() %>!
+                </h2>
+                <p class="text-slate-600">
+                    Ready to challenge your mind? Discover new quizzes or create your own masterpiece!
+                </p>
+                <div class="mt-4 flex space-x-3">
+                    <a href="create-quiz"
+                       class="px-6 py-3 bg-gray-100 border border-gray-200 rounded-xl text-slate-700 font-medium hover:bg-gray-200 transition-colors">
+                        Create Quiz
+                    </a>
+                </div>
+                <%
+                } else {
+                %>
                 <p class="text-slate-600 text-lg">Ready to challenge your mind? Discover new quizzes or create your own masterpiece!</p>
                 <div class="mt-4 flex space-x-3">
                     <a href="login" class="px-6 py-3 bg-gray-100 border border-gray-200 rounded-xl text-slate-700 font-medium hover:bg-gray-200 transition-colors">
                         Create Quiz
                     </a>
                 </div>
-              <%
-                  }
-              %>
+                <%
+                    }
+                %>
             </div>
 
             <!-- Quiz Grid -->
