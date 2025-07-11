@@ -2,6 +2,7 @@
 <%@ page import="models.Notification" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="DAO.NotificationDAO" %>
+<%@ page import="notifications.ChallengeNotification" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -140,6 +141,17 @@
                                         Accept
                                     </button>
                                 </form>
+                            <% } %>
+                            <% if (Notification.CHALLENGE_NOTIFICATION.equals(notification.getQuestionType())) {
+                                   long quizId = 0;
+                                   if (notification instanceof ChallengeNotification) {
+                                       quizId = ((ChallengeNotification) notification).getQuizId();
+                                   }
+                                   String quizLink = quizId > 0 ? ("QuizSummary?quizId=" + quizId) : "#";
+                            %>
+                                <a href="<%= quizLink %>" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors">
+                                    Take Quiz
+                                </a>
                             <% } %>
                             <form action="notifications" method="POST" class="inline">
                                 <input type="hidden" name="action" value="delete">

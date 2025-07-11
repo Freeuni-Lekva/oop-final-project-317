@@ -13,6 +13,8 @@ public interface QuizDAO {
 
     ArrayList<Quiz> getUserQuizzes(long userId);
 
+    ArrayList<Quiz> getUserQuizzes(Long userId);
+
     Quiz getQuiz(long quizId);
 
     ArrayList<Quiz> getRecentQuizzes(int limit);
