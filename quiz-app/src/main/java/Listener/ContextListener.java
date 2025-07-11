@@ -114,8 +114,8 @@ public class ContextListener implements ServletContextListener {
             stmt.executeUpdate(createFriendshipsTable);
             System.out.println("Frienships table created/verified successfully");
 
-            // Create quizzes table
-            String createQuizzesTable = "CREATE TABLE IF NOT EXISTS quizzes ("
+            // Ensure quizzes table exists with required columns
+            String ensureQuizzesTable = "CREATE TABLE IF NOT EXISTS quizzes ("
                     + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
                     + "title VARCHAR(255) NOT NULL, "
                     + "description TEXT, "
@@ -125,11 +125,17 @@ public class ContextListener implements ServletContextListener {
                     + "randomize_questions BOOLEAN, "
                     + "one_page BOOLEAN, "
                     + "immediate_correction BOOLEAN, "
-                    + "practice_mode BOOLEAN"
-                    + ")";
+                    + "practice_mode BOOLEAN" + ")";
+            stmt.executeUpdate(ensureQuizzesTable);
 
-            stmt.executeUpdate(createQuizzesTable);
-            System.out.println("Quizzes table created/verified successfully");
+            // Add any missing columns (older installations)
+            addColumnIfMissing(stmt, "quizzes", "created_by BIGINT");
+            addColumnIfMissing(stmt, "quizzes", "created_date DATETIME");
+            addColumnIfMissing(stmt, "quizzes", "last_modified DATETIME");
+            addColumnIfMissing(stmt, "quizzes", "randomize_questions BOOLEAN");
+            addColumnIfMissing(stmt, "quizzes", "one_page BOOLEAN");
+            addColumnIfMissing(stmt, "quizzes", "immediate_correction BOOLEAN");
+            addColumnIfMissing(stmt, "quizzes", "practice_mode BOOLEAN");
 
 
             // Create quiz result table
@@ -179,14 +185,34 @@ public class ContextListener implements ServletContextListener {
             System.out.println("Quiz history table created/verified successfully");
 
             // After quizzes table – initialize DAO objects in context
-            QuizResultSQLDAO quizResultSqlDao = new QuizResultSQLDAO(dbConnection);
-            context.setAttribute("quizResultDAO", quizResultSqlDao);
+            // make sure quizResultDAO is available in context
+            DAO.QuizResultSQLDAO quizResultDAOObj = new DAO.QuizResultSQLDAO(dbConnection);
+            context.setAttribute("quizResultDAO", quizResultDAOObj);
 
             System.out.println("All database tables initialized successfully");
 
         } catch (SQLException e) {
             System.err.println("Error initializing database tables: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private void addColumnIfMissing(Statement stmt, String tableName, String columnDefinition) throws SQLException {
+        DatabaseMetaData meta = stmt.getConnection().getMetaData();
+        ResultSet tables = meta.getTables(null, null, tableName, null);
+        if (tables.next()) {
+            ResultSet columns = meta.getColumns(null, null, tableName, null);
+            boolean columnExists = false;
+            while (columns.next()) {
+                if (columns.getString("COLUMN_NAME").equalsIgnoreCase(columnDefinition.split(" ")[0])) {
+                    columnExists = true;
+                    break;
+                }
+            }
+            if (!columnExists) {
+                stmt.executeUpdate("ALTER TABLE " + tableName + " ADD COLUMN " + columnDefinition);
+                System.out.println("Added missing column to " + tableName + ": " + columnDefinition);
+            }
         }
     }
 }

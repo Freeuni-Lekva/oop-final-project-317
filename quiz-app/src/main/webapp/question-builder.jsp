@@ -31,6 +31,11 @@
             <textarea name="prompt" rows="3" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3"></textarea>
         </div>
 
+        <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Points *</label>
+            <input type="number" min="1" name="points" value="1" required class="w-28 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2" />
+        </div>
+
         <% String type = (String) request.getAttribute("questionType"); %>
         <% if ("MultipleChoice".equals(type)) { %>
             <!-- four options, single correct via radio -->

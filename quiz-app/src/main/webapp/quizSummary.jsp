@@ -1,368 +1,203 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="models.Quiz" %>
-<%@ page import="models.QuizResult" %>
-<%@ page import="models.User" %>
+<%@ page import="models.Quiz,models.QuizResult,models.User" %>
 <%@ page import="com.quizmaster.servlet.QuizSummaryServlet" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.*" %>
 <%@ page import="java.text.DecimalFormat" %>
-
 <%
     Quiz quiz = (Quiz) request.getAttribute("quiz");
     User creator = (User) request.getAttribute("creator");
-    ArrayList<QuizResult> userResults = (ArrayList<QuizResult>) request.getAttribute("userResults");
-    List<QuizResult> topPerformersAllTime = (List<QuizResult>) request.getAttribute("topPerformersAllTime");
-    List<QuizResult> topPerformersLastDay = (List<QuizResult>) request.getAttribute("topPerformersLastDay");
+    List<QuizResult> userResults = (List<QuizResult>) request.getAttribute("userResults");
     List<QuizResult> recentPerformers = (List<QuizResult>) request.getAttribute("recentPerformers");
-    QuizSummaryServlet.QuizStats quizStats = (QuizSummaryServlet.QuizStats) request.getAttribute("quizStats");
-    Boolean isOwner = (Boolean) request.getAttribute("isOwner");
-    User currentUser = (User) request.getAttribute("currentUser");
-    String sortBy = (String) request.getAttribute("sortBy");
-
-    DecimalFormat df = new DecimalFormat("#.##");
+    QuizSummaryServlet.QuizStats stats = (QuizSummaryServlet.QuizStats) request.getAttribute("quizStats");
+    DecimalFormat df = new DecimalFormat("#.#");
 %>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Summary - <%= quiz.getTitle() %></title>
-    <link rel="stylesheet" href="<c:url value='/styles.css'/>">
-    <style>
-        .quiz-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
-        }
-        .stats-card {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        .performance-table {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .badge-score {
-            font-size: 0.9rem;
-            padding: 0.5rem 0.8rem;
-        }
-        .user-link {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .user-link:hover {
-            text-decoration: underline;
-        }
-        .sort-controls {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-    </style>
+    <title><%= quiz.getTitle() %> - Summary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<div class="container-fluid">
-    <!-- Quiz Header -->
-    <div class="quiz-header">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-                    <h1 class="display-5"><%= quiz.getTitle() %></h1>
-                    <p class="lead"><%= quiz.getDescription() %></p>
-                    <p class="mb-0">
-                        Created by:
-                        <a href="ProfileServlet?userId=<%= creator.getId() %>" class="text-white">
-                            <strong><%= creator.getName() %></strong>
-                        </a>
-                    </p>
-                </div>
-                <div class="col-md-4">
-                    <div class="text-end">
-                        <div class="action-buttons">
-                            <a href="TakeQuizServlet?quizId=<%= quiz.getId() %>"
-                               class="btn btn-light btn-lg">
-                                <i class="fas fa-play"></i> Take Quiz
-                            </a>
-                            <% if (quiz.isPracticeMode()) { %>
-                            <a href="TakeQuizServlet?quizId=<%= quiz.getId() %>&practice=true"
-                               class="btn btn-outline-light">
-                                <i class="fas fa-dumbbell"></i> Practice Mode
-                            </a>
-                            <% } %>
-                            <% if (isOwner != null && isOwner) { %>
-                            <a href="EditQuizServlet?quizId=<%= quiz.getId() %>"
-                               class="btn btn-warning">
-                                <i class="fas fa-edit"></i> Edit Quiz
-                            </a>
-                            <% } %>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<body class="overflow-hidden bg-gray-50">
+<div class="flex h-screen">
+    <%-- Sidebar copied from index.jsp --%>
+    <div class="w-80 bg-white border-r border-gray-200 p-6 flex flex-col">
+        <div class="mb-8 cursor-pointer" onclick="window.location.href='index.jsp'">
+            <h1 class="text-2xl font-bold text-slate-700">QuizMaster</h1>
+            <p class="text-slate-500 text-sm">Your Learning Adventure</p>
         </div>
+        <nav class="space-y-1 flex-1">
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='quiz-history'">
+                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center"><svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+                <span class="text-slate-700 font-medium">My Quiz History</span>
+            </div>
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='my-creations'">
+                <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center"><svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></div>
+                <span class="text-slate-700 font-medium">My Creations</span>
+            </div>
+            <!-- Other nav items omitted for brevity -->
+        </nav>
     </div>
 
-    <div class="container">
-        <div class="row">
-            <!-- Left Column - User Performance & Quiz Info -->
-            <div class="col-lg-8">
-                <% if (currentUser != null && userResults != null && !userResults.isEmpty()) { %>
-                <!-- User's Past Performance -->
-                <div class="card mb-4">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Your Past Performance</h5>
-                        <div class="sort-controls">
-                            <label class="form-label me-2">Sort by:</label>
-                            <select class="form-select form-select-sm" style="width: auto; display: inline-block;"
-                                    onchange="sortResults(this.value)">
-                                <option value="date" <%= "date".equals(sortBy) ? "selected" : "" %>>Date</option>
-                                <option value="percentage" <%= "percentage".equals(sortBy) ? "selected" : "" %>>Percentage</option>
-                                <option value="score" <%= "score".equals(sortBy) ? "selected" : "" %>>Score</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                <tr>
-                                    <th>Attempt</th>
-                                    <th>Score</th>
-                                    <th>Percentage</th>
-                                    <th>Points</th>
-                                    <th>Mode</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <%
-                                    int attemptNum = 1;
-                                    for (QuizResult result : userResults) {
-                                %>
-                                <tr>
-                                    <td><strong>#<%= attemptNum++ %></strong></td>
-                                    <td>
-                                                        <span class="badge badge-score bg-primary">
-                                                            <%= result.getScore() %>/<%= result.getTotalQuestions() %>
-                                                        </span>
-                                    </td>
-                                    <td>
-                                                        <span class="badge badge-score <%= result.getPercentage() >= 80 ? "bg-success" :
-                                                                                             result.getPercentage() >= 60 ? "bg-warning text-dark" : "bg-danger" %>">
-                                                            <%= df.format(result.getPercentage()) %>%
-                                                        </span>
-                                    </td>
-                                    <td><%= result.getTotalPoints() %>/<%= result.getMaxPoints() %></td>
-                                    <td>
-                                                        <span class="badge <%= result.isPracticeMode() ? "bg-info" : "bg-success" %>">
-                                                            <%= result.isPracticeMode() ? "Practice" : "Official" %>
-                                                        </span>
-                                    </td>
-                                </tr>
-                                <% } %>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <% } else if (currentUser != null) { %>
-                <!-- No attempts yet -->
-                <div class="alert alert-info">
-                    <h5>No attempts yet</h5>
-                    <p>You haven't taken this quiz yet. Click "Take Quiz" to get started!</p>
-                </div>
+    <!-- Right side (content) -->
+    <div class="flex-1 flex flex-col">
+        <!-- Top Bar (simple placeholder) -->
+        <div class="bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-slate-700">Quiz Summary</h2>
+        </div>
+
+        <!-- Content scroll area -->
+        <div class="flex-1 overflow-y-auto">
+            <!-- Header -->
+<header class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-12 shadow-md">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <div>
+            <h1 class="text-4xl font-bold mb-2"><%= quiz.getTitle() %></h1>
+            <p class="opacity-90 mb-4"><%= quiz.getDescription() %></p>
+            <p class="text-sm">Created by <a href="profile?userId=<%= creator.getId() %>" class="underline font-semibold"><%= creator.getName() %></a></p>
+        </div>
+        <!-- Action buttons -->
+        <div class="flex flex-wrap gap-3">
+            <a href="take-quiz?quizId=<%= quiz.getId() %>" class="px-5 py-3 bg-white/20 rounded-lg font-medium hover:bg-white/30 transition">Take Quiz</a>
+            <% if (quiz.isPracticeMode()) { %>
+            <a href="take-quiz?quizId=<%= quiz.getId() %>&practice=true" class="px-5 py-3 bg-white/10 rounded-lg font-medium hover:bg-white/20 transition">Practice Mode</a>
+            <% } %>
+            <% Boolean isOwner=(Boolean)request.getAttribute("isOwner"); if(isOwner!=null && isOwner){ %>
+            <a href="edit-quiz?quizId=<%= quiz.getId() %>" class="px-5 py-3 bg-yellow-400 text-slate-800 rounded-lg font-medium hover:bg-yellow-500 transition">Edit Quiz</a>
+            <% } %>
+        </div>
+    </div>
+</header>
+
+<!-- Main -->
+<main class="flex-1 max-w-5xl mx-auto px-6 py-8 space-y-10">
+    <!-- Overall Stats -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl shadow p-4 text-center">
+            <p class="text-sm text-slate-500">Attempts</p>
+            <p class="text-2xl font-bold text-indigo-600"><%= stats != null ? stats.getTotalAttempts() : 0 %></p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4 text-center">
+            <p class="text-sm text-slate-500">Average %</p>
+            <p class="text-2xl font-bold text-indigo-600"><%= stats != null ? df.format(stats.getAveragePercentage()) : "0" %>%</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4 text-center">
+            <p class="text-sm text-slate-500">Best %</p>
+            <p class="text-2xl font-bold text-green-600"><%= stats != null ? df.format(stats.getMaxPercentage()) : "0" %>%</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4 text-center">
+            <p class="text-sm text-slate-500">Worst %</p>
+            <p class="text-2xl font-bold text-red-600"><%= stats != null ? df.format(stats.getMinPercentage()) : "0" %>%</p>
+        </div>
+    </section>
+
+    <!-- Your Attempts (if logged in) -->
+    <% String sortBy=(String)request.getAttribute("sortBy"); if (userResults != null && !userResults.isEmpty()) { %>
+    <section>
+        <div class="flex items-center justify-between mb-3">
+            <h2 class="text-xl font-semibold text-slate-700">Your Attempts</h2>
+            <div class="text-sm flex items-center gap-2">
+                <label for="sortSel">Sort by</label>
+                <select id="sortSel" class="border rounded px-2 py-1" onchange="location.href='QuizSummary?quizId=<%=quiz.getId()%>&sortBy='+this.value">
+                    <option value="date" <%= "date".equals(sortBy)?"selected":"" %>>Date</option>
+                    <option value="percentage" <%= "percentage".equals(sortBy)?"selected":"" %>>Percentage</option>
+                    <option value="score" <%= "score".equals(sortBy)?"selected":"" %>>Score</option>
+                </select>
+            </div>
+        </div>
+        <div class="overflow-x-auto bg-white rounded-xl shadow">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-3 text-left font-medium text-slate-600">#</th>
+                    <th class="px-4 py-3 text-left font-medium text-slate-600">Score</th>
+                    <th class="px-4 py-3 text-left font-medium text-slate-600">%</th>
+                    <th class="px-4 py-3 text-left font-medium text-slate-600">Points</th>
+                    <th class="px-4 py-3 text-left font-medium text-slate-600">Mode</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                <% int idx=1; for(QuizResult r : userResults){ %>
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3"><%= idx++ %></td>
+                    <td class="px-4 py-3"><%= r.getScore() %>/<%= r.getTotalQuestions() %></td>
+                    <td class="px-4 py-3"><%= df.format(r.getPercentage()) %>%</td>
+                    <td class="px-4 py-3"><%= r.getTotalPoints() %>/<%= r.getMaxPoints() %></td>
+                    <td class="px-4 py-3"><%= r.isPracticeMode()?"Practice":"Official" %></td>
+                </tr>
                 <% } %>
-
-                <!-- Recent Test Takers -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Recent Test Takers</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <% if (recentPerformers != null && !recentPerformers.isEmpty()) { %>
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                <tr>
-                                    <th>User</th>
-                                    <th>Score</th>
-                                    <th>Percentage</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <% for (QuizResult result : recentPerformers) { %>
-                                <tr>
-                                    <td>
-                                        <a href="ProfileServlet?userId=<%= result.getUserId() %>" class="user-link">
-                                            User #<%= result.getUserId() %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                                        <span class="badge badge-score bg-primary">
-                                                            <%= result.getScore() %>/<%= result.getTotalQuestions() %>
-                                                        </span>
-                                    </td>
-                                    <td>
-                                                        <span class="badge badge-score <%= result.getPercentage() >= 80 ? "bg-success" :
-                                                                                             result.getPercentage() >= 60 ? "bg-warning text-dark" : "bg-danger" %>">
-                                                            <%= df.format(result.getPercentage()) %>%
-                                                        </span>
-                                    </td>
-                                </tr>
-                                <% } %>
-                                </tbody>
-                            </table>
-                        </div>
-                        <% } else { %>
-                        <div class="text-center py-4">
-                            <p class="text-muted">No recent attempts found.</p>
-                        </div>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column - Leaderboards & Stats -->
-            <div class="col-lg-4">
-                <!-- Quiz Statistics -->
-                <div class="stats-card">
-                    <h5 class="mb-3">Quiz Statistics</h5>
-                    <div class="row text-center">
-                        <div class="col-6">
-                            <div class="border-end">
-                                <h4 class="text-primary mb-1"><%= quizStats.getTotalAttempts() %></h4>
-                                <small class="text-muted">Total Attempts</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <h4 class="text-success mb-1"><%= df.format(quizStats.getAveragePercentage()) %>%</h4>
-                            <small class="text-muted">Average Score</small>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row text-center">
-                        <div class="col-4">
-                            <div class="border-end">
-                                <h6 class="text-success mb-1"><%= df.format(quizStats.getMaxPercentage()) %>%</h6>
-                                <small class="text-muted">Highest</small>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="border-end">
-                                <h6 class="text-info mb-1"><%= df.format(quizStats.getMedianPercentage()) %>%</h6>
-                                <small class="text-muted">Median</small>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <h6 class="text-danger mb-1"><%= df.format(quizStats.getMinPercentage()) %>%</h6>
-                            <small class="text-muted">Lowest</small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Top Performers All Time -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">🏆 Top Performers (All Time)</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <% if (topPerformersAllTime != null && !topPerformersAllTime.isEmpty()) { %>
-                        <div class="list-group list-group-flush">
-                            <%
-                                int rank = 1;
-                                for (QuizResult result : topPerformersAllTime) {
-                            %>
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="badge bg-gold me-2"><%= rank++ %></span>
-                                    <a href="ProfileServlet?userId=<%= result.getUserId() %>" class="user-link">
-                                        User #<%= result.getUserId() %>
-                                    </a>
-                                </div>
-                                <div class="text-end">
-                                                <span class="badge badge-score bg-success">
-                                                    <%= df.format(result.getPercentage()) %>%
-                                                </span>
-                                    <br>
-                                    <small class="text-muted">
-                                        <%= result.getScore() %>/<%= result.getTotalQuestions() %>
-                                    </small>
-                                </div>
-                            </div>
-                            <% } %>
-                        </div>
-                        <% } else { %>
-                        <div class="text-center py-4">
-                            <p class="text-muted">No results available yet.</p>
-                        </div>
-                        <% } %>
-                    </div>
-                </div>
-
-                <!-- Top Performers Last Day -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">🔥 Top Performers (Last Day)</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <% if (topPerformersLastDay != null && !topPerformersLastDay.isEmpty()) { %>
-                        <div class="list-group list-group-flush">
-                            <%
-                                int dailyRank = 1;
-                                for (QuizResult result : topPerformersLastDay) {
-                            %>
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="badge bg-warning text-dark me-2"><%= dailyRank++ %></span>
-                                    <a href="ProfileServlet?userId=<%= result.getUserId() %>" class="user-link">
-                                        User #<%= result.getUserId() %>
-                                    </a>
-                                </div>
-                                <div class="text-end">
-                                                <span class="badge badge-score bg-success">
-                                                    <%= df.format(result.getPercentage()) %>%
-                                                </span>
-                                    <br>
-                                    <small class="text-muted">
-                                        <%= result.getScore() %>/<%= result.getTotalQuestions() %>
-                                    </small>
-                                </div>
-                            </div>
-                            <% } %>
-                        </div>
-                        <% } else { %>
-                        <div class="text-center py-4">
-                            <p class="text-muted">No recent results available.</p>
-                        </div>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
+                </tbody>
+            </table>
         </div>
-    </div>
-</div>
+    </section>
+    <% } %>
 
-<script>
-    function sortResults(sortBy) {
-        const urlParams = new URLSearchParams(window.location.search);
-        urlParams.set('sortBy', sortBy);
-        window.location.search = urlParams.toString();
-    }
-</script>
+    <!-- Recent Performers -->
+    <section>
+        <h2 class="text-xl font-semibold text-slate-700 mb-3">Recent Performers</h2>
+        <% if (recentPerformers != null && !recentPerformers.isEmpty()) { %>
+        <div class="overflow-x-auto bg-white rounded-xl shadow">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-3 text-left font-medium text-slate-600">User ID</th>
+                    <th class="px-4 py-3 text-left font-medium text-slate-600">Score</th>
+                    <th class="px-4 py-3 text-left font-medium text-slate-600">%</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                <% for(QuizResult r : recentPerformers){ %>
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3"><%= r.getUserId() %></td>
+                    <td class="px-4 py-3"><%= r.getScore() %>/<%= r.getTotalQuestions() %></td>
+                    <td class="px-4 py-3"><%= df.format(r.getPercentage()) %>%</td>
+                </tr>
+                <% } %>
+                </tbody>
+            </table>
+        </div>
+        <% } else { %>
+        <p class="text-slate-500">No attempts yet.</p>
+        <% } %>
+    </section>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <!-- Top performers -->
+    <section class="grid md:grid-cols-2 gap-8">
+        <!-- All time -->
+        <div>
+            <h2 class="text-xl font-semibold text-slate-700 mb-3">🏆 Top Performers (All Time)</h2>
+            <% List<QuizResult> topAll=(List<QuizResult>)request.getAttribute("topPerformersAllTime"); if(topAll!=null && !topAll.isEmpty()){ %>
+            <div class="bg-white rounded-xl shadow overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 text-sm">
+                    <thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left">Rank</th><th class="px-4 py-3 text-left">User</th><th class="px-4 py-3 text-left">%</th></tr></thead>
+                    <tbody class="divide-y divide-gray-100">
+                    <% int rnk=1; for(QuizResult qr: topAll){ %>
+                        <tr class="hover:bg-gray-50"><td class="px-4 py-3"><%= rnk++ %></td><td class="px-4 py-3">User #<%= qr.getUserId() %></td><td class="px-4 py-3"><%= df.format(qr.getPercentage()) %>%</td></tr>
+                    <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %><p class="text-slate-500">No data yet.</p><% } %>
+        </div>
+        <!-- Last day -->
+        <div>
+            <h2 class="text-xl font-semibold text-slate-700 mb-3">🔥 Top Performers (Last 24h)</h2>
+            <% List<QuizResult> topDay=(List<QuizResult>)request.getAttribute("topPerformersLastDay"); if(topDay!=null && !topDay.isEmpty()){ %>
+            <div class="bg-white rounded-xl shadow overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 text-sm">
+                    <thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left">Rank</th><th class="px-4 py-3 text-left">User</th><th class="px-4 py-3 text-left">%</th></tr></thead>
+                    <tbody class="divide-y divide-gray-100">
+                    <% int rnk=1; for(QuizResult qr: topDay){ %>
+                        <tr class="hover:bg-gray-50"><td class="px-4 py-3"><%= rnk++ %></td><td class="px-4 py-3">User #<%= qr.getUserId() %></td><td class="px-4 py-3"><%= df.format(qr.getPercentage()) %>%</td></tr>
+                    <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %><p class="text-slate-500">No data yet.</p><% } %>
+        </div>
+    </section>
+</main>
+
 </body>
 </html>
