@@ -22,7 +22,7 @@ public class Quiz {
     private boolean onePage; // true = single page, false = multiple pages
     private boolean immediateCorrection;
     private boolean practiceMode;
-    
+
     // Tracking field
     private int timesTaken; // Number of times this quiz has been completed
 

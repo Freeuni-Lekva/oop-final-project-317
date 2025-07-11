@@ -7,6 +7,18 @@
          
   <display-name>QuizMaster Application</display-name>
   
+  <!-- Servlet Definitions -->
+  <servlet>
+    <servlet-name>NotificationsServlet</servlet-name>
+    <servlet-class>com.quizmaster.servlet.NotificationsServlet</servlet-class>
+  </servlet>
+
+  <!-- Servlet Mappings -->
+  <servlet-mapping>
+    <servlet-name>NotificationsServlet</servlet-name>
+    <url-pattern>/notifications</url-pattern>
+  </servlet-mapping>
+  
   <!-- Welcome file configuration -->
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
