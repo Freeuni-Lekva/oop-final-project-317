@@ -127,4 +127,27 @@ public class UserSQLDao implements UserDAO{
             e.printStackTrace();
         }
     }
+
+    @Override
+    public boolean checkIfFriends(long userId1, long userId2) {
+        String sql = "SELECT COUNT(*) as count FROM friendships WHERE " +
+                    "(user_id1 = ? AND user_id2 = ?) OR " +
+                    "(user_id1 = ? AND user_id2 = ?)";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            // Check both directions of the friendship
+            stmt.setLong(1, userId1);
+            stmt.setLong(2, userId2);
+            stmt.setLong(3, userId2);
+            stmt.setLong(4, userId1);
+            
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("count") > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
