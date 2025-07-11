@@ -131,4 +131,22 @@ public class QuizSQLDao implements QuizDAO {
         } catch (SQLException ignore) {}
         return quiz;
     }
+
+    @Override
+    public ArrayList<Quiz> getRecentQuizzes(int limit) {
+        ArrayList<Quiz> quizzes = new ArrayList<>();
+        String query = "SELECT * FROM quizzes ORDER BY created_date DESC LIMIT ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Quiz quiz = extractQuizFromResultSet(rs);
+                quizzes.add(quiz);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return quizzes;
+    }
 }

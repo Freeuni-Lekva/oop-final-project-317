@@ -108,7 +108,7 @@ body {
                 <span class="text-slate-700 font-medium">Popular Quizzes</span>
             </div>
 
-            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3">
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='recents'">
                 <div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center">
                     <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
