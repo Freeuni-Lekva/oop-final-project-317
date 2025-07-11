@@ -20,12 +20,14 @@ public class QuizResultServlet extends HttpServlet {
 
     private QuizDAO quizDAO;
     private QuizResultDAO quizResultDAO;
+    private UserDAO userDAO;
 
     @Override
     public void init() throws ServletException {
         super.init();
         quizDAO = (QuizDAO) getServletContext().getAttribute("quizDAO");
         quizResultDAO = (QuizResultDAO) getServletContext().getAttribute("quizResultDAO");
+        userDAO = (UserDAO) getServletContext().getAttribute("userDAO");
     }
 
     @Override
@@ -43,7 +45,7 @@ public class QuizResultServlet extends HttpServlet {
             return;
         }
 
-        if (quizResultDAO == null || quizDAO == null) {
+        if (quizResultDAO == null || quizDAO == null || userDAO == null) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "DAO not initialized");
             return;
         }
@@ -70,6 +72,15 @@ public class QuizResultServlet extends HttpServlet {
             allResults.sort((a,b) -> Double.compare(b.getPercentage(), a.getPercentage()));
             List<QuizResult> top10 = allResults.subList(0, Math.min(10, allResults.size()));
 
+            // Get user information for all results
+            Map<Long, User> userMap = new HashMap<>();
+            for (QuizResult r : top10) {
+                User user = userDAO.getUser(r.getUserId());
+                if (user != null) {
+                    userMap.put(r.getUserId(), user);
+                }
+            }
+
             HttpSession session = request.getSession(false);
             User currentUser = session != null ? (User) session.getAttribute("user") : null;
 
@@ -78,6 +89,7 @@ public class QuizResultServlet extends HttpServlet {
             request.setAttribute("userPastResults", userPast);
             request.setAttribute("topResults", top10);
             request.setAttribute("currentUser", currentUser);
+            request.setAttribute("userMap", userMap);
 
             RequestDispatcher rd = request.getRequestDispatcher("/quiz-result.jsp");
             rd.forward(request, response);

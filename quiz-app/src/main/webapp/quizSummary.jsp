@@ -11,6 +11,7 @@
     QuizSummaryServlet.QuizStats stats = (QuizSummaryServlet.QuizStats) request.getAttribute("quizStats");
     DecimalFormat df = new DecimalFormat("#.#");
     User currentUserObj = (User) request.getAttribute("currentUser");
+    Map<Long, User> userMap = (Map<Long, User>) request.getAttribute("userMap");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -212,15 +213,19 @@
             <table class="min-w-full divide-y divide-gray-200 text-sm">
                 <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-4 py-3 text-left font-medium text-slate-600">User ID</th>
+                    <th class="px-4 py-3 text-left font-medium text-slate-600">User</th>
                     <th class="px-4 py-3 text-left font-medium text-slate-600">Score</th>
                     <th class="px-4 py-3 text-left font-medium text-slate-600">%</th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                <% for(QuizResult r : recentPerformers){ boolean isMe = (currentUserObj!=null && currentUserObj.getId()==r.getUserId()); %>
+                <% for(QuizResult r : recentPerformers){ 
+                    boolean isMe = (currentUserObj!=null && currentUserObj.getId()==r.getUserId());
+                    User performer = userMap.get(r.getUserId());
+                    String userName = performer != null ? performer.getName() : "Unknown User";
+                %>
                 <tr class="<%= isMe ? "bg-indigo-50 font-semibold" : "hover:bg-gray-50" %>">
-                    <td class="px-4 py-3"><%= r.getUserId() %></td>
+                    <td class="px-4 py-3"><%= userName %><%= isMe ? " (You)" : "" %></td>
                     <td class="px-4 py-3"><%= r.getScore() %>/<%= r.getTotalQuestions() %></td>
                     <td class="px-4 py-3"><%= df.format(r.getPercentage()) %>%</td>
                 </tr>
@@ -243,15 +248,26 @@
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left">Rank</th><th class="px-4 py-3 text-left">User</th><th class="px-4 py-3 text-left">%</th></tr></thead>
                     <tbody class="divide-y divide-gray-100">
-                    <% int rnk=1; for(QuizResult qr: topAll){ boolean isMeTop = (currentUserObj!=null && currentUserObj.getId()==qr.getUserId()); %>
-                        <tr class="<%= isMeTop ? "bg-indigo-50 font-semibold" : "hover:bg-gray-50" %>"><td class="px-4 py-3"><%= rnk++ %></td><td class="px-4 py-3">User #<%= qr.getUserId() %></td><td class="px-4 py-3"><%= df.format(qr.getPercentage()) %>%</td></tr>
+                    <% int rnk=1; for(QuizResult qr: topAll){ 
+                        boolean isMeTop = (currentUserObj!=null && currentUserObj.getId()==qr.getUserId());
+                        User performer = userMap.get(qr.getUserId());
+                        String userName = performer != null ? performer.getName() : "Unknown User";
+                    %>
+                        <tr class="<%= isMeTop ? "bg-indigo-50 font-semibold" : "hover:bg-gray-50" %>">
+                            <td class="px-4 py-3"><%= rnk++ %></td>
+                            <td class="px-4 py-3"><%= userName %><%= isMeTop ? " (You)" : "" %></td>
+                            <td class="px-4 py-3"><%= df.format(qr.getPercentage()) %>%</td>
+                        </tr>
                     <% } %>
                     </tbody>
                 </table>
             </div>
-            <% } else { %><p class="text-slate-500">No data yet.</p><% } %>
+            <% } else { %>
+            <p class="text-slate-500">No data yet.</p>
+            <% } %>
         </div>
-        <!-- Last day -->
+
+        <!-- Last 24h -->
         <div>
             <h2 class="text-xl font-semibold text-slate-700 mb-3">Top Performers (Last 24h)</h2>
             <% List<QuizResult> topDay=(List<QuizResult>)request.getAttribute("topPerformersLastDay"); if(topDay!=null && !topDay.isEmpty()){ %>
@@ -259,13 +275,23 @@
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left">Rank</th><th class="px-4 py-3 text-left">User</th><th class="px-4 py-3 text-left">%</th></tr></thead>
                     <tbody class="divide-y divide-gray-100">
-                    <% int rnk=1; for(QuizResult qr: topDay){ boolean isMeDay = (currentUserObj!=null && currentUserObj.getId()==qr.getUserId()); %>
-                        <tr class="<%= isMeDay ? "bg-indigo-50 font-semibold" : "hover:bg-gray-50" %>"><td class="px-4 py-3"><%= rnk++ %></td><td class="px-4 py-3">User #<%= qr.getUserId() %></td><td class="px-4 py-3"><%= df.format(qr.getPercentage()) %>%</td></tr>
+                    <% int rnk=1; for(QuizResult qr: topDay){ 
+                        boolean isMeTop = (currentUserObj!=null && currentUserObj.getId()==qr.getUserId());
+                        User performer = userMap.get(qr.getUserId());
+                        String userName = performer != null ? performer.getName() : "Unknown User";
+                    %>
+                        <tr class="<%= isMeTop ? "bg-indigo-50 font-semibold" : "hover:bg-gray-50" %>">
+                            <td class="px-4 py-3"><%= rnk++ %></td>
+                            <td class="px-4 py-3"><%= userName %><%= isMeTop ? " (You)" : "" %></td>
+                            <td class="px-4 py-3"><%= df.format(qr.getPercentage()) %>%</td>
+                        </tr>
                     <% } %>
                     </tbody>
                 </table>
             </div>
-            <% } else { %><p class="text-slate-500">No data yet.</p><% } %>
+            <% } else { %>
+            <p class="text-slate-500">No data yet.</p>
+            <% } %>
         </div>
     </section>
 </main>

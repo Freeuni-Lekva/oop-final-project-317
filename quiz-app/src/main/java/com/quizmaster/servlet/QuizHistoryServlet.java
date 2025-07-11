@@ -1,7 +1,10 @@
 package com.quizmaster.servlet;
 
 import DAO.QuizHistorySQLDao;
+import DAO.QuizDAO;
+import DAO.QuizHistoryDAO;
 import models.QuizHistory;
+import models.Quiz;
 import models.User;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +15,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet("/quiz-history")
 public class QuizHistoryServlet extends HttpServlet {
@@ -27,39 +32,34 @@ public class QuizHistoryServlet extends HttpServlet {
         }
 
         User user = (User) session.getAttribute("user");
-        String username = user.getName();
+        long userId = user.getId();
 
-        Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
-        QuizHistorySQLDao quizHistoryDao = new QuizHistorySQLDao(connection);
-
-        // Get user ID from database using username
-        long userId = getUserIdByUsername(connection, username);
-
-        if (userId != -1) {
-            // Get quiz history for the user
-            ArrayList<QuizHistory> quizHistory = quizHistoryDao.getUserQuizHistory(userId);
-            request.setAttribute("quizHistory", quizHistory);
+        // Get quiz history (taken quizzes)
+        QuizHistoryDAO quizHistoryDao = (QuizHistoryDAO) getServletContext().getAttribute("quizHistoryDAO");
+        if (quizHistoryDao == null) {
+            // Fallback to creating new instance if not in context
+            Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
+            quizHistoryDao = new QuizHistorySQLDao(connection);
         }
+        
+        ArrayList<QuizHistory> quizHistory = quizHistoryDao.getUserQuizHistory(userId);
+
+        // Get quiz names for each quiz in history
+        QuizDAO quizDAO = (QuizDAO) getServletContext().getAttribute("quizDAO");
+        Map<Long, String> quizNames = new HashMap<>();
+        if (quizDAO != null && quizHistory != null) {
+            for (QuizHistory history : quizHistory) {
+                Quiz quiz = quizDAO.getQuiz(history.getQuizId());
+                if (quiz != null) {
+                    quizNames.put(quiz.getId(), quiz.getTitle());
+                }
+            }
+        }
+
+        request.setAttribute("quizHistory", quizHistory);
+        request.setAttribute("quizNames", quizNames);
 
         // Forward to quiz history JSP
         request.getRequestDispatcher("/QuizHistory.jsp").forward(request, response);
-    }
-
-    // Helper method to get user ID by username
-    private long getUserIdByUsername(Connection connection, String username) {
-        try {
-            String query = "SELECT id FROM users WHERE name = ?";
-            try (java.sql.PreparedStatement ps = connection.prepareStatement(query)) {
-                ps.setString(1, username);
-                try (java.sql.ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return rs.getLong("id");
-                    }
-                }
-            }
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
     }
 }
