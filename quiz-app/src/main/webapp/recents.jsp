@@ -66,14 +66,14 @@
   <!-- Sidebar -->
   <div class="w-80 bg-white border-r border-gray-200 p-6 flex flex-col">
     <!-- Logo -->
-    <div class="mb-8">
-      <h1 class="text-2xl font-bold text-slate-700">QuizMaster</h1>
-      <p class="text-slate-500 text-sm">Your Learning Adventure</p>
+    <div class="mb-8 cursor-pointer" onclick="window.location.href='index.jsp'">
+        <h1 class="text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors">QuizMaster</h1>
+        <p class="text-slate-500 text-sm">Your Learning Adventure</p>
     </div>
 
     <!-- Navigation -->
     <nav class="space-y-1 flex-1">
-      <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='quiz-history'">
+      <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='QuizHistory.jsp'">
         <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
           <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
@@ -91,7 +91,7 @@
         <span class="text-slate-700 font-medium">My Creations</span>
       </div>
 
-      <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3">
+      <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='achievements'">
         <div class="w-8 h-8 bg-yellow-50 rounded-lg flex items-center justify-center">
           <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -100,7 +100,7 @@
         <span class="text-slate-700 font-medium">Achievements</span>
       </div>
 
-      <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3">
+      <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='popular-quizzes'">
         <div class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center">
           <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
