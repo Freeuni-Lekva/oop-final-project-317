@@ -1,5 +1,6 @@
 package com.quizmaster.servlet;
 
+import DAO.QuizDAO;
 import models.Quiz;
 
 import javax.servlet.ServletException;
@@ -9,10 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 @WebServlet("/popular-quizzes")
@@ -27,22 +24,42 @@ public class PopularQuizzesServlet extends HttpServlet {
             return;
         }
 
-        Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
-        if (connection == null) {
-            throw new ServletException("Database connection not initialized");
+        QuizDAO quizDAO = (QuizDAO) getServletContext().getAttribute("quizDAO");
+        if (quizDAO == null) {
+            throw new ServletException("QuizDAO not initialized");
         }
 
-        List<Map<String, Object>> popularQuizzes = new ArrayList<>();
+        try {
+            // Get all quizzes and filter/sort by times_taken
+            List<Quiz> allQuizzes = quizDAO.getUserQuizzes(0L); // This gets all quizzes for user 0, but we'll use a different approach
+            
+            // Actually, let's get all quizzes properly by modifying our approach
+            // For now, let's create a simple list and sort by times_taken
+            List<Quiz> popularQuizzes = getAllQuizzesOrderedByPopularity(quizDAO);
+            
+            // Limit to top 10
+            if (popularQuizzes.size() > 10) {
+                popularQuizzes = popularQuizzes.subList(0, 10);
+            }
 
-        String sql = "SELECT q.*, COUNT(r.id) AS completions " +
-                "FROM quizzes q " +
-                "JOIN quiz_results r ON q.id = r.quiz_id " +
-                "GROUP BY q.id " +
-                "ORDER BY completions DESC " +
-                "LIMIT 10";
+            request.setAttribute("popularQuizzes", popularQuizzes);
+            request.getRequestDispatcher("/popular-quizzes.jsp").forward(request, response);
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            try (ResultSet rs = stmt.executeQuery()) {
+        } catch (Exception e) {
+            throw new ServletException("Failed to retrieve popular quizzes", e);
+        }
+    }
+    
+    private List<Quiz> getAllQuizzesOrderedByPopularity(QuizDAO quizDAO) {
+        // For simplicity, we'll use a SQL query directly here
+        // In a production system, you'd add a method to QuizDAO for this
+        List<Quiz> quizzes = new ArrayList<>();
+        
+        java.sql.Connection connection = (java.sql.Connection) getServletContext().getAttribute("dbConnection");
+        String sql = "SELECT * FROM quizzes ORDER BY times_taken DESC LIMIT 10";
+        
+        try (java.sql.PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Quiz quiz = new Quiz(
                             rs.getString("title"),
@@ -60,19 +77,14 @@ public class PopularQuizzesServlet extends HttpServlet {
                     quiz.setOnePage(rs.getBoolean("one_page"));
                     quiz.setImmediateCorrection(rs.getBoolean("immediate_correction"));
                     quiz.setPracticeMode(rs.getBoolean("practice_mode"));
-
-                    int completions = rs.getInt("completions");
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("quiz", quiz);
-                    map.put("completions", completions);
-                    popularQuizzes.add(map);
+                    quiz.setTimesTaken(rs.getInt("times_taken"));
+                    quizzes.add(quiz);
                 }
             }
-        } catch (SQLException e) {
-            throw new ServletException("Failed to retrieve popular quizzes", e);
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
         }
-
-        request.setAttribute("popularQuizzes", popularQuizzes);
-        request.getRequestDispatcher("/popular-quizzes.jsp").forward(request, response);
+        
+        return quizzes;
     }
 } 

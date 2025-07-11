@@ -115,7 +115,7 @@ public class ContextListener implements ServletContextListener {
             System.out.println("Frienships table created/verified successfully");
 
             // Create quizzes table
-            String createQuizTable = "CREATE TABLE IF NOT EXISTS quizzes ("
+            String createQuizzesTable = "CREATE TABLE IF NOT EXISTS quizzes ("
                     + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
                     + "title VARCHAR(255) NOT NULL, "
                     + "description TEXT, "
@@ -125,8 +125,10 @@ public class ContextListener implements ServletContextListener {
                     + "randomize_questions BOOLEAN, "
                     + "one_page BOOLEAN, "
                     + "immediate_correction BOOLEAN, "
-                    + "practice_mode BOOLEAN" + ")";
-            stmt.executeUpdate(createQuizTable);
+                    + "practice_mode BOOLEAN, "
+                    + "times_taken INT DEFAULT 0"
+                    + ")";
+            stmt.executeUpdate(createQuizzesTable);
             System.out.println("Quiz table created/verified successfully");
 
 

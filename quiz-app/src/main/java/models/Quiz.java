@@ -22,6 +22,9 @@ public class Quiz {
     private boolean onePage; // true = single page, false = multiple pages
     private boolean immediateCorrection;
     private boolean practiceMode;
+    
+    // Tracking field
+    private int timesTaken; // Number of times this quiz has been completed
 
     // Not stored in database - populated when needed
     private List<Question> questions;
@@ -84,6 +87,11 @@ public class Quiz {
         this.practiceMode = practiceMode;
         this.lastModified = LocalDateTime.now();
     }
+
+    public int getTimesTaken() { return timesTaken; }
+    public void setTimesTaken(int timesTaken) { this.timesTaken = timesTaken; }
+    
+    public void incrementTimesTaken() { this.timesTaken++; }
 
     public List<Question> getQuestions() { return questions; }
     public void setQuestions(List<Question> questions) { this.questions = questions; }
