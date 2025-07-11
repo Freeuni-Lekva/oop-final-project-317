@@ -24,7 +24,14 @@ public class QuestionSQLDao implements QuestionDAO {
             stmt.setString(1, question.getQuestionText());
             stmt.setString(2, question.getQuestionType());
             stmt.setLong(3, question.getQuizId());
-            stmt.setString(4, convertAnswersToString(question.getCorrectAnswers()));
+            // For multiple choice questions, store the full options list so they can be rendered later.
+            if (question instanceof questions.MultipleChoiceQuestion) {
+                stmt.setString(4, convertAnswersToString(((questions.MultipleChoiceQuestion) question).getOptions()));
+            } else if (question instanceof questions.MultipleChoiceMultipleAnswersQuestion) {
+                stmt.setString(4, convertAnswersToString(((questions.MultipleChoiceMultipleAnswersQuestion) question).getOptions()));
+            } else {
+                stmt.setString(4, convertAnswersToString(question.getCorrectAnswers()));
+            }
             stmt.setString(5, question.getImageUrl());
             stmt.setInt(6, question.getPoints());
             stmt.setInt(7, question.getTimeLimit());

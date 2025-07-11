@@ -129,11 +129,22 @@
                         String cardClass = cardClasses[idx % cardClasses.length];
                         idx++;
             %>
-            <div class="<%= cardClass %> rounded-2xl p-6 card-hover cursor-pointer" onclick="window.location.href='QuizSummary?quizId=<%= q.getId() %>'">
-                <h3 class="text-xl font-bold text-white mb-2"><%= q.getTitle() %></h3>
-                <p class="text-white text-sm opacity-90 mb-4"><%= q.getDescription() == null ? "" : q.getDescription() %></p>
-                <div class="flex items-center space-x-3 text-white/90 text-xs">
-                    <span>Created: <%= q.getCreatedDate().toLocalDate() %></span>
+            <div class="<%= cardClass %> rounded-2xl p-6 card-hover relative">
+                <form method="post" action="delete-quiz" onsubmit="return confirm('Delete this quiz permanently?');" class="absolute top-4 right-4 z-10">
+                    <input type="hidden" name="quizId" value="<%= q.getId() %>">
+                    <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-full border border-red-500 text-red-500 hover:bg-red-50" title="Delete Quiz">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span class="sr-only">Delete</span>
+                    </button>
+                </form>
+                <div onclick="window.location.href='QuizSummary?quizId=<%= q.getId() %>'" class="cursor-pointer space-y-2">
+                    <h3 class="text-xl font-bold text-white mb-2"><%= q.getTitle() %></h3>
+                    <p class="text-white text-sm opacity-90 mb-4"><%= q.getDescription() == null ? "" : q.getDescription() %></p>
+                    <div class="flex items-center space-x-3 text-white/90 text-xs">
+                        <span>Created: <%= q.getCreatedDate().toLocalDate() %></span>
+                    </div>
                 </div>
             </div>
             <%
