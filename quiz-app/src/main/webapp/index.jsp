@@ -252,61 +252,26 @@ body {
 
             <!-- Quiz Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Quiz Card 1 -->
-                <div class="quiz-card-1 rounded-2xl p-6 card-hover cursor-pointer">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="bg-white/20 rounded-full px-3 py-1">
-                            <span class="text-white text-sm font-medium">25 Questions</span>
+                <%
+    DAO.QuizDAO quizDAO = (DAO.QuizDAO) application.getAttribute("quizDAO");
+    java.util.List<models.Quiz> quizList = quizDAO != null ? quizDAO.getRecentQuizzes(1000) : java.util.Collections.emptyList();
+%>
+                <% if (quizList != null && !quizList.isEmpty()) {
+                       String[] classes = {"quiz-card-1","quiz-card-2","quiz-card-3","quiz-card-4"};
+                       int c=0;
+                       for (models.Quiz q : quizList) {
+                         String cls = classes[c % classes.length]; c++; %>
+                        <div class="<%= cls %> rounded-2xl p-6 card-hover cursor-pointer" onclick="window.location.href='QuizSummary?quizId=<%= q.getId() %>'">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="bg-white/20 rounded-full px-3 py-1"><span class="text-white text-sm font-medium"><%= q.getQuestionCount() %> Questions</span></div>
+                                <div class="bg-slate-700 rounded-full px-3 py-1"><span class="text-white text-sm"><%= q.getTimeLimit()>0 ? (q.getTimeLimit()/60)+" min" : "No limit" %></span></div>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2"><%= q.getTitle() %></h3>
+                            <p class="text-white text-sm opacity-90 mb-4"><%= q.getDescription()==null?"":q.getDescription() %></p>
                         </div>
-                        <div class="bg-slate-700 rounded-full px-3 py-1">
-                            <span class="text-white text-sm">15 min</span>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">Ultimate Science Challenge</h3>
-                    <p class="text-slate-600 mb-4">Test your knowledge across physics, chemistry, and biology. From quantum mechanics to molecular structures, this comprehensive quiz covers the fascinating world of science.</p>
-                </div>
-
-                <!-- Quiz Card 2 -->
-                <div class="quiz-card-2 rounded-2xl p-6 card-hover cursor-pointer">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="bg-white/20 rounded-full px-3 py-1">
-                            <span class="text-white text-sm font-medium">30 Questions</span>
-                        </div>
-                        <div class="bg-slate-700 rounded-full px-3 py-1">
-                            <span class="text-white text-sm">20 min</span>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">World Geography Master</h3>
-                    <p class="text-slate-600 mb-4">Explore continents, capitals, and cultures! Journey through countries, landmarks, and natural wonders in this exciting geography adventure that will expand your worldview.</p>
-                </div>
-
-                <!-- Quiz Card 3 -->
-                <div class="quiz-card-3 rounded-2xl p-6 card-hover cursor-pointer">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="bg-white/20 rounded-full px-3 py-1">
-                            <span class="text-white text-sm font-medium">20 Questions</span>
-                        </div>
-                        <div class="bg-slate-700 rounded-full px-3 py-1">
-                            <span class="text-white text-sm">12 min</span>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">Movie Trivia Extravaganza</h3>
-                    <p class="text-slate-600 mb-4">From classic Hollywood gems to modern blockbusters, test your cinema knowledge! Dive into directors, actors, plot twists, and behind-the-scenes secrets.</p>
-                </div>
-
-                <!-- Quiz Card 4 -->
-                <div class="quiz-card-4 rounded-2xl p-6 card-hover cursor-pointer">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="bg-white/20 rounded-full px-3 py-1">
-                            <span class="text-white text-sm font-medium">35 Questions</span>
-                        </div>
-                        <div class="bg-slate-700 rounded-full px-3 py-1">
-                            <span class="text-white text-sm">25 min</span>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">Ancient Civilizations Quest</h3>
-                    <p class="text-slate-600 mb-4">Uncover the mysteries of ancient Egypt, Greece, Rome, and beyond! Discover pharaohs, philosophers, and legendary empires that shaped our modern world.</p>
-                </div>
+                <% } } else { %>
+                    <div class="col-span-full text-center text-slate-600">No quizzes created yet.</div>
+                <% } %>
             </div>
         </div>
     </div>

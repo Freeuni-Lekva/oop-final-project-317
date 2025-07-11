@@ -38,7 +38,6 @@ public class User {
         this.isBanned = isBanned;
         this.quizCreatedCount = 0;
         this.quizTakenCount = 0;
-
     }
 
     public void setName(String name) {
@@ -75,7 +74,7 @@ public class User {
 
     public Timestamp getCreatedAt() { return createdAt; }
 
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+    public void setQuizCreatedCount(Timestamp createdAt) { this.createdAt = createdAt; }
     public void increaseQuizCreatedCount() {this.quizCreatedCount++;}
     public int getQuizCreatedCount() { return quizCreatedCount; }
 

@@ -38,6 +38,7 @@ public class FriendshipServlet extends HttpServlet {
             try {
                 // Add friendship
                 userDAO.addFriendship(currentUser.getId(), fromUserId);
+                userDAO.addFriendship(fromUserId, currentUser.getId());
 
                 // Delete the notification
                 notificationDAO.deleteNotification(notificationId);
