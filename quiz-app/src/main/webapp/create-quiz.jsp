@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@ page import="models.User" %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">

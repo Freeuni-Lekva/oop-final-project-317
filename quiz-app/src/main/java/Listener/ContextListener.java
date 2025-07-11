@@ -13,6 +13,7 @@ import com.quizmaster.util.PasswordUtil;
 import models.User;
 import DAO.QuizSQLDao;
 import DAO.UserSQLDao;
+import DAO.QuizResultSQLDAO;
 
 @WebListener
 public class ContextListener implements ServletContextListener {
@@ -25,7 +26,7 @@ public class ContextListener implements ServletContextListener {
             String dbUrl = "jdbc:mysql://localhost:3306/quizmaster_db";
             String dbUser = "root";
 
-            String dbPassword = "Wiwibura22."; // change with your database password
+            String dbPassword = "KoMSHi!!17"; // change with your database password
 
             Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             context.setAttribute("dbConnection", dbConnection);
@@ -176,6 +177,10 @@ public class ContextListener implements ServletContextListener {
             stmt.executeUpdate(createQuizHistoryTable);
 
             System.out.println("Quiz history table created/verified successfully");
+
+            // After quizzes table – initialize DAO objects in context
+            QuizResultSQLDAO quizResultSqlDao = new QuizResultSQLDAO(dbConnection);
+            context.setAttribute("quizResultDAO", quizResultSqlDao);
 
             System.out.println("All database tables initialized successfully");
 
