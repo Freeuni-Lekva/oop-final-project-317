@@ -12,4 +12,8 @@ public interface NotificationDAO {
     public void deleteNotification(long notificationId);
 
     public ArrayList<Notification> getNotifications(long userId);
+
+    public int getNotificationCount(long userId);
+
+    public String getSenderUsername(long fromUserId);
 }
