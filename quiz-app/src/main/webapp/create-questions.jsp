@@ -83,6 +83,24 @@
                 <span class="text-slate-700 font-medium">My Profile</span>
             </div>
             <% } %>
+            <% 
+                if (session.getAttribute("user") != null) {
+                    User user = (User) session.getAttribute("user");
+                    boolean isAdmin = user.getIfAdmin();
+                    if (isAdmin) {
+            %>
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3 bg-indigo-50" onclick="window.location.href='admin'">
+                <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <span class="text-slate-700 font-medium">Statistics</span>
+            </div>
+            <% 
+                    }
+                }
+            %>
         </nav>
     </div>
 

@@ -5,7 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - QuizMaster</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="admin.css">
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f2f0e9;
+    min-height: 100vh;
+}
+
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(73, 89, 107, 0.15);
+}
+
+.sidebar-item {
+    transition: all 0.2s ease;
+}
+
+.sidebar-item:hover {
+    background-color: #f8fafc;
+    transform: translateX(2px);
+}
+
+.notification-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Admin Stats Cards */
+.admin-card-1 {
+    background: linear-gradient(135deg, #FF6B6B 0%, #d63447 100%) !important;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #222;
+}
+
+.admin-card-2 {
+    background: linear-gradient(135deg, #4ECDC4 0%, #26a69a 100%) !important;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #222;
+}
+
+.admin-card-3 {
+    background: linear-gradient(135deg, #45B7D1 0%, #2980b9 100%) !important;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #222;
+}
+
+.admin-card-4 {
+    background: linear-gradient(135deg, #F39C12 0%, #d68910 100%) !important;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #222;
+}
+
+.admin-icon {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+    </style>
 </head>
 <body class="overflow-hidden bg-gray-50">
 <div class="flex h-screen">
@@ -104,6 +177,12 @@
 
         <!-- Main Content Area -->
         <div class="flex-1 p-6 overflow-y-auto">
+            <!-- Go to Homepage Button -->
+            <div class="mb-6 flex justify-end">
+                <a href="index.jsp" class="px-6 py-3 bg-blue-600 rounded-xl text-white font-medium hover:bg-blue-700 transition-colors shadow">
+                    Go to Homepage & Make Quizzes
+                </a>
+            </div>
             <!-- Admin Stats Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <!-- Total Quizzes -->
