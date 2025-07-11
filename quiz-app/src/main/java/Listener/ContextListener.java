@@ -125,9 +125,25 @@ public class ContextListener implements ServletContextListener {
                     + "randomize_questions BOOLEAN, "
                     + "one_page BOOLEAN, "
                     + "immediate_correction BOOLEAN, "
-                    + "practice_mode BOOLEAN" + ")";
+                    + "practice_mode BOOLEAN, "
+                    + "time_limit INT DEFAULT 0" + ")";
             stmt.executeUpdate(createQuizTable);
             System.out.println("Quiz table created/verified successfully");
+
+            // Create questions table
+            String createQuestionsTable = "CREATE TABLE IF NOT EXISTS questions ("
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
+                    + "question_text TEXT NOT NULL, "
+                    + "question_type VARCHAR(100) NOT NULL, "
+                    + "quiz_id BIGINT NOT NULL, "
+                    + "correct_answers TEXT, "
+                    + "image_url VARCHAR(1024), "
+                    + "points INT DEFAULT 1, "
+                    + "time_limit INT DEFAULT 0, "
+                    + "FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE"
+                    + ")";
+            stmt.executeUpdate(createQuestionsTable);
+            System.out.println("Questions table created/verified successfully");
 
 
             // Create quiz result table
@@ -180,6 +196,10 @@ public class ContextListener implements ServletContextListener {
             // make sure quizResultDAO is available in context
             DAO.QuizResultSQLDAO quizResultDAOObj = new DAO.QuizResultSQLDAO(dbConnection);
             context.setAttribute("quizResultDAO", quizResultDAOObj);
+
+            // Make Question DAO available
+            DAO.QuestionSQLDao questionDaoObj = new DAO.QuestionSQLDao(dbConnection);
+            context.setAttribute("questionDAO", questionDaoObj);
 
             System.out.println("All database tables initialized successfully");
 
