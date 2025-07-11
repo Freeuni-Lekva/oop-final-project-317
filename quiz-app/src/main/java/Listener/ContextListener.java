@@ -79,7 +79,7 @@ public class ContextListener implements ServletContextListener {
             context = sce.getServletContext();
             // Create users table
             String createUsersTable = "CREATE TABLE IF NOT EXISTS users ("
-                    + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
                     + "name VARCHAR(50) NOT NULL UNIQUE, "
                     + "email VARCHAR(255) NOT NULL UNIQUE, "
                     + "pass_hash VARCHAR(255) NOT NULL, "
@@ -102,22 +102,20 @@ public class ContextListener implements ServletContextListener {
 
             // Create Friendsships table
             String createFriendshipsTable = "CREATE TABLE IF NOT EXISTS friendships ("
-                    + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
                     + "user_id1 BIGINT NOT NULL, "
                     + "user_id2 BIGINT NOT NULL, "
                     + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
                     + "FOREIGN KEY (user_id1) REFERENCES users(id), "
                     + "FOREIGN KEY (user_id2) REFERENCES users(id), "
-                    + "UNIQUE KEY unique_friendship (LEAST(user_id1, user_id2), GREATEST(user_id1, user_id2))"
+                    + "UNIQUE KEY unique_friendship (user_id1, user_id2)"
                     + ")";
-
-
 
             stmt.executeUpdate(createFriendshipsTable);
             System.out.println("Frienships table created/verified successfully");
 
-            // Ensure quizzes table exists with required columns
-            String ensureQuizzesTable = "CREATE TABLE IF NOT EXISTS quizzes ("
+            // Create quizzes table
+            String createQuizTable = "CREATE TABLE IF NOT EXISTS quizzes ("
                     + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
                     + "title VARCHAR(255) NOT NULL, "
                     + "description TEXT, "
@@ -128,16 +126,8 @@ public class ContextListener implements ServletContextListener {
                     + "one_page BOOLEAN, "
                     + "immediate_correction BOOLEAN, "
                     + "practice_mode BOOLEAN" + ")";
-            stmt.executeUpdate(ensureQuizzesTable);
-
-            // Add any missing columns (older installations)
-            addColumnIfMissing(stmt, "quizzes", "created_by BIGINT");
-            addColumnIfMissing(stmt, "quizzes", "created_date DATETIME");
-            addColumnIfMissing(stmt, "quizzes", "last_modified DATETIME");
-            addColumnIfMissing(stmt, "quizzes", "randomize_questions BOOLEAN");
-            addColumnIfMissing(stmt, "quizzes", "one_page BOOLEAN");
-            addColumnIfMissing(stmt, "quizzes", "immediate_correction BOOLEAN");
-            addColumnIfMissing(stmt, "quizzes", "practice_mode BOOLEAN");
+            stmt.executeUpdate(createQuizTable);
+            System.out.println("Quiz table created/verified successfully");
 
 
             // Create quiz result table
@@ -199,22 +189,4 @@ public class ContextListener implements ServletContextListener {
         }
     }
 
-    private void addColumnIfMissing(Statement stmt, String tableName, String columnDefinition) throws SQLException {
-        DatabaseMetaData meta = stmt.getConnection().getMetaData();
-        ResultSet tables = meta.getTables(null, null, tableName, null);
-        if (tables.next()) {
-            ResultSet columns = meta.getColumns(null, null, tableName, null);
-            boolean columnExists = false;
-            while (columns.next()) {
-                if (columns.getString("COLUMN_NAME").equalsIgnoreCase(columnDefinition.split(" ")[0])) {
-                    columnExists = true;
-                    break;
-                }
-            }
-            if (!columnExists) {
-                stmt.executeUpdate("ALTER TABLE " + tableName + " ADD COLUMN " + columnDefinition);
-                System.out.println("Added missing column to " + tableName + ": " + columnDefinition);
-            }
-        }
-    }
 }
