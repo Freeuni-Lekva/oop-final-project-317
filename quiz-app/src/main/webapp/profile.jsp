@@ -1,4 +1,5 @@
 <%@ page import="models.User" %>
+<%@ page import="DAO.NotificationDAO" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -189,14 +190,21 @@ body {
 
                 <!-- User Actions -->
                 <div class="flex items-center space-x-4 ml-6">
-                    <!-- Notification Icon -->
-                    <button class="relative p-3 bg-gray-50 rounded-xl border border-gray-200 hover:bg-gray-100 transition-colors">
+                    <!-- Notification Icon (always visible) -->
+                    <a href="notifications" class="relative p-3 bg-gray-50 rounded-xl border border-gray-200 hover:bg-gray-100 transition-colors">
                         <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.73 21a2 2 0 0 1-3.46 0"/>
                         </svg>
-                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center notification-pulse">3</span>
-                    </button>
+                        <% if (session.getAttribute("user") != null) {
+                            NotificationDAO notificationDAO = (NotificationDAO) request.getServletContext().getAttribute("notificationDAO");
+                            User currentUser = (User) session.getAttribute("user");
+                            int notificationCount = notificationDAO.getNotificationCount(currentUser.getId());
+                            if (notificationCount > 0) {
+                        %>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center notification-pulse"><%= notificationCount %></span>
+                        <% } } %>
+                    </a>
 
                     <!-- Logout Button -->
                     <a href="signout" class="px-4 py-3 bg-slate-600 rounded-xl text-white font-medium hover:bg-slate-700 transition-colors">
