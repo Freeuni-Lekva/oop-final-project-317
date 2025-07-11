@@ -13,7 +13,7 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+        request.getRequestDispatcher("/register.jsp").forward(request, response);
     }
     
     @Override
@@ -28,31 +28,31 @@ public class RegisterServlet extends HttpServlet {
         // Validation
         if (username == null || username.trim().isEmpty()) {
             request.setAttribute("error", "Username is required");
-            request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
             return;
         }
         
         if (email == null || email.trim().isEmpty()) {
             request.setAttribute("error", "Email is required");
-            request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
             return;
         }
         
         if (password == null || password.trim().isEmpty()) {
             request.setAttribute("error", "Password is required");
-            request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
             return;
         }
         
         if (password.length() < 8) {
             request.setAttribute("error", "Password must be at least 8 characters long");
-            request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
             return;
         }
         
         if (!password.equals(confirmPassword)) {
             request.setAttribute("error", "Passwords do not match");
-            request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
             return;
         }
 
@@ -60,11 +60,11 @@ public class RegisterServlet extends HttpServlet {
         // Demo registration logic - replace with real database save later
         if ("admin@test.com".equals(email)) {
             request.setAttribute("error", "Email already exists");
-            request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
         } else {
             // Registration successful
             request.setAttribute("success", "Account created successfully! You can now login.");
-            request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
         }
 
         // Add User in database if email and username is unique
@@ -80,7 +80,7 @@ public class RegisterServlet extends HttpServlet {
                 if (rs.next() && rs.getInt(1) > 0) {
                     rs.close();
                     request.setAttribute("error", "Email already registered");
-                    request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+                    request.getRequestDispatcher("/register.jsp").forward(request, response);
                     return;
                 }
                 rs.close();
@@ -94,7 +94,7 @@ public class RegisterServlet extends HttpServlet {
                 if (rs.next() && rs.getInt(1) > 0) {
                     rs.close();
                     request.setAttribute("error", "Username already taken");
-                    request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+                    request.getRequestDispatcher("/register.jsp").forward(request, response);
                     return;
                 }
                 rs.close();
@@ -115,7 +115,7 @@ public class RegisterServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("error", "Database error: " + e.getMessage());
-            request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
         }
     }
 }

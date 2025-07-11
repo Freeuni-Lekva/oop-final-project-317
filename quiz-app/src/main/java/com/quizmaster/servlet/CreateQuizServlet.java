@@ -19,7 +19,7 @@ public class CreateQuizServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Redirect to create-quiz.jsp if accessed directly
-        request.getRequestDispatcher("/WEB-INF/jsp/create-quiz.jsp").forward(request, response);
+        request.getRequestDispatcher("/create-quiz.jsp").forward(request, response);
     }
 
     @Override
@@ -90,15 +90,11 @@ public class CreateQuizServlet extends HttpServlet {
 
         // Get DAO objects from context
         QuizSQLDao quizDAO = (QuizSQLDao) getServletContext().getAttribute("quizDAO");
-        UserSQLDao userDAO = (UserSQLDao) getServletContext().getAttribute("userDAO");
 
-        // Get current user
-        String username = (String) session.getAttribute("user");
-        User currentUser = userDAO.getUser(username);
-
+        // Current user object is already stored in session
+        User currentUser = (User) session.getAttribute("user");
         if (currentUser == null) {
-            request.setAttribute("error", "User not found. Please log in again.");
-            request.getRequestDispatcher("create-quiz.jsp").forward(request, response);
+            response.sendRedirect("login");
             return;
         }
 
@@ -118,9 +114,11 @@ public class CreateQuizServlet extends HttpServlet {
 
         // Store quiz ID in session for the questions creation step
         session.setAttribute("currentQuizId", quiz.getId());
-        session.setAttribute("quizNumQuestions", numQuestions);
+        session.setAttribute("numQuestions", numQuestions);
+        // reset any old progress
+        session.removeAttribute("questionTypes");
 
-        // Redirect to create-questions.jsp
-        response.sendRedirect("create-questions.jsp");
+        // Redirect to the first question-type selection page
+        response.sendRedirect(request.getContextPath() + "/question-type?index=1");
     }
 }

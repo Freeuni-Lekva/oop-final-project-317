@@ -73,9 +73,9 @@ public class UserSQLDao implements UserDAO{
 
     @Override
     public User getUserByEmail(String email) {
-        String sql = "SELECT * FROM users WHERE email = ?";
+        String sql = "SELECT * FROM users WHERE LOWER(email) = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, email);
+            stmt.setString(1, email.toLowerCase().trim());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),

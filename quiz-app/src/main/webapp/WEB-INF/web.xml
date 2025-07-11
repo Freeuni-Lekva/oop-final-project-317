@@ -7,10 +7,9 @@
          
   <display-name>QuizMaster Application</display-name>
   
-  <!-- Enable JSTL -->
-  <context-param>
-    <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
-    <param-value>messages</param-value>
-  </context-param>
+  <!-- Welcome file configuration -->
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
   
 </web-app>

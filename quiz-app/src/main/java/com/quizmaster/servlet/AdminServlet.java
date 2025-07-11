@@ -57,6 +57,6 @@ public class AdminServlet extends HttpServlet {
         }
         request.setAttribute("totalUsers", totalUsers);
         request.setAttribute("totalQuizzes", totalQuizzes);
-        request.getRequestDispatcher("/WEB-INF/jsp/admin.jsp").forward(request, response);
+        request.getRequestDispatcher("/admin.jsp").forward(request, response);
     }
 } 
