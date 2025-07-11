@@ -31,13 +31,10 @@ public class QuizSummaryServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        // Initialize your DAOs here
+        // Attempt initial lookup; if not yet available, will retry in doGet
         this.quizDAO = (QuizDAO) getServletContext().getAttribute("quizDAO");
         this.quizResultDAO = (QuizResultDAO) getServletContext().getAttribute("quizResultDAO");
         this.userDAO = (UserDAO) getServletContext().getAttribute("userDAO");
-        if (quizDAO == null || quizResultDAO == null || userDAO == null) {
-            throw new ServletException("DAO objects not found in servlet context");
-        }
     }
 
     @Override
@@ -59,6 +56,25 @@ public class QuizSummaryServlet extends HttpServlet {
         }
 
         HttpSession session = request.getSession();
+        // Lazy fetch DAOs if init didn't have them yet
+        if (quizDAO == null) quizDAO = (QuizDAO) getServletContext().getAttribute("quizDAO");
+        if (quizResultDAO == null) quizResultDAO = (QuizResultDAO) getServletContext().getAttribute("quizResultDAO");
+        if (userDAO == null) userDAO = (UserDAO) getServletContext().getAttribute("userDAO");
+
+        if (quizDAO == null || quizResultDAO == null || userDAO == null) {
+            java.sql.Connection conn = (java.sql.Connection) getServletContext().getAttribute("dbConnection");
+            if (conn != null) {
+                if (quizDAO == null) quizDAO = new DAO.QuizSQLDao(conn);
+                if (quizResultDAO == null) quizResultDAO = new DAO.QuizResultSQLDAO(conn);
+                if (userDAO == null) userDAO = new DAO.UserSQLDao(conn);
+            }
+        }
+
+        if (quizDAO == null || quizResultDAO == null || userDAO == null) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "DAO initialization problem after fallback");
+            return;
+        }
+
         User currentUser = (User) session.getAttribute("user");
         Long currentUserId = currentUser != null ? currentUser.getId() : null;
 
@@ -109,7 +125,7 @@ public class QuizSummaryServlet extends HttpServlet {
             request.setAttribute("currentUser", currentUser);
             request.setAttribute("sortBy", sortBy);
 
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/quizSummary.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/quizSummary.jsp");
             dispatcher.forward(request, response);
 
         } catch (SQLException e) {
