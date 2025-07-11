@@ -85,8 +85,8 @@ body {
     <!-- Sidebar -->
     <div class="w-80 bg-white border-r border-gray-200 p-6 flex flex-col">
         <!-- Logo -->
-        <div class="mb-8">
-            <h1 class="text-2xl font-bold text-slate-700">QuizMaster</h1>
+        <div class="mb-8 cursor-pointer" onclick="window.location.href='<%= request.getContextPath() %>/'">
+            <h1 class="text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors">QuizMaster</h1>
             <p class="text-slate-500 text-sm">Admin Dashboard</p>
         </div>
 

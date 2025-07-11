@@ -12,9 +12,11 @@ public class User {
     private boolean isAdmin;
     private boolean isBanned;
     private Timestamp createdAt;
+    private int quizCreatedCount;
+    private int quizTakenCount;
 
 
-    public User(long userId, String userName, String userEmail, String passwordHash, int passedQuizzes, boolean isAdmin, boolean isBanned, Timestamp createdAt) {
+    public User(long userId, String userName, String userEmail, String passwordHash, int passedQuizzes, boolean isAdmin, boolean isBanned, Timestamp createdAt,  int quizCreatedCount, int quizTakenCount) {
         this.userId = userId;
         this.name = userName;
         this.email = userEmail;
@@ -22,9 +24,11 @@ public class User {
         this.passedQuizzes = passedQuizzes;
         this.isAdmin = isAdmin;
         this.isBanned = isBanned;
+        this.quizCreatedCount = quizCreatedCount;
+        this.quizTakenCount = quizTakenCount;
     }
 
-    public User(String userName, String userEmail, String passwordHash, int passedQuizzes, boolean isAdmin, boolean isBanned) {
+    public User(String userName, String userEmail, String passwordHash, int passedQuizzes, boolean isAdmin, boolean isBanned, int quizCreatedCount, int quizTakenCount) {
         this.userId = 0;
         this.name = userName;
         this.email = userEmail;
@@ -32,6 +36,8 @@ public class User {
         this.passedQuizzes = passedQuizzes;
         this.isAdmin = isAdmin;
         this.isBanned = isBanned;
+        this.quizCreatedCount = 0;
+        this.quizTakenCount = 0;
 
     }
 
@@ -68,4 +74,12 @@ public class User {
     public long getId() {return  userId;}
 
     public Timestamp getCreatedAt() { return createdAt; }
+
+    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+    public void increaseQuizCreatedCount() {this.quizCreatedCount++;}
+    public int getQuizCreatedCount() { return quizCreatedCount; }
+
+    public void setQuizTakenCount(int quizTakenCount) {this.quizTakenCount = quizTakenCount;}
+    public void increaseQuizTakenCount() {this.quizTakenCount++;}
+    public int getQuizTakenCount() { return quizTakenCount; }
 }
