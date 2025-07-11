@@ -126,7 +126,8 @@ public class ContextListener implements ServletContextListener {
                     + "one_page BOOLEAN, "
                     + "immediate_correction BOOLEAN, "
                     + "practice_mode BOOLEAN, "
-                    + "time_limit INT DEFAULT 0" + ")";
+                    + "time_limit INT DEFAULT 0, "
+                    + "times_taken INT DEFAULT 0" + ")";
             stmt.executeUpdate(createQuizTable);
             System.out.println("Quiz table created/verified successfully");
 

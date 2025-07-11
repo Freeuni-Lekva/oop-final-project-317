@@ -32,14 +32,10 @@ public class PopularQuizzesServlet extends HttpServlet {
             throw new ServletException("Database connection not initialized");
         }
 
-        List<Map<String, Object>> popularQuizzes = new ArrayList<>();
+        List<Quiz> popularQuizzes = new ArrayList<>();
 
-        String sql = "SELECT q.*, COUNT(r.id) AS completions " +
-                "FROM quizzes q " +
-                "JOIN quiz_results r ON q.id = r.quiz_id " +
-                "GROUP BY q.id " +
-                "ORDER BY completions DESC " +
-                "LIMIT 10";
+        // Simple query to get quizzes ordered by times_taken
+        String sql = "SELECT * FROM quizzes ORDER BY times_taken DESC LIMIT 10";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             try (ResultSet rs = stmt.executeQuery()) {
@@ -60,12 +56,13 @@ public class PopularQuizzesServlet extends HttpServlet {
                     quiz.setOnePage(rs.getBoolean("one_page"));
                     quiz.setImmediateCorrection(rs.getBoolean("immediate_correction"));
                     quiz.setPracticeMode(rs.getBoolean("practice_mode"));
-
-                    int completions = rs.getInt("completions");
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("quiz", quiz);
-                    map.put("completions", completions);
-                    popularQuizzes.add(map);
+                    try {
+                        quiz.setTimeLimit(rs.getInt("time_limit"));
+                    } catch (SQLException ignore) {}
+                    try {
+                        quiz.setTimesTaken(rs.getInt("times_taken"));
+                    } catch (SQLException ignore) {}
+                    popularQuizzes.add(quiz);
                 }
             }
         } catch (SQLException e) {
