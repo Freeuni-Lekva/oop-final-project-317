@@ -200,6 +200,13 @@
                                    placeholder="Enter number of questions"
                                    value="<%= request.getParameter("numQuestions") != null ? request.getParameter("numQuestions") : "" %>">
                         </div>
+
+                        <div>
+                            <label for="timeLimit" class="block text-sm font-medium text-slate-700 mb-2">Time Limit for Whole Quiz (minutes, 0 = unlimited)</label>
+                            <input type="number" id="timeLimit" name="timeLimit" min="0" value="0"
+                                   class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                                   placeholder="0 = unlimited">
+                        </div>
                     </div>
 
                     <!-- Quiz Settings -->

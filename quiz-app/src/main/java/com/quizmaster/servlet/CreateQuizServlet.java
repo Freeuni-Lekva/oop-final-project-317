@@ -40,6 +40,7 @@ public class CreateQuizServlet extends HttpServlet {
         String title = request.getParameter("title");
         String description = request.getParameter("description");
         String numQuestionsStr = request.getParameter("numQuestions");
+        String timeLimitStr = request.getParameter("timeLimit");
 
         // Get checkbox values (they will be "true" if checked, null if not checked)
         boolean randomizeQuestions = "true".equals(request.getParameter("randomizeQuestions"));
@@ -78,6 +79,19 @@ public class CreateQuizServlet extends HttpServlet {
             }
         }
 
+        int quizTimeLimitMinutes = 0;
+        if (timeLimitStr != null && !timeLimitStr.trim().isEmpty()) {
+            try {
+                quizTimeLimitMinutes = Integer.parseInt(timeLimitStr.trim());
+                if (quizTimeLimitMinutes < 0) {
+                    errorMessage.append("Time limit cannot be negative. ");
+                }
+            } catch (NumberFormatException e) {
+                errorMessage.append("Time limit must be a valid number. ");
+            }
+        }
+        int quizTimeLimitSeconds = quizTimeLimitMinutes * 60;
+
         // If there are validation errors, forward back to the form
         if (errorMessage.length() > 0) {
             request.setAttribute("error", errorMessage.toString().trim());
@@ -108,6 +122,7 @@ public class CreateQuizServlet extends HttpServlet {
         quiz.setOnePage(onePage);
         quiz.setImmediateCorrection(immediateCorrection);
         quiz.setPracticeMode(practiceMode);
+        quiz.setTimeLimit(quizTimeLimitSeconds);
 
         // Save quiz to database
         quizDAO.addQuiz(quiz);

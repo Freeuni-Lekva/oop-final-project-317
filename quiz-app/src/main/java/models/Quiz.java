@@ -23,6 +23,8 @@ public class Quiz {
     private boolean immediateCorrection;
     private boolean practiceMode;
 
+    private int timeLimit; // total allowed time in seconds (0 = unlimited)
+
     // Not stored in database - populated when needed
     private List<Question> questions;
 
@@ -33,6 +35,7 @@ public class Quiz {
         this.createdBy = createdBy;
         this.createdDate = LocalDateTime.now();
         this.lastModified = LocalDateTime.now();
+        this.timeLimit = 0;
         this.questions = new ArrayList<>();
     }
 
@@ -84,6 +87,9 @@ public class Quiz {
         this.practiceMode = practiceMode;
         this.lastModified = LocalDateTime.now();
     }
+
+    public int getTimeLimit() { return timeLimit; }
+    public void setTimeLimit(int timeLimit) { this.timeLimit = timeLimit; }
 
     public List<Question> getQuestions() { return questions; }
     public void setQuestions(List<Question> questions) { this.questions = questions; }
@@ -138,6 +144,7 @@ public class Quiz {
                 ", questionCount=" + getQuestionCount() +
                 ", totalPoints=" + getTotalPoints() +
                 ", totalTimeLimit=" + getTotalTimeLimit() +
+                ", timeLimit=" + timeLimit +
                 '}';
     }
 }

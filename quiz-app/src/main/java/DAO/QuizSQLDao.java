@@ -15,8 +15,8 @@ public class QuizSQLDao implements QuizDAO {
     @Override
     public void addQuiz(Quiz quiz) {
         String query = "INSERT INTO quizzes (title, description, created_by, created_date, last_modified, " +
-                "randomize_questions, one_page, immediate_correction, practice_mode) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "randomize_questions, one_page, immediate_correction, practice_mode, time_limit) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, quiz.getTitle());
@@ -28,6 +28,7 @@ public class QuizSQLDao implements QuizDAO {
             stmt.setBoolean(7, quiz.isOnePage());
             stmt.setBoolean(8, quiz.isImmediateCorrection());
             stmt.setBoolean(9, quiz.isPracticeMode());
+            stmt.setInt(10, quiz.getTimeLimit());
             stmt.executeUpdate();
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -92,7 +93,7 @@ public class QuizSQLDao implements QuizDAO {
     @Override
     public void updateQuiz(Quiz quiz) {
         String query = "UPDATE quizzes SET title = ?, description = ?, last_modified = ?, " +
-                "randomize_questions = ?, one_page = ?, immediate_correction = ?, practice_mode = ? " +
+                "randomize_questions = ?, one_page = ?, immediate_correction = ?, practice_mode = ?, time_limit = ? " +
                 "WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, quiz.getTitle());
@@ -102,7 +103,8 @@ public class QuizSQLDao implements QuizDAO {
             stmt.setBoolean(5, quiz.isOnePage());
             stmt.setBoolean(6, quiz.isImmediateCorrection());
             stmt.setBoolean(7, quiz.isPracticeMode());
-            stmt.setLong(8, quiz.getId());
+            stmt.setInt(8, quiz.getTimeLimit());
+            stmt.setLong(9, quiz.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -124,6 +126,9 @@ public class QuizSQLDao implements QuizDAO {
         quiz.setOnePage(rs.getBoolean("one_page"));
         quiz.setImmediateCorrection(rs.getBoolean("immediate_correction"));
         quiz.setPracticeMode(rs.getBoolean("practice_mode"));
+        try {
+            quiz.setTimeLimit(rs.getInt("time_limit"));
+        } catch (SQLException ignore) {}
         return quiz;
     }
 }
