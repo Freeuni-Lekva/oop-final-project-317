@@ -168,12 +168,6 @@ body {
                     <p class="text-slate-500 text-sm">Monitor and manage QuizMaster platform</p>
                 </div>
                 <div class="flex items-center space-x-4 ml-6">
-                    <button class="relative p-3 bg-gray-50 rounded-xl border border-gray-200 hover:bg-gray-100 transition-colors">
-                        <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
-                        </svg>
-                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center notification-pulse">5</span>
-                    </button>
                     <a href="logout" class="px-4 py-3 bg-slate-600 rounded-xl text-white font-medium hover:bg-slate-700 transition-colors">
                         <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
@@ -183,7 +177,6 @@ body {
                 </div>
             </div>
         </div>
-
         <!-- Main Content Area -->
         <div class="flex-1 p-6 overflow-y-auto">
             <!-- Go to Homepage Button -->
@@ -301,48 +294,152 @@ body {
                 <div class="bg-white rounded-2xl border border-gray-200 p-6 card-hover">
                     <h3 class="text-xl font-bold text-slate-700 mb-4">Quick Actions</h3>
                     <div class="space-y-3">
-                        <button class="w-full p-4 bg-blue-50 hover:bg-blue-100 rounded-xl border border-blue-200 transition-colors text-left">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p class="text-slate-700 font-medium">Add New Quiz</p>
-                                    <p class="text-slate-500 text-sm">Create a new quiz for users</p>
-                                </div>
-                            </div>
-                        </button>
-                        <button class="w-full p-4 bg-green-50 hover:bg-green-100 rounded-xl border border-green-200 transition-colors text-left">
+                        <a href="admin?view=users" class="w-full block p-4 bg-green-50 hover:bg-green-100 rounded-xl border border-green-200 transition-colors text-left">
                             <div class="flex items-center space-x-3">
                                 <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                                     <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p class="text-slate-700 font-medium">View Reports</p>
-                                    <p class="text-slate-500 text-sm">Generate detailed analytics</p>
-                                </div>
-                            </div>
-                        </button>
-                        <button class="w-full p-4 bg-yellow-50 hover:bg-yellow-100 rounded-xl border border-yellow-200 transition-colors text-left">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-slate-700 font-medium">Manage Users</p>
-                                    <p class="text-slate-500 text-sm">View and edit user accounts</p>
+                                    <p class="text-slate-700 font-medium">All Users</p>
+                                    <p class="text-slate-500 text-sm">View all registered users</p>
                                 </div>
                             </div>
-                        </button>
+                        </a>
+                        <a href="admin?view=quizzes" class="w-full block p-4 bg-blue-50 hover:bg-blue-100 rounded-xl border border-blue-200 transition-colors text-left">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-slate-700 font-medium">All Quizzes</p>
+                                    <p class="text-slate-500 text-sm">View all quizzes</p>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="index.jsp" class="w-full block p-4 bg-yellow-50 hover:bg-yellow-100 rounded-xl border border-yellow-200 transition-colors text-left">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-slate-700 font-medium">Take a Quiz</p>
+                                    <p class="text-slate-500 text-sm">Go to quiz taking page</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
+            <!-- Show All Users Table -->
+            <% if (request.getAttribute("showUsers") != null) { %>
+            <div class="mb-8">
+                <h2 class="text-xl font-bold mb-4">All Users</h2>
+                <form method="post" action="admin" onsubmit="return confirm('Are you sure you want to remove the selected users?');">
+                    <input type="hidden" name="action" value="remove-users" />
+                    <div class="mb-2">
+                        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 font-medium" onclick="return confirm('Are you sure you want to remove the selected users?');">Remove Selected</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-200 rounded-xl">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-2 border-b"><input type="checkbox" id="selectAllUsers" onclick="var cbs=document.querySelectorAll('.user-checkbox');for(var i=0;i<cbs.length;i++){cbs[i].checked=this.checked;}" /></th>
+                                    <th class="px-4 py-2 border-b">ID</th>
+                                    <th class="px-4 py-2 border-b">Name</th>
+                                    <th class="px-4 py-2 border-b">Email</th>
+                                    <th class="px-4 py-2 border-b">Admin</th>
+                                    <th class="px-4 py-2 border-b">Banned</th>
+                                    <th class="px-4 py-2 border-b">Created At</th>
+                                    <th class="px-4 py-2 border-b">Quizzes Created</th>
+                                    <th class="px-4 py-2 border-b">Quizzes Taken</th>
+                                    <th class="px-4 py-2 border-b">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <% java.util.List<models.User> usersList = (java.util.List<models.User>)request.getAttribute("allUsers");
+                               if (usersList == null || usersList.isEmpty()) { %>
+                                <tr><td colspan="10" class="text-center py-4 text-slate-500">No users found.</td></tr>
+                            <% } else {
+                               for (models.User u : usersList) { 
+                                   if (u.getIfAdmin()) continue;
+                               %>
+                                <tr>
+                                    <td class="px-4 py-2 border-b text-center"><input type="checkbox" class="user-checkbox" name="userIds" value="<%= u.getId() %>" /></td>
+                                    <td class="px-4 py-2 border-b"><%= u.getId() %></td>
+                                    <td class="px-4 py-2 border-b"><%= u.getName() %></td>
+                                    <td class="px-4 py-2 border-b"><%= u.getEmail() %></td>
+                                    <td class="px-4 py-2 border-b"><%= u.getIfAdmin() ? "Yes" : "No" %></td>
+                                    <td class="px-4 py-2 border-b"><%= u.getIfBanned() ? "Yes" : "No" %></td>
+                                    <td class="px-4 py-2 border-b"><%= u.getCreatedAt() %></td>
+                                    <td class="px-4 py-2 border-b"><%= u.getQuizCreatedCount() %></td>
+                                    <td class="px-4 py-2 border-b"><%= u.getQuizTakenCount() %></td>
+                                    <td class="px-4 py-2 border-b">
+                                        <button type="submit" name="removeUserSingle" value="<%= u.getId() %>" class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 ml-2" onclick="return confirm('Are you sure you want to remove this user?');">Remove</button>
+                                    </td>
+                                </tr>
+                            <% } } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <% } %>
+            <!-- Show All Quizzes Table -->
+            <% if (request.getAttribute("showQuizzes") != null) { %>
+            <div class="mb-8">
+                <h2 class="text-xl font-bold mb-4">All Quizzes</h2>
+                <% java.util.List<models.Quiz> quizzesList = (java.util.List<models.Quiz>)request.getAttribute("allQuizzes");
+                   if (quizzesList == null || quizzesList.isEmpty()) { %>
+                    <div class="p-6 text-center text-slate-500 bg-white border border-gray-200 rounded-xl">No quizzes found.</div>
+                <% } else { %>
+                <form method="post" action="admin" onsubmit="return confirm('Are you sure you want to remove the selected quizzes?');">
+                    <input type="hidden" name="action" value="remove-quizzes" />
+                    <div class="mb-2">
+                        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 font-medium" onclick="return confirm('Are you sure you want to remove the selected quizzes?');">Remove Selected</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-200 rounded-xl">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-2 border-b"><input type="checkbox" id="selectAllQuizzes" onclick="var cbs=document.querySelectorAll('.quiz-checkbox');for(var i=0;i<cbs.length;i++){cbs[i].checked=this.checked;}" /></th>
+                                    <th class="px-4 py-2 border-b">ID</th>
+                                    <th class="px-4 py-2 border-b">Title</th>
+                                    <th class="px-4 py-2 border-b">Description</th>
+                                    <th class="px-4 py-2 border-b">Created By</th>
+                                    <th class="px-4 py-2 border-b">Created Date</th>
+                                    <th class="px-4 py-2 border-b">Times Taken</th>
+                                    <th class="px-4 py-2 border-b">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <% for (models.Quiz q : quizzesList) { %>
+                                <tr>
+                                    <td class="px-4 py-2 border-b text-center"><input type="checkbox" class="quiz-checkbox" name="quizIds" value="<%= q.getId() %>" /></td>
+                                    <td class="px-4 py-2 border-b"><%= q.getId() %></td>
+                                    <td class="px-4 py-2 border-b"><%= q.getTitle() %></td>
+                                    <td class="px-4 py-2 border-b"><%= q.getDescription() %></td>
+                                    <td class="px-4 py-2 border-b"><%= q.getCreatedBy() %></td>
+                                    <td class="px-4 py-2 border-b"><%= q.getCreatedDate() %></td>
+                                    <td class="px-4 py-2 border-b"><%= q.getTimesTaken() %></td>
+                                    <td class="px-4 py-2 border-b">
+                                        <a href="quizSummary?quizId=<%= q.getId() %>" class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">Take Quiz</a>
+                                        <button type="submit" name="removeSingle" value="<%= q.getId() %>" class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 ml-2" onclick="return confirm('Are you sure you want to remove this quiz?');">Remove</button>
+                                    </td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+                <% } %>
+            </div>
+            <% } %>
         </div>
     </div>
 </div>

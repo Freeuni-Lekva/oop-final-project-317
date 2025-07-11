@@ -11,6 +11,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import DAO.UserSQLDao;
+import DAO.QuizSQLDao;
+import models.User;
+import models.Quiz;
+import java.util.ArrayList;
 
 @WebServlet("/admin")
 public class AdminServlet extends HttpServlet {
@@ -23,15 +28,14 @@ public class AdminServlet extends HttpServlet {
             return;
         }
         // Only allow admin users
-        models.User user = (models.User) session.getAttribute("user");
-        String username = user.getName();
+        User user = (User) session.getAttribute("user");
         Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
         boolean isAdmin = user.getIfAdmin();
         if (!isAdmin) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not authorized to access this page.");
             return;
         }
-        // Get total users
+        // Get total users and quizzes
         int totalUsers = 0;
         int totalQuizzes = 0;
         try {
@@ -57,6 +61,94 @@ public class AdminServlet extends HttpServlet {
         }
         request.setAttribute("totalUsers", totalUsers);
         request.setAttribute("totalQuizzes", totalQuizzes);
+
+        // Handle view switching
+        String view = request.getParameter("view");
+        if (view != null) {
+            if (view.equals("users")) {
+                UserSQLDao userDao = new UserSQLDao(connection);
+                ArrayList<User> allUsers = userDao.getAllUsers();
+                request.setAttribute("allUsers", allUsers);
+                request.setAttribute("showUsers", true);
+            } else if (view.equals("quizzes")) {
+                QuizSQLDao quizDao = new QuizSQLDao(connection);
+                ArrayList<Quiz> allQuizzes = quizDao.getAllQuizzes();
+                request.setAttribute("allQuizzes", allQuizzes);
+                request.setAttribute("showQuizzes", true);
+            }
+        }
         request.getRequestDispatcher("/admin.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        User user = (User) session.getAttribute("user");
+        Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
+        boolean isAdmin = user.getIfAdmin();
+        if (!isAdmin) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not authorized to access this page.");
+            return;
+        }
+        String action = request.getParameter("action");
+        QuizSQLDao quizDao = new QuizSQLDao(connection);
+        if ("remove-quizzes".equals(action)) {
+            // Remove selected quizzes
+            String[] quizIds = request.getParameterValues("quizIds");
+            if (quizIds != null) {
+                for (String idStr : quizIds) {
+                    try {
+                        long id = Long.parseLong(idStr);
+                        models.Quiz quiz = quizDao.getQuiz(id);
+                        if (quiz != null) quizDao.removeQuiz(quiz);
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+            // Remove single quiz if requested
+            String removeSingle = request.getParameter("removeSingle");
+            if (removeSingle != null && !removeSingle.isEmpty()) {
+                try {
+                    long id = Long.parseLong(removeSingle);
+                    models.Quiz quiz = quizDao.getQuiz(id);
+                    if (quiz != null) quizDao.removeQuiz(quiz);
+                } catch (NumberFormatException ignored) {}
+            }
+            // Redirect back to all quizzes view
+            response.sendRedirect("admin?view=quizzes");
+            return;
+        }
+        if ("remove-users".equals(action)) {
+            // Remove selected users
+            String[] userIds = request.getParameterValues("userIds");
+            UserSQLDao userDao = new UserSQLDao(connection);
+            if (userIds != null) {
+                for (String idStr : userIds) {
+                    try {
+                        long id = Long.parseLong(idStr);
+                        models.User u = userDao.getUser(id);
+                        if (u != null) userDao.removeUser(u);
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+            // Remove single user if requested
+            String removeUserSingle = request.getParameter("removeUserSingle");
+            if (removeUserSingle != null && !removeUserSingle.isEmpty()) {
+                try {
+                    long id = Long.parseLong(removeUserSingle);
+                    models.User u = userDao.getUser(id);
+                    if (u != null) userDao.removeUser(u);
+                } catch (NumberFormatException ignored) {}
+            }
+            // Redirect back to all users view
+            response.sendRedirect("admin?view=users");
+            return;
+        }
+        // Default: redirect to admin
+        response.sendRedirect("admin");
     }
 } 

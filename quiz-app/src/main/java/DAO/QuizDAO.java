@@ -20,4 +20,6 @@ public interface QuizDAO {
     public ArrayList<Quiz> getRecentQuizzes(int limit);
     
     public void incrementQuizCompletions(long quizId);
+
+    public ArrayList<Quiz> getAllQuizzes();
 }

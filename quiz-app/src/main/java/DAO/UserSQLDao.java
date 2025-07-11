@@ -127,4 +127,41 @@ public class UserSQLDao implements UserDAO{
             e.printStackTrace();
         }
     }
+
+    @Override
+    public ArrayList<User> getAllUsers() {
+        ArrayList<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                users.add(new User(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("email"),
+                    rs.getString("pass_hash"),
+                    rs.getInt("passed_quizzes"),
+                    rs.getBoolean("is_admin"),
+                    rs.getBoolean("is_banned"),
+                    rs.getTimestamp("created_at"),
+                    rs.getInt("quiz_created_count"),
+                    rs.getInt("quiz_taken_count")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    @Override
+    public void removeUser(User user) {
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, user.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

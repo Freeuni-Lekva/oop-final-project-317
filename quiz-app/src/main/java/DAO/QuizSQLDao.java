@@ -165,4 +165,19 @@ public class QuizSQLDao implements QuizDAO {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public ArrayList<Quiz> getAllQuizzes() {
+        ArrayList<Quiz> quizzes = new ArrayList<>();
+        String query = "SELECT * FROM quizzes";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                quizzes.add(extractQuizFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return quizzes;
+    }
 }
