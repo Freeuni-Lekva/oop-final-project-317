@@ -85,6 +85,42 @@ public class NotificationsSQLDAO implements NotificationDAO {
         return notifications;
     }
 
+    @Override
+    public int getNotificationCount(long userId) {
+        String sql = "SELECT COUNT(*) FROM notifications WHERE to_id = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, userId);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error counting notifications for user: " + userId, e);
+        }
+        return 0;
+    }
+
+    @Override
+    public String getSenderUsername(long fromUserId) {
+        String sql = "SELECT name FROM users WHERE id = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, fromUserId);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("name");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error retrieving sender username: " + fromUserId, e);
+        }
+        return "Unknown User";
+    }
+
     private Notification createNotificationInstance(String questionType) {
         switch (questionType) {
             case Notification.NOTE_NOTIFICATION:
@@ -97,5 +133,4 @@ public class NotificationsSQLDAO implements NotificationDAO {
                 return null;
         }
     }
-
 }

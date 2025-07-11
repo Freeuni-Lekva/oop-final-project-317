@@ -8,12 +8,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import DAO.UserSQLDao;
+import DAO.*;
 import com.quizmaster.util.PasswordUtil;
 import models.User;
-import DAO.QuizSQLDao;
-import DAO.UserSQLDao;
-import DAO.QuizResultSQLDAO;
 
 @WebListener
 public class ContextListener implements ServletContextListener {
@@ -201,6 +198,10 @@ public class ContextListener implements ServletContextListener {
             // Make Question DAO available
             DAO.QuestionSQLDao questionDaoObj = new DAO.QuestionSQLDao(dbConnection);
             context.setAttribute("questionDAO", questionDaoObj);
+
+            // Make Notification DAO available
+            NotificationsSQLDAO notificationDaoObj = new NotificationsSQLDAO(dbConnection);
+            context.setAttribute("notificationDAO", notificationDaoObj);
 
             System.out.println("All database tables initialized successfully");
 
