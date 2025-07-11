@@ -12,13 +12,23 @@
     <!-- Sidebar -->
     <div class="w-80 bg-white border-r border-gray-200 p-6 flex flex-col">
         <!-- Logo -->
-        <div class="mb-8">
-            <h1 class="text-2xl font-bold text-slate-700">QuizMaster</h1>
+        <div class="mb-8 cursor-pointer" onclick="window.location.href='<%= request.getContextPath() %>/'">
+            <h1 class="text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors">QuizMaster</h1>
             <p class="text-slate-500 text-sm">Your Learning Adventure</p>
         </div>
 
         <!-- Navigation -->
         <nav class="space-y-1 flex-1">
+            <!-- Home -->
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='<%= request.getContextPath() %>/'">
+                <div class="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                </div>
+                <span class="text-slate-700 font-medium">Home</span>
+            </div>
+
             <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3">
                 <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
                     <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -37,7 +47,7 @@
                 <span class="text-slate-700 font-medium">My Creations</span>
             </div>
 
-            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3">
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='<%= request.getContextPath() %>/achievements'">
                 <div class="w-8 h-8 bg-yellow-50 rounded-lg flex items-center justify-center">
                     <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>

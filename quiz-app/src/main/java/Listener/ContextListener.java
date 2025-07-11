@@ -86,7 +86,9 @@ public class ContextListener implements ServletContextListener {
                     + "nof_notifications INT DEFAULT 0, "
                     + "is_admin BOOLEAN DEFAULT FALSE, "
                     + "is_banned BOOLEAN DEFAULT FALSE, "
-                    + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+                    + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+                    + "quiz_created_count INT DEFAULT 0, "
+                    + "quiz_taken_count INT DEFAULT 0"
                     + ")";
 
             stmt.executeUpdate(createUsersTable);
@@ -94,7 +96,7 @@ public class ContextListener implements ServletContextListener {
 
             userSqlDao = new UserSQLDao(dbConnection);
             context.setAttribute("userSqlDao", userSqlDao);
-            User admin = new User("admin", "admin@admin", PasswordUtil.hashPassword("12341234"), 0, true, false);
+            User admin = new User("admin", "admin@admin", PasswordUtil.hashPassword("12341234"), 0, true, false, 0, 0);
             userSqlDao.addUser(admin);
 
             // Create Friendsships table

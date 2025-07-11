@@ -18,7 +18,9 @@ public class UserSQLDao implements UserDAO{
         int passedQuizzes = user.getPassedQuizzes();
         boolean isAdmin = user.getIfAdmin();
         boolean isBanned = user.getIfBanned();
-        String addUser = "INSERT INTO users (name, email, pass_hash, passed_quizzes, is_admin, is_banned) VALUES (?, ?, ?, ?, ?, ?)";
+        int quizCreatedCount = user.getQuizCreatedCount();
+        int quizTakenCount = user.getQuizTakenCount();
+        String addUser = "INSERT INTO users (name, email, pass_hash, passed_quizzes, is_admin, is_banned, quiz_created_count, quiz_taken_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(addUser)) {
             stmt.setString(1, name);
@@ -27,6 +29,8 @@ public class UserSQLDao implements UserDAO{
             stmt.setInt(4, passedQuizzes);
             stmt.setBoolean(5, isAdmin);
             stmt.setBoolean(6, isBanned);
+            stmt.setInt(7, quizCreatedCount);
+            stmt.setInt(8, quizTakenCount);
             stmt.executeUpdate();
             System.out.println("User added successfully");
         } catch (SQLException e) {
@@ -46,7 +50,8 @@ public class UserSQLDao implements UserDAO{
             if (rs.next()) {
                 return new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
-                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"));
+                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"),
+                        rs.getInt("quiz_created_count"), rs.getInt("quiz_taken_count"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -63,7 +68,8 @@ public class UserSQLDao implements UserDAO{
             if (rs.next()) {
                 return new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
-                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"));
+                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"),
+                        rs.getInt("quiz_created_count"), rs.getInt("quiz_taken_count"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -80,7 +86,8 @@ public class UserSQLDao implements UserDAO{
             if (rs.next()) {
                 return new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
-                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"));
+                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"), rs.getTimestamp("created_at"),
+                        rs.getInt("quiz_created_count"), rs.getInt("quiz_taken_count"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -100,7 +107,8 @@ public class UserSQLDao implements UserDAO{
             while (rs.next()) {
                 friends.add(new User(rs.getLong("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("pass_hash"), rs.getInt("passed_quizzes"),
-                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"),  rs.getTimestamp("created_at")));
+                        rs.getBoolean("is_admin"), rs.getBoolean("is_banned"),  rs.getTimestamp("created_at"),
+                        rs.getInt("quiz_created_count"), rs.getInt("quiz_taken_count")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
