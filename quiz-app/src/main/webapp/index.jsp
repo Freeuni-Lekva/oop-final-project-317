@@ -64,8 +64,8 @@ body {
     <!-- Sidebar -->
     <div class="w-80 bg-white border-r border-gray-200 p-6 flex flex-col">
         <!-- Logo -->
-        <div class="mb-8">
-            <h1 class="text-2xl font-bold text-slate-700">QuizMaster</h1>
+        <div class="mb-8 cursor-pointer" onclick="window.location.href='<%= request.getContextPath() %>/'">
+            <h1 class="text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors">QuizMaster</h1>
             <p class="text-slate-500 text-sm">Your Learning Adventure</p>
         </div>
 
@@ -90,7 +90,7 @@ body {
                 <span class="text-slate-700 font-medium">My Creations</span>
             </div>
 
-            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3">
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='<%= request.getContextPath() %>/achievements'">
                 <div class="w-8 h-8 bg-yellow-50 rounded-lg flex items-center justify-center">
                     <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -99,7 +99,7 @@ body {
                 <span class="text-slate-700 font-medium">Achievements</span>
             </div>
 
-            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3">
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='popular-quizzes'">
                 <div class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center">
                     <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>

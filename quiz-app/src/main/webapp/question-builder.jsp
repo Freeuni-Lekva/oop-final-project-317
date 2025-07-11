@@ -31,29 +31,42 @@
             <textarea name="prompt" rows="3" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3"></textarea>
         </div>
 
+        <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Points *</label>
+            <input type="number" min="1" name="points" value="1" required class="w-28 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2" />
+        </div>
+
         <% String type = (String) request.getAttribute("questionType"); %>
         <% if ("MultipleChoice".equals(type)) { %>
-            <!-- four options, single correct via radio -->
-            <% for(int i=1;i<=4;i++){ %>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Option <%= i %></label>
-                <input type="text" name="option<%= i %>" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3" />
+            <!-- dynamic options, single correct via numeric index -->
+            <div id="optionsContainer" class="space-y-4">
+                <% for(int i=1;i<=2;i++){ %>
+                <div class="relative p-4 border border-gray-200 rounded-lg">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Option <%= i %></label>
+                    <input type="text" name="option<%= i %>" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3" />
+                    <button type="button" onclick="removeOption(this)" class="absolute top-2 right-2 text-sm text-red-500 hover:text-red-700">✕</button>
+                </div>
+                <% } %>
             </div>
-            <% } %>
+            <button type="button" onclick="addOption()" class="px-3 py-2 bg-gray-100 border border-gray-200 rounded-lg text-sm hover:bg-gray-200">+ Add Option</button>
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Correct Option (1-4)</label>
-                <input type="number" min="1" max="4" name="answer" required class="w-24 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2" />
+                <label class="block text-sm font-medium text-slate-700 mb-1 mt-4">Correct Option (index)</label>
+                <input id="correctIndex" type="number" min="1" name="answer" required class="w-24 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2" />
             </div>
         <% } else if ("MultipleChoiceMultipleAnswers".equals(type)) { %>
-            <!-- four options, choose one or more correct answers -->
-            <% for(int i=1;i<=4;i++){ %>
-            <div class="flex items-center space-x-3">
-                <input type="checkbox" id="opt<%= i %>" name="answers" value="<%= i %>" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
-                <label for="opt<%= i %>" class="block text-sm font-medium text-slate-700">Option <%= i %></label>
-                <input type="text" name="option<%= i %>" class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3" />
+            <!-- dynamic options, choose one or more correct answers -->
+            <div id="optionsContainer" class="space-y-4">
+                <% for(int i=1;i<=2;i++){ %>
+                <div class="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg relative">
+                    <input type="checkbox" id="opt<%= i %>" name="answers" value="<%= i %>" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                    <label for="opt<%= i %>" class="block text-sm font-medium text-slate-700">Option <%= i %></label>
+                    <input type="text" name="option<%= i %>" class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3" />
+                    <button type="button" onclick="removeOption(this)" class="absolute top-2 right-2 text-sm text-red-500 hover:text-red-700">✕</button>
+                </div>
+                <% } %>
             </div>
-            <% } %>
-            <p class="text-xs text-slate-500">Tick all checkboxes that correspond to the correct answers.</p>
+            <button type="button" onclick="addOption()" class="px-3 py-2 bg-gray-100 border border-gray-200 rounded-lg text-sm hover:bg-gray-200">+ Add Option</button>
+            <p class="text-xs text-slate-500 mt-1">Tick all checkboxes that correspond to the correct answers.</p>
         <% } else if ("FillInBlank".equals(type)) { %>
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Correct Answer</label>
@@ -105,6 +118,72 @@
         const pos = start + 4;
         ta.focus();
         ta.setSelectionRange(pos, pos);
+    }
+
+    function renumberOptions() {
+        const container = document.getElementById('optionsContainer');
+        if (!container) return;
+        const qType = document.querySelector('input[name="questionType"]')?.value || '';
+        const rows = Array.from(container.children);
+        rows.forEach((row, idx) => {
+            const index = idx + 1; // 1-based
+            if (qType === 'MultipleChoice') {
+                row.querySelector('label').textContent = 'Option ' + index;
+                row.querySelector('input[type="text"]').name = 'option' + index;
+            } else if (qType === 'MultipleChoiceMultipleAnswers') {
+                const cb = row.querySelector('input[type="checkbox"]');
+                cb.id = 'opt' + index;
+                cb.value = index;
+                const lbl = row.querySelector('label');
+                lbl.setAttribute('for', 'opt' + index);
+                lbl.textContent = 'Option ' + index;
+                row.querySelector('input[type="text"]').name = 'option' + index;
+            }
+        });
+        const correctInput = document.getElementById('correctIndex');
+        if (correctInput) {
+            correctInput.max = rows.length;
+        }
+    }
+
+    function addOption() {
+        const container = document.getElementById('optionsContainer');
+        if (!container) return;
+        const nextIndex = container.children.length + 1;
+        const qType = document.querySelector('input[name="questionType"]')?.value || '';
+        let html = '';
+        if (qType === 'MultipleChoice') {
+            html = `<div class=\"relative p-4 border border-gray-200 rounded-lg\">` +
+                   `<label class=\"block text-sm font-medium text-slate-700 mb-1\">Option ${nextIndex}</label>` +
+                   `<input type=\"text\" name=\"option${nextIndex}\" class=\"w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3\" />` +
+                   `<button type=\"button\" onclick=\"removeOption(this)\" class=\"absolute top-2 right-2 text-sm text-red-500 hover:text-red-700\">✕</button>` +
+                   `</div>`;
+        } else if (qType === 'MultipleChoiceMultipleAnswers') {
+            html = `<div class=\"flex items-center space-x-3 p-4 border border-gray-200 rounded-lg relative\">` +
+                   `<input type=\"checkbox\" id=\"opt${nextIndex}\" name=\"answers\" value=\"${nextIndex}\" class=\"h-4 w-4 text-blue-600 border-gray-300 rounded\">` +
+                   `<label for=\"opt${nextIndex}\" class=\"block text-sm font-medium text-slate-700\">Option ${nextIndex}</label>` +
+                   `<input type=\"text\" name=\"option${nextIndex}\" class=\"flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3\" />` +
+                   `<button type=\"button\" onclick=\"removeOption(this)\" class=\"absolute top-2 right-2 text-sm text-red-500 hover:text-red-700\">✕</button>` +
+                   `</div>`;
+        }
+        if (html) {
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = html;
+            container.appendChild(wrapper.firstElementChild);
+            renumberOptions();
+        }
+    }
+
+    function removeOption(btn) {
+        const container = document.getElementById('optionsContainer');
+        if (!container) return;
+        if (container.children.length <= 2) {
+            alert('At least two options are required.');
+            return;
+        }
+        const row = btn.closest('div');
+        if (row) row.remove();
+        renumberOptions();
     }
 </script>
 </html> 

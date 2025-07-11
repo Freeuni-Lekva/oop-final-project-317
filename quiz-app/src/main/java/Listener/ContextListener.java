@@ -79,7 +79,7 @@ public class ContextListener implements ServletContextListener {
             context = sce.getServletContext();
             // Create users table
             String createUsersTable = "CREATE TABLE IF NOT EXISTS users ("
-                    + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
                     + "name VARCHAR(50) NOT NULL UNIQUE, "
                     + "email VARCHAR(255) NOT NULL UNIQUE, "
                     + "pass_hash VARCHAR(255) NOT NULL, "
@@ -87,7 +87,9 @@ public class ContextListener implements ServletContextListener {
                     + "nof_notifications INT DEFAULT 0, "
                     + "is_admin BOOLEAN DEFAULT FALSE, "
                     + "is_banned BOOLEAN DEFAULT FALSE, "
-                    + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+                    + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+                    + "quiz_created_count INT DEFAULT 0, "
+                    + "quiz_taken_count INT DEFAULT 0"
                     + ")";
 
             stmt.executeUpdate(createUsersTable);
@@ -95,27 +97,25 @@ public class ContextListener implements ServletContextListener {
 
             userSqlDao = new UserSQLDao(dbConnection);
             context.setAttribute("userSqlDao", userSqlDao);
-            User admin = new User("admin", "admin@admin", PasswordUtil.hashPassword("12341234"), 0, true, false);
+            User admin = new User("admin", "admin@admin", PasswordUtil.hashPassword("12341234"), 0, true, false, 0, 0);
             userSqlDao.addUser(admin);
 
             // Create Friendsships table
             String createFriendshipsTable = "CREATE TABLE IF NOT EXISTS friendships ("
-                    + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
                     + "user_id1 BIGINT NOT NULL, "
                     + "user_id2 BIGINT NOT NULL, "
                     + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
                     + "FOREIGN KEY (user_id1) REFERENCES users(id), "
                     + "FOREIGN KEY (user_id2) REFERENCES users(id), "
-                    + "UNIQUE KEY unique_friendship (LEAST(user_id1, user_id2), GREATEST(user_id1, user_id2))"
+                    + "UNIQUE KEY unique_friendship (user_id1, user_id2)"
                     + ")";
-
-
 
             stmt.executeUpdate(createFriendshipsTable);
             System.out.println("Frienships table created/verified successfully");
 
             // Create quizzes table
-            String createQuizzesTable = "CREATE TABLE IF NOT EXISTS quizzes ("
+            String createQuizTable = "CREATE TABLE IF NOT EXISTS quizzes ("
                     + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
                     + "title VARCHAR(255) NOT NULL, "
                     + "description TEXT, "
@@ -125,11 +125,9 @@ public class ContextListener implements ServletContextListener {
                     + "randomize_questions BOOLEAN, "
                     + "one_page BOOLEAN, "
                     + "immediate_correction BOOLEAN, "
-                    + "practice_mode BOOLEAN"
-                    + ")";
-
-            stmt.executeUpdate(createQuizzesTable);
-            System.out.println("Quizzes table created/verified successfully");
+                    + "practice_mode BOOLEAN" + ")";
+            stmt.executeUpdate(createQuizTable);
+            System.out.println("Quiz table created/verified successfully");
 
 
             // Create quiz result table
@@ -179,8 +177,9 @@ public class ContextListener implements ServletContextListener {
             System.out.println("Quiz history table created/verified successfully");
 
             // After quizzes table – initialize DAO objects in context
-            QuizResultSQLDAO quizResultSqlDao = new QuizResultSQLDAO(dbConnection);
-            context.setAttribute("quizResultDAO", quizResultSqlDao);
+            // make sure quizResultDAO is available in context
+            DAO.QuizResultSQLDAO quizResultDAOObj = new DAO.QuizResultSQLDAO(dbConnection);
+            context.setAttribute("quizResultDAO", quizResultDAOObj);
 
             System.out.println("All database tables initialized successfully");
 
@@ -189,4 +188,5 @@ public class ContextListener implements ServletContextListener {
             e.printStackTrace();
         }
     }
+
 }
