@@ -11,6 +11,7 @@ import java.util.List;
 import DAO.*;
 import com.quizmaster.util.PasswordUtil;
 import models.User;
+import DAO.QuizSQLDao;
 
 @WebListener
 public class ContextListener implements ServletContextListener {
@@ -24,6 +25,7 @@ public class ContextListener implements ServletContextListener {
             String dbUser = "root";
 
             String dbPassword = "Wiwibura22."; // change with your database password
+
 
             Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             context.setAttribute("dbConnection", dbConnection);
@@ -211,5 +213,4 @@ public class ContextListener implements ServletContextListener {
             e.printStackTrace();
         }
     }
-
 }
