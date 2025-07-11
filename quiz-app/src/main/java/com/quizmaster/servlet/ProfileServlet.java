@@ -8,6 +8,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.*;
+import DAO.UserSQLDao;
+import DAO.QuizHistorySQLDao;
+import DAO.NotificationsSQLDAO;
+import models.User;
+import models.QuizHistory;
+import models.Notification;
+import java.util.ArrayList;
 
 @WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
@@ -17,15 +24,15 @@ public class ProfileServlet extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession(false);
-        
-        // Check if user is logged in
+
         if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
         
-        models.User user = (models.User) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         String username = user.getName();
+        long userId = user.getId();
         Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
         
         try {
@@ -41,10 +48,28 @@ public class ProfileServlet extends HttpServlet {
                     }
                 }
             }
-            
+
             // Get user statistics
             getQuizStatistics(request, connection, username);
-            
+
+            // Fetch recent activities
+            QuizHistorySQLDao quizHistoryDao = new QuizHistorySQLDao(connection);
+            ArrayList<QuizHistory> recentActivities = quizHistoryDao.getUserQuizHistory(userId);
+            if (recentActivities.size() > 5) {
+                recentActivities = new ArrayList<>(recentActivities.subList(0, 5));
+            }
+            request.setAttribute("recentActivities", recentActivities);
+
+            // Fetch friends
+            UserSQLDao userDao = new UserSQLDao(connection);
+            ArrayList<User> friendsList = userDao.getFriends(userId);
+            request.setAttribute("friendsList", friendsList);
+
+            // Fetch achievements (using notifications as a placeholder for now)
+            NotificationsSQLDAO notificationsDao = new NotificationsSQLDAO(connection);
+            ArrayList<Notification> achievementsList = notificationsDao.getNotifications(userId);
+            request.setAttribute("achievementsList", achievementsList);
+
         } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("error", "Database error: " + e.getMessage());
@@ -66,12 +91,74 @@ public class ProfileServlet extends HttpServlet {
         }
         
         String action = request.getParameter("action");
-        models.User user = (models.User) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         String username = user.getName();
+        long userId = user.getId();
         Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
         
         try {
-            if ("updateProfile".equals(action)) {
+            if ("changeEmail".equals(action)) {
+                String newEmail = request.getParameter("newEmail");
+                if (newEmail != null && !newEmail.trim().isEmpty()) {
+                    String checkQuery = "SELECT id FROM users WHERE LOWER(email) = ? AND id != ?";
+                    try (PreparedStatement ps = connection.prepareStatement(checkQuery)) {
+                        ps.setString(1, newEmail.toLowerCase().trim());
+                        ps.setLong(2, userId);
+                        ResultSet rs = ps.executeQuery();
+                        if (rs.next()) {
+                            request.setAttribute("error", "Email is already in use.");
+                            request.getRequestDispatcher("/profile.jsp").forward(request, response);
+                            return;
+                        }
+                    }
+                    String updateQuery = "UPDATE users SET email = ? WHERE id = ?";
+                    try (PreparedStatement ps = connection.prepareStatement(updateQuery)) {
+                        ps.setString(1, newEmail);
+                        ps.setLong(2, userId);
+                        ps.executeUpdate();
+                    }
+                    request.setAttribute("success", "Email updated successfully.");
+                }
+                response.sendRedirect(request.getContextPath() + "/profile");
+                return;
+            } else if ("changeUsername".equals(action)) {
+                String newUsername = request.getParameter("newUsername");
+                if (newUsername != null && !newUsername.trim().isEmpty()) {
+                    String checkQuery = "SELECT id FROM users WHERE LOWER(name) = ? AND id != ?";
+                    try (PreparedStatement ps = connection.prepareStatement(checkQuery)) {
+                        ps.setString(1, newUsername.toLowerCase().trim());
+                        ps.setLong(2, userId);
+                        ResultSet rs = ps.executeQuery();
+                        if (rs.next()) {
+                            request.setAttribute("error", "Username is already in use.");
+                            request.getRequestDispatcher("/profile.jsp").forward(request, response);
+                            return;
+                        }
+                    }
+                    String updateQuery = "UPDATE users SET name = ? WHERE id = ?";
+                    try (PreparedStatement ps = connection.prepareStatement(updateQuery)) {
+                        ps.setString(1, newUsername);
+                        ps.setLong(2, userId);
+                        ps.executeUpdate();
+                    }
+                    // Update session user name
+                    user.setName(newUsername);
+                    session.setAttribute("user", user);
+                    request.setAttribute("success", "Username updated successfully.");
+                }
+                response.sendRedirect(request.getContextPath() + "/profile");
+                return;
+            } else if ("deactivateAccount".equals(action)) {
+                // Remove user from DB
+                String deleteQuery = "DELETE FROM users WHERE id = ?";
+                try (PreparedStatement ps = connection.prepareStatement(deleteQuery)) {
+                    ps.setLong(1, userId);
+                    ps.executeUpdate();
+                }
+                session.invalidate();
+                response.sendRedirect(request.getContextPath() + "/index.jsp");
+                return;
+            } else if ("updateProfile".equals(action)) {
                 updateProfile(request, response, connection, username);
             } else {
                 // Default action - redirect back to profile page
@@ -185,21 +272,17 @@ public class ProfileServlet extends HttpServlet {
         
         if (hasUpdates) {
             updateQuery.append(" WHERE name = ?");
-            
             try (PreparedStatement ps = connection.prepareStatement(updateQuery.toString())) {
                 int paramIndex = 1;
                 
                 if (email != null && !email.trim().isEmpty()) {
                     ps.setString(paramIndex++, email);
                 }
-                
                 if (newPassword != null && !newPassword.trim().isEmpty()) {
                     String newHash = com.quizmaster.util.PasswordUtil.hashPassword(newPassword);
                     ps.setString(paramIndex++, newHash);
                 }
-                
                 ps.setString(paramIndex, username);
-                
                 int rowsAffected = ps.executeUpdate();
                 if (rowsAffected > 0) {
                     request.setAttribute("success", "Profile updated successfully");
@@ -208,7 +291,6 @@ public class ProfileServlet extends HttpServlet {
                 }
             }
         }
-        
         response.sendRedirect(request.getContextPath() + "/profile");
     }
 } 
