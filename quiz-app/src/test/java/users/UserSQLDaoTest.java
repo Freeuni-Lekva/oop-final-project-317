@@ -332,4 +332,39 @@ class UserSQLDaoTest {
         assertEquals("Bob", aliceFriends.get(0).getName());
         assertEquals("Alice", bobFriends.get(0).getName());
     }
+
+    @Test
+    void testCheckIfFriends_WhenFriends() throws SQLException {
+        // Insert test users
+        insertTestUser(1L, "User One", "user1@example.com", "hash1", 3, false, false);
+        insertTestUser(2L, "User Two", "user2@example.com", "hash2", 5, false, false);
+        
+        // Make them friends
+        insertTestFriendship(1L, 2L);
+        
+        // Check both directions
+        assertTrue(userSQLDao.checkIfFriends(1L, 2L), "Users should be friends");
+        assertTrue(userSQLDao.checkIfFriends(2L, 1L), "Friendship should be bidirectional");
+    }
+
+    @Test
+    void testCheckIfFriends_WhenNotFriends() throws SQLException {
+        // Insert test users
+        insertTestUser(1L, "User One", "user1@example.com", "hash1", 3, false, false);
+        insertTestUser(2L, "User Two", "user2@example.com", "hash2", 5, false, false);
+        
+        // Don't create friendship
+        assertFalse(userSQLDao.checkIfFriends(1L, 2L), "Users should not be friends");
+        assertFalse(userSQLDao.checkIfFriends(2L, 1L), "Users should not be friends in either direction");
+    }
+
+    @Test
+    void testCheckIfFriends_WithNonExistentUser() throws SQLException {
+        // Insert only one test user
+        insertTestUser(1L, "User One", "user1@example.com", "hash1", 3, false, false);
+        
+        // Check with non-existent user
+        assertFalse(userSQLDao.checkIfFriends(1L, 999L), "Should return false for non-existent user");
+        assertFalse(userSQLDao.checkIfFriends(999L, 1L), "Should return false when checking in opposite direction");
+    }
 }

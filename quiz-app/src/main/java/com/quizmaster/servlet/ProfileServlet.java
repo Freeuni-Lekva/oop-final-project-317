@@ -1,5 +1,8 @@
 package com.quizmaster.servlet;
 
+import DAO.UserDAO;
+import models.User;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,26 +27,42 @@ public class ProfileServlet extends HttpServlet {
             return;
         }
         
-        models.User user = (models.User) session.getAttribute("user");
-        String username = user.getName();
+        User currentUser = (User) session.getAttribute("user");
         Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
+        UserDAO userDAO = (UserDAO) getServletContext().getAttribute("userSqlDao");
+        
+        // Check if we're viewing another user's profile
+        String userIdParam = request.getParameter("userId");
+        User profileUser = currentUser; // Default to current user
+        boolean isOwnProfile = true;
+        
+        if (userIdParam != null && !userIdParam.trim().isEmpty()) {
+            try {
+                long userId = Long.parseLong(userIdParam.trim());
+                if (userId != currentUser.getId()) {
+                    // Viewing another user's profile
+                    profileUser = userDAO.getUser(userId);
+                    if (profileUser == null) {
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
+                        return;
+                    }
+                    isOwnProfile = false;
+                }
+            } catch (NumberFormatException e) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid user ID");
+                return;
+            }
+        }
         
         try {
-            // Get user details from database
-            String userQuery = "SELECT name, email, created_at FROM users WHERE name = ?";
-            try (PreparedStatement ps = connection.prepareStatement(userQuery)) {
-                ps.setString(1, username);
-                
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        request.setAttribute("userEmail", rs.getString("email"));
-                        request.setAttribute("userCreatedAt", rs.getTimestamp("created_at"));
-                    }
-                }
-            }
-            
             // Get user statistics
-            getQuizStatistics(request, connection, username);
+            getQuizStatistics(request, connection, profileUser.getName());
+            
+            // Set profile attributes
+            request.setAttribute("profileUser", profileUser);
+            request.setAttribute("isOwnProfile", isOwnProfile);
+            request.setAttribute("userEmail", profileUser.getEmail());
+            request.setAttribute("userCreatedAt", profileUser.getCreatedAt());
             
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,7 +85,7 @@ public class ProfileServlet extends HttpServlet {
         }
         
         String action = request.getParameter("action");
-        models.User user = (models.User) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         String username = user.getName();
         Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
         
@@ -80,7 +99,7 @@ public class ProfileServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("error", "Database error: " + e.getMessage());
-            request.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(request, response);
+            request.getRequestDispatcher("/profile.jsp").forward(request, response);
         }
     }
     
