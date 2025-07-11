@@ -27,7 +27,7 @@
 
         <!-- Navigation -->
         <nav class="space-y-1 flex-1">
-            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='QuizHistory.jsp'">
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='quiz-history'">
                 <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
                     <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
@@ -70,9 +70,11 @@
                 <span class="text-slate-700 font-medium">Recent Quizzes</span>
             </div>
 
-            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3">
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='friends'">
                 <div class="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
                 </div>
                 <span class="text-slate-700 font-medium">Friends</span>
             </div>
@@ -129,11 +131,22 @@
                         String cardClass = cardClasses[idx % cardClasses.length];
                         idx++;
             %>
-            <div class="<%= cardClass %> rounded-2xl p-6 card-hover cursor-pointer" onclick="window.location.href='QuizSummary?quizId=<%= q.getId() %>'">
-                <h3 class="text-xl font-bold text-white mb-2"><%= q.getTitle() %></h3>
-                <p class="text-white text-sm opacity-90 mb-4"><%= q.getDescription() == null ? "" : q.getDescription() %></p>
-                <div class="flex items-center space-x-3 text-white/90 text-xs">
-                    <span>Created: <%= q.getCreatedDate().toLocalDate() %></span>
+            <div class="<%= cardClass %> rounded-2xl p-6 card-hover relative">
+                <form method="post" action="delete-quiz" onsubmit="return confirm('Delete this quiz permanently?');" class="absolute top-4 right-4 z-10">
+                    <input type="hidden" name="quizId" value="<%= q.getId() %>">
+                    <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-full border border-red-500 text-red-500 hover:bg-red-50" title="Delete Quiz">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span class="sr-only">Delete</span>
+                    </button>
+                </form>
+                <div onclick="window.location.href='QuizSummary?quizId=<%= q.getId() %>'" class="cursor-pointer space-y-2">
+                    <h3 class="text-xl font-bold text-white mb-2"><%= q.getTitle() %></h3>
+                    <p class="text-white text-sm opacity-90 mb-4"><%= q.getDescription() == null ? "" : q.getDescription() %></p>
+                    <div class="flex items-center space-x-3 text-white/90 text-xs">
+                        <span>Created: <%= q.getCreatedDate().toLocalDate() %></span>
+                    </div>
                 </div>
             </div>
             <%

@@ -36,10 +36,6 @@
             <input type="number" min="1" name="points" value="1" required class="w-28 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2" />
         </div>
 
-        <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Time Limit (minutes, 0 = unlimited)</label>
-            <input type="number" min="0" name="timeLimit" value="0" class="w-32 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2" />
-        </div>
 
         <% String type = (String) request.getAttribute("questionType"); %>
         <% if ("MultipleChoice".equals(type)) { %>

@@ -117,7 +117,11 @@ public class QuestionBuilderServlet extends HttpServlet {
                 List<String> options = collectSequentialValues(map, "option");
                 int correctIdx = 0;
                 try { correctIdx = Integer.parseInt(map.getOrDefault("answer", new String[]{"1"})[0]) - 1; } catch (NumberFormatException ignored) {}
-                String correctAns = (correctIdx >=0 && correctIdx < options.size()) ? options.get(correctIdx) : "";
+                if (correctIdx >=0 && correctIdx < options.size()) {
+                    // move correct answer to first position so DAO can recognise it
+                    java.util.Collections.swap(options, 0, correctIdx);
+                }
+                String correctAns = options.get(0);
                 MultipleChoiceQuestion q = new MultipleChoiceQuestion(prompt, options, correctAns);
                 q.setPoints(points);
                 q.setTimeLimit(timeLimit);
@@ -191,7 +195,7 @@ public class QuestionBuilderServlet extends HttpServlet {
             String key = prefix + i;
             if (!map.containsKey(key)) break;
             String val = map.get(key)[0];
-            if (val != null) list.add(val);
+            if (val != null && !val.trim().isEmpty()) list.add(val.trim());
             i++;
         }
         return list;

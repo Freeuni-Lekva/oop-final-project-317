@@ -1,4 +1,7 @@
 <%@ page import="models.User" %>
+<%@ page import="models.Quiz" %>
+<%@ page import="java.util.List" %>
+<%@ page import="DAO.NotificationDAO" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,7 +76,7 @@ body {
 
         <!-- Navigation -->
         <nav class="space-y-1 flex-1">
-            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='QuizHistory.jsp'">                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='quiz-history'">                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
                 <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                 </svg>
@@ -117,7 +120,7 @@ body {
                 <span class="text-slate-700 font-medium">Recent Quizzes</span>
             </div>
 
-            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3">
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='friends'">
                 <div class="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
                     <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
@@ -158,9 +161,11 @@ body {
                 <!-- Search Bar -->
                 <div class="flex-1 max-w-2xl">
                     <div class="relative">
-                        <input type="text" placeholder="Search for quizzes, topics, or friends..."
-                               class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
-                        <div class="absolute right-3 top-3">
+                        <form action="search" method="GET" class="w-full">
+                            <input type="text" name="q" id="searchInput" placeholder="Search for quizzes, topics, or friends..."
+                                   class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                        </form>
+                        <div class="absolute right-3 top-3 cursor-pointer" onclick="document.getElementById('searchInput').closest('form').submit();">
                             <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                             </svg>
@@ -192,13 +197,20 @@ body {
                     <% } %>
 
                     <!-- Notification Icon (always visible) -->
-                    <button class="relative p-3 bg-gray-50 rounded-xl border border-gray-200 hover:bg-gray-100 transition-colors">
+                    <a href="notifications" class="relative p-3 bg-gray-50 rounded-xl border border-gray-200 hover:bg-gray-100 transition-colors">
                         <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.73 21a2 2 0 0 1-3.46 0"/>
                         </svg>
-                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center notification-pulse">5</span>
-                    </button>
+                        <% if (session.getAttribute("user") != null) {
+                            NotificationDAO notificationDAO = (NotificationDAO) request.getServletContext().getAttribute("notificationDAO");
+                            User currentUser = (User) session.getAttribute("user");
+                            int notificationCount = notificationDAO.getNotificationCount(currentUser.getId());
+                            if (notificationCount > 0) {
+                        %>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center notification-pulse"><%= notificationCount %></span>
+                        <% } } %>
+                    </a>
                 </div>
             </div>
         </div>
@@ -240,61 +252,26 @@ body {
 
             <!-- Quiz Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Quiz Card 1 -->
-                <div class="quiz-card-1 rounded-2xl p-6 card-hover cursor-pointer">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="bg-white/20 rounded-full px-3 py-1">
-                            <span class="text-white text-sm font-medium">25 Questions</span>
+                <%
+    DAO.QuizDAO quizDAO = (DAO.QuizDAO) application.getAttribute("quizDAO");
+    java.util.List<models.Quiz> quizList = quizDAO != null ? quizDAO.getRecentQuizzes(1000) : java.util.Collections.emptyList();
+%>
+                <% if (quizList != null && !quizList.isEmpty()) {
+                       String[] classes = {"quiz-card-1","quiz-card-2","quiz-card-3","quiz-card-4"};
+                       int c=0;
+                       for (models.Quiz q : quizList) {
+                         String cls = classes[c % classes.length]; c++; %>
+                        <div class="<%= cls %> rounded-2xl p-6 card-hover cursor-pointer" onclick="window.location.href='QuizSummary?quizId=<%= q.getId() %>'">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="bg-white/20 rounded-full px-3 py-1"><span class="text-white text-sm font-medium"><%= q.getQuestionCount() %> Questions</span></div>
+                                <div class="bg-slate-700 rounded-full px-3 py-1"><span class="text-white text-sm"><%= q.getTimeLimit()>0 ? (q.getTimeLimit()/60)+" min" : "No limit" %></span></div>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2"><%= q.getTitle() %></h3>
+                            <p class="text-white text-sm opacity-90 mb-4"><%= q.getDescription()==null?"":q.getDescription() %></p>
                         </div>
-                        <div class="bg-slate-700 rounded-full px-3 py-1">
-                            <span class="text-white text-sm">15 min</span>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">Ultimate Science Challenge</h3>
-                    <p class="text-slate-600 mb-4">Test your knowledge across physics, chemistry, and biology. From quantum mechanics to molecular structures, this comprehensive quiz covers the fascinating world of science.</p>
-                </div>
-
-                <!-- Quiz Card 2 -->
-                <div class="quiz-card-2 rounded-2xl p-6 card-hover cursor-pointer">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="bg-white/20 rounded-full px-3 py-1">
-                            <span class="text-white text-sm font-medium">30 Questions</span>
-                        </div>
-                        <div class="bg-slate-700 rounded-full px-3 py-1">
-                            <span class="text-white text-sm">20 min</span>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">World Geography Master</h3>
-                    <p class="text-slate-600 mb-4">Explore continents, capitals, and cultures! Journey through countries, landmarks, and natural wonders in this exciting geography adventure that will expand your worldview.</p>
-                </div>
-
-                <!-- Quiz Card 3 -->
-                <div class="quiz-card-3 rounded-2xl p-6 card-hover cursor-pointer">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="bg-white/20 rounded-full px-3 py-1">
-                            <span class="text-white text-sm font-medium">20 Questions</span>
-                        </div>
-                        <div class="bg-slate-700 rounded-full px-3 py-1">
-                            <span class="text-white text-sm">12 min</span>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">Movie Trivia Extravaganza</h3>
-                    <p class="text-slate-600 mb-4">From classic Hollywood gems to modern blockbusters, test your cinema knowledge! Dive into directors, actors, plot twists, and behind-the-scenes secrets.</p>
-                </div>
-
-                <!-- Quiz Card 4 -->
-                <div class="quiz-card-4 rounded-2xl p-6 card-hover cursor-pointer">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="bg-white/20 rounded-full px-3 py-1">
-                            <span class="text-white text-sm font-medium">35 Questions</span>
-                        </div>
-                        <div class="bg-slate-700 rounded-full px-3 py-1">
-                            <span class="text-white text-sm">25 min</span>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">Ancient Civilizations Quest</h3>
-                    <p class="text-slate-600 mb-4">Uncover the mysteries of ancient Egypt, Greece, Rome, and beyond! Discover pharaohs, philosophers, and legendary empires that shaped our modern world.</p>
-                </div>
+                <% } } else { %>
+                    <div class="col-span-full text-center text-slate-600">No quizzes created yet.</div>
+                <% } %>
             </div>
         </div>
     </div>

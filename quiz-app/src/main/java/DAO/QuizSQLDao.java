@@ -67,8 +67,7 @@ public class QuizSQLDao implements QuizDAO {
             stmt.setLong(1, userId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Quiz quiz = extractQuizFromResultSet(rs);
-                quizzes.add(quiz);
+                quizzes.add(extractQuizFromResultSet(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -113,14 +112,12 @@ public class QuizSQLDao implements QuizDAO {
         }
     }
 
-    // Helper method to convert a ResultSet row into a Quiz object
     private Quiz extractQuizFromResultSet(ResultSet rs) throws SQLException {
         Quiz quiz = new Quiz(
                 rs.getString("title"),
                 rs.getString("description"),
                 rs.getLong("created_by")
         );
-
         quiz.setId(rs.getLong("id"));
         quiz.setCreatedDate(rs.getTimestamp("created_date").toLocalDateTime());
         quiz.setLastModified(rs.getTimestamp("last_modified").toLocalDateTime());
@@ -128,12 +125,8 @@ public class QuizSQLDao implements QuizDAO {
         quiz.setOnePage(rs.getBoolean("one_page"));
         quiz.setImmediateCorrection(rs.getBoolean("immediate_correction"));
         quiz.setPracticeMode(rs.getBoolean("practice_mode"));
-        try {
-            quiz.setTimeLimit(rs.getInt("time_limit"));
-        } catch (SQLException ignore) {}
-        try {
-            quiz.setTimesTaken(rs.getInt("times_taken"));
-        } catch (SQLException ignore) {}
+        try { quiz.setTimeLimit(rs.getInt("time_limit")); } catch (SQLException ignore) {}
+        try { quiz.setTimesTaken(rs.getInt("times_taken")); } catch (SQLException ignore) {}
         return quiz;
     }
 
@@ -141,13 +134,11 @@ public class QuizSQLDao implements QuizDAO {
     public ArrayList<Quiz> getRecentQuizzes(int limit) {
         ArrayList<Quiz> quizzes = new ArrayList<>();
         String query = "SELECT * FROM quizzes ORDER BY created_date DESC LIMIT ?";
-
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, limit);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Quiz quiz = extractQuizFromResultSet(rs);
-                quizzes.add(quiz);
+                quizzes.add(extractQuizFromResultSet(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -164,5 +155,55 @@ public class QuizSQLDao implements QuizDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public ArrayList<Quiz> getAllQuizzes() {
+        ArrayList<Quiz> quizzes = new ArrayList<>();
+        String query = "SELECT * FROM quizzes";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                quizzes.add(extractQuizFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return quizzes;
+    }
+
+    @Override
+    public ArrayList<Quiz> searchQuizzes(String searchTerm, int limit) {
+        ArrayList<Quiz> quizzes = new ArrayList<>();
+        String query = "SELECT * FROM quizzes WHERE LOWER(title) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?) ORDER BY created_date DESC LIMIT ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            String pattern = "%" + searchTerm + "%";
+            stmt.setString(1, pattern);
+            stmt.setString(2, pattern);
+            stmt.setInt(3, limit);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                quizzes.add(extractQuizFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return quizzes;
+    }
+
+    @Override
+    public ArrayList<Quiz> getAllQuizzes(int limit) {
+        ArrayList<Quiz> quizzes = new ArrayList<>();
+        String query = "SELECT * FROM quizzes ORDER BY created_date DESC LIMIT ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                quizzes.add(extractQuizFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return quizzes;
     }
 }

@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import DAO.UserSQLDao;
+import DAO.*;
 import com.quizmaster.util.PasswordUtil;
 import models.User;
 import DAO.QuizSQLDao;
@@ -23,8 +23,9 @@ public class ContextListener implements ServletContextListener {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String dbUrl = "jdbc:mysql://localhost:3306/quizmaster_db";
             String dbUser = "root";
-
+          
             String dbPassword = "marikuna12"; // change with your database password
+
 
             Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             context.setAttribute("dbConnection", dbConnection);
@@ -199,6 +200,10 @@ public class ContextListener implements ServletContextListener {
             // Make Question DAO available
             DAO.QuestionSQLDao questionDaoObj = new DAO.QuestionSQLDao(dbConnection);
             context.setAttribute("questionDAO", questionDaoObj);
+
+            // Make Notification DAO available
+            NotificationsSQLDAO notificationDaoObj = new NotificationsSQLDAO(dbConnection);
+            context.setAttribute("notificationDAO", notificationDaoObj);
 
             System.out.println("All database tables initialized successfully");
 
