@@ -19,8 +19,37 @@
     <title><%= quiz.getTitle() %> - Summary</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
-<!-- Header -->
+<body class="overflow-hidden bg-gray-50">
+<div class="flex h-screen">
+    <%-- Sidebar copied from index.jsp --%>
+    <div class="w-80 bg-white border-r border-gray-200 p-6 flex flex-col">
+        <div class="mb-8 cursor-pointer" onclick="window.location.href='index.jsp'">
+            <h1 class="text-2xl font-bold text-slate-700">QuizMaster</h1>
+            <p class="text-slate-500 text-sm">Your Learning Adventure</p>
+        </div>
+        <nav class="space-y-1 flex-1">
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='quiz-history'">
+                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center"><svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+                <span class="text-slate-700 font-medium">My Quiz History</span>
+            </div>
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='my-creations'">
+                <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center"><svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></div>
+                <span class="text-slate-700 font-medium">My Creations</span>
+            </div>
+            <!-- Other nav items omitted for brevity -->
+        </nav>
+    </div>
+
+    <!-- Right side (content) -->
+    <div class="flex-1 flex flex-col">
+        <!-- Top Bar (simple placeholder) -->
+        <div class="bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-slate-700">Quiz Summary</h2>
+        </div>
+
+        <!-- Content scroll area -->
+        <div class="flex-1 overflow-y-auto">
+            <!-- Header -->
 <header class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-12 shadow-md">
     <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
         <div>
