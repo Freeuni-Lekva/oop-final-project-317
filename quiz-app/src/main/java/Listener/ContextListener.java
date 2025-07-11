@@ -23,7 +23,7 @@ public class ContextListener implements ServletContextListener {
             String dbUrl = "jdbc:mysql://localhost:3306/quizmaster_db";
             String dbUser = "root";
 
-            String dbPassword = "KoMSHi!!17"; // change with your database password
+            String dbPassword = "Wiwibura22."; // change with your database password
 
             Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             context.setAttribute("dbConnection", dbConnection);
@@ -190,20 +190,21 @@ public class ContextListener implements ServletContextListener {
 
             System.out.println("Quiz history table created/verified successfully");
 
-            // After quizzes table – initialize DAO objects in context
-            // make sure quizResultDAO is available in context
-            DAO.QuizResultSQLDAO quizResultDAOObj = new DAO.QuizResultSQLDAO(dbConnection);
+            // Initialize all DAOs in context
+            QuizResultSQLDAO quizResultDAOObj = new QuizResultSQLDAO(dbConnection);
             context.setAttribute("quizResultDAO", quizResultDAOObj);
 
-            // Make Question DAO available
-            DAO.QuestionSQLDao questionDaoObj = new DAO.QuestionSQLDao(dbConnection);
+            QuestionSQLDao questionDaoObj = new QuestionSQLDao(dbConnection);
             context.setAttribute("questionDAO", questionDaoObj);
 
-            // Make Notification DAO available
             NotificationsSQLDAO notificationDaoObj = new NotificationsSQLDAO(dbConnection);
             context.setAttribute("notificationDAO", notificationDaoObj);
 
-            System.out.println("All database tables initialized successfully");
+            // Initialize QuizHistoryDAO
+            QuizHistorySQLDao quizHistoryDAOObj = new QuizHistorySQLDao(dbConnection);
+            context.setAttribute("quizHistoryDAO", quizHistoryDAOObj);
+
+            System.out.println("All database tables and DAOs initialized successfully");
 
         } catch (SQLException e) {
             System.err.println("Error initializing database tables: " + e.getMessage());

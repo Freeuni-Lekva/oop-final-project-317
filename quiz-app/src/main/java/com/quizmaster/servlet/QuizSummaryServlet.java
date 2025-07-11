@@ -17,10 +17,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @WebServlet("/QuizSummary")
 public class QuizSummaryServlet extends HttpServlet {
@@ -35,6 +32,19 @@ public class QuizSummaryServlet extends HttpServlet {
         this.quizDAO = (QuizDAO) getServletContext().getAttribute("quizDAO");
         this.quizResultDAO = (QuizResultDAO) getServletContext().getAttribute("quizResultDAO");
         this.userDAO = (UserDAO) getServletContext().getAttribute("userDAO");
+    }
+
+    private Map<Long, User> getUsersForResults(List<QuizResult> results) {
+        Map<Long, User> userMap = new HashMap<>();
+        for (QuizResult result : results) {
+            if (!userMap.containsKey(result.getUserId())) {
+                User user = userDAO.getUser(result.getUserId());
+                if (user != null) {
+                    userMap.put(result.getUserId(), user);
+                }
+            }
+        }
+        return userMap;
     }
 
     @Override
@@ -112,6 +122,9 @@ public class QuizSummaryServlet extends HttpServlet {
             List<QuizResult> recentPerformers = getRecentPerformers(officialResults, 20);
             QuizStats quizStats = calculateQuizStatistics(officialResults);
 
+            // Get user information for all results
+            Map<Long, User> userMap = getUsersForResults(officialResults);
+
             boolean isOwner = currentUserId != null && currentUserId.equals(quiz.getCreatedBy());
 
             request.setAttribute("quiz", quiz);
@@ -124,6 +137,7 @@ public class QuizSummaryServlet extends HttpServlet {
             request.setAttribute("isOwner", isOwner);
             request.setAttribute("currentUser", currentUser);
             request.setAttribute("sortBy", sortBy);
+            request.setAttribute("userMap", userMap);
 
             RequestDispatcher dispatcher = request.getRequestDispatcher("/quizSummary.jsp");
             dispatcher.forward(request, response);

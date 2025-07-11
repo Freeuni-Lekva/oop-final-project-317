@@ -25,14 +25,14 @@ public class AchievementsServlet extends HttpServlet {
         }
 
         User user = (User) session.getAttribute("user");
-        String username = user.getName();
+        Long userId = user.getId();
         Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
 
         try {
             // Get number of quizzes created
-            String quizzesCreatedQuery = "SELECT COUNT(*) as count FROM quizzes WHERE creator_name = ?";
+            String quizzesCreatedQuery = "SELECT COUNT(*) as count FROM quizzes WHERE created_by = ?";
             try (PreparedStatement ps = connection.prepareStatement(quizzesCreatedQuery)) {
-                ps.setString(1, username);
+                ps.setLong(1, userId);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         request.setAttribute("quizzesCreated", rs.getInt("count"));
@@ -41,9 +41,9 @@ public class AchievementsServlet extends HttpServlet {
             }
 
             // Get number of quizzes taken
-            String quizzesTakenQuery = "SELECT COUNT(*) as count FROM quiz_attempts WHERE user_name = ?";
+            String quizzesTakenQuery = "SELECT COUNT(*) as count FROM quiz_history WHERE user_id = ?";
             try (PreparedStatement ps = connection.prepareStatement(quizzesTakenQuery)) {
-                ps.setString(1, username);
+                ps.setLong(1, userId);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         request.setAttribute("quizzesTaken", rs.getInt("count"));
@@ -52,11 +52,11 @@ public class AchievementsServlet extends HttpServlet {
             }
 
             // Get number of best scores (highest score in a quiz)
-            String bestScoresQuery = "SELECT COUNT(*) as count FROM quiz_attempts qa1 " +
-                    "WHERE score = (SELECT MAX(score) FROM quiz_attempts qa2 WHERE qa2.quiz_id = qa1.quiz_id) " +
-                    "AND user_name = ?";
+            String bestScoresQuery = "SELECT COUNT(*) as count FROM quiz_results qr1 " +
+                    "WHERE score = (SELECT MAX(score) FROM quiz_results qr2 WHERE qr2.quiz_id = qr1.quiz_id) " +
+                    "AND user_id = ?";
             try (PreparedStatement ps = connection.prepareStatement(bestScoresQuery)) {
-                ps.setString(1, username);
+                ps.setLong(1, userId);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         request.setAttribute("bestScores", rs.getInt("count"));
@@ -65,9 +65,9 @@ public class AchievementsServlet extends HttpServlet {
             }
 
             // Check if user has taken any practice mode quizzes
-            String practiceModeQuery = "SELECT COUNT(*) as count FROM quiz_attempts WHERE user_name = ? AND practice_mode = true";
+            String practiceModeQuery = "SELECT COUNT(*) as count FROM quiz_results WHERE user_id = ? AND is_practice_mode = true";
             try (PreparedStatement ps = connection.prepareStatement(practiceModeQuery)) {
-                ps.setString(1, username);
+                ps.setLong(1, userId);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         request.setAttribute("practiceQuizzes", rs.getInt("count"));

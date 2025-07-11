@@ -5,6 +5,7 @@ import DAO.*;
 import models.Quiz;
 import models.Question;
 import models.QuizResult;
+import models.QuizHistory;
 import models.User;
 
 import javax.servlet.ServletException;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -23,6 +25,7 @@ public class TakeQuizServlet extends HttpServlet {
     private QuizDAO quizDAO;
     private QuestionDAO questionDAO;
     private QuizResultDAO quizResultDAO;
+    private QuizHistoryDAO quizHistoryDAO;
 
     @Override
     public void init() throws ServletException {
@@ -30,6 +33,30 @@ public class TakeQuizServlet extends HttpServlet {
         quizDAO = (QuizDAO) getServletContext().getAttribute("quizDAO");
         questionDAO = (QuestionDAO) getServletContext().getAttribute("questionDAO");
         quizResultDAO = (QuizResultDAO) getServletContext().getAttribute("quizResultDAO");
+        
+        // Initialize QuizHistoryDAO
+        Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
+        if (connection != null) {
+            quizHistoryDAO = new QuizHistorySQLDao(connection);
+        }
+    }
+
+    private void ensureDAOsInitialized() {
+        if (quizDAO == null) {
+            quizDAO = (QuizDAO) getServletContext().getAttribute("quizDAO");
+        }
+        if (questionDAO == null) {
+            questionDAO = (QuestionDAO) getServletContext().getAttribute("questionDAO");
+        }
+        if (quizResultDAO == null) {
+            quizResultDAO = (QuizResultDAO) getServletContext().getAttribute("quizResultDAO");
+        }
+        if (quizHistoryDAO == null) {
+            Connection connection = (Connection) getServletContext().getAttribute("dbConnection");
+            if (connection != null) {
+                quizHistoryDAO = new QuizHistorySQLDao(connection);
+            }
+        }
     }
 
     @Override
@@ -49,9 +76,8 @@ public class TakeQuizServlet extends HttpServlet {
             return;
         }
 
-        // Lazy load DAOs if init() didn t get them for some reason
-        if (quizDAO == null) quizDAO = (QuizDAO) getServletContext().getAttribute("quizDAO");
-        if (questionDAO == null) questionDAO = (QuestionDAO) getServletContext().getAttribute("questionDAO");
+        // Ensure all DAOs are initialized
+        ensureDAOsInitialized();
 
         if (quizDAO == null || questionDAO == null) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "DAO initialization problem");
@@ -74,6 +100,7 @@ public class TakeQuizServlet extends HttpServlet {
         HttpSession session = request.getSession();
         session.setAttribute("currentQuiz", quiz);
         session.setAttribute("currentQuizQuestions", questions);
+        session.setAttribute("quizStartTime", System.currentTimeMillis()); // Store start time
 
         // Forward to JSP page to render the quiz
         request.setAttribute("quiz", quiz);
@@ -89,6 +116,9 @@ public class TakeQuizServlet extends HttpServlet {
             response.sendRedirect("login");
             return;
         }
+
+        // Ensure all DAOs are initialized
+        ensureDAOsInitialized();
 
         Quiz quiz = (Quiz) session.getAttribute("currentQuiz");
         @SuppressWarnings("unchecked")
@@ -140,12 +170,27 @@ public class TakeQuizServlet extends HttpServlet {
         quizResult.setPracticeMode(quiz.isPracticeMode());
 
         try {
-            if (quizResultDAO == null) {
-                quizResultDAO = (QuizResultDAO) getServletContext().getAttribute("quizResultDAO");
-            }
             if (quizResultDAO != null) {
                 quizResultDAO.addQuizResult(quizResult);
             }
+
+            // Save to quiz history
+            if (quizHistoryDAO != null) {
+                // Calculate time taken using the stored start time
+                long startTime = session.getAttribute("quizStartTime") != null ? 
+                    (Long) session.getAttribute("quizStartTime") : 
+                    session.getCreationTime();
+                int timeTaken = (int)(System.currentTimeMillis() - startTime) / 1000; // Time taken in seconds
+
+                QuizHistory quizHistory = new QuizHistory(
+                    userId,
+                    quiz.getId(),
+                    (int)((double)totalPoints / maxPoints * 100), // Convert to percentage
+                    timeTaken
+                );
+                quizHistoryDAO.addQuizHistory(quizHistory);
+            }
+
             // Increment quiz times taken
             if (quizDAO != null) {
                 quizDAO.incrementQuizCompletions(quiz.getId());
@@ -157,6 +202,7 @@ public class TakeQuizServlet extends HttpServlet {
         // Clean up session attributes
         session.removeAttribute("currentQuiz");
         session.removeAttribute("currentQuizQuestions");
+        session.removeAttribute("quizStartTime");
 
         // Redirect to quiz result page
         response.sendRedirect(request.getContextPath() + "/quiz-result?resultId=" + quizResult.getId());

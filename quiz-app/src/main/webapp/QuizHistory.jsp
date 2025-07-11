@@ -2,6 +2,7 @@
 <%@ page import="models.QuizHistory" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page import="models.User" %>
+<%@ page import="java.util.Map" %>
 <%
     // Authentication check - redirect to login if not authenticated
     if (session == null || session.getAttribute("user") == null) {
@@ -117,21 +118,6 @@
                     <h1 class="text-2xl font-bold text-slate-700">My Quiz History</h1>
                     <p class="text-slate-500">Track your progress and achievements</p>
                 </div>
-
-                <!-- User Actions -->
-                <div class="flex items-center space-x-4">
-                    <% if (session.getAttribute("user") != null) { %>
-                    <a href="profile" class="px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-slate-700 font-medium hover:bg-gray-200 transition-colors">
-                        <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
-                        Profile
-                    </a>
-                    <a href="signout" class="px-4 py-3 bg-slate-600 rounded-xl text-white font-medium hover:bg-slate-700 transition-colors">
-                        Sign Out
-                    </a>
-                    <% } %>
-                </div>
             </div>
         </div>
 
@@ -139,16 +125,18 @@
         <div class="flex-1 p-6 overflow-y-auto">
             <%
                 ArrayList<QuizHistory> quizHistory = (ArrayList<QuizHistory>) request.getAttribute("quizHistory");
+                Map<Long, String> quizNames = (Map<Long, String>) request.getAttribute("quizNames");
                 if (quizHistory != null && !quizHistory.isEmpty()) {
             %>
             <div class="space-y-4">
                 <%
                     for (QuizHistory history : quizHistory) {
+                        String quizName = quizNames.getOrDefault(history.getQuizId(), "Unknown Quiz");
                 %>
                 <div class="bg-white rounded-2xl p-6 border border-gray-200 card-hover">
                     <div class="flex items-center justify-between">
                         <div class="flex-1">
-                            <h3 class="text-lg font-semibold text-slate-700 mb-2">Quiz ID: <%= history.getQuizId() %></h3>
+                            <h3 class="text-lg font-semibold text-slate-700 mb-2"><%= quizName %></h3>
                             <div class="flex items-center space-x-6 text-sm text-slate-600">
                                 <div class="flex items-center">
                                     <svg class="w-4 h-4 mr-1 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,7 +148,7 @@
                                     <svg class="w-4 h-4 mr-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>
-                                    Time: <%= history.getTimeTaken() %> minutes
+                                    Time: <%= history.getTimeTaken() / 60 %> minutes
                                 </div>
                                 <div class="flex items-center">
                                     <svg class="w-4 h-4 mr-1 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

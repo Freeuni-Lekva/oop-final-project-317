@@ -6,6 +6,7 @@
     List<QuizResult> past = (List<QuizResult>) request.getAttribute("userPastResults");
     List<QuizResult> top = (List<QuizResult>) request.getAttribute("topResults");
     User currentUser = (User) request.getAttribute("currentUser");
+    Map<Long, User> userMap = (Map<Long, User>) request.getAttribute("userMap");
     DecimalFormat df = new DecimalFormat("#.#");
 %>
 <!DOCTYPE html>
@@ -156,8 +157,16 @@
                     <table class="min-w-full text-sm divide-y divide-gray-200">
                         <thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left">Rank</th><th class="px-4 py-3 text-left">User</th><th class="px-4 py-3 text-left">%</th></tr></thead>
                         <tbody class="divide-y divide-gray-100">
-                        <% int rank=1; for(QuizResult r: top){ boolean me = (currentUser!=null && currentUser.getId()==r.getUserId()); %>
-                        <tr class="<%= me?"bg-indigo-50 font-semibold":"hover:bg-gray-50" %>"><td class="px-4 py-3"><%= rank++ %></td><td class="px-4 py-3">User #<%= r.getUserId() %></td><td class="px-4 py-3"><%= df.format(r.getPercentage()) %>%</td></tr>
+                        <% int rank=1; for(QuizResult r: top){ 
+                            boolean me = (currentUser!=null && currentUser.getId()==r.getUserId());
+                            User user = userMap.get(r.getUserId());
+                            String userName = user != null ? user.getName() : "Unknown User";
+                        %>
+                        <tr class="<%= me?"bg-indigo-50 font-semibold":"hover:bg-gray-50" %>">
+                            <td class="px-4 py-3"><%= rank++ %></td>
+                            <td class="px-4 py-3"><%= userName %><%= me ? " (You)" : "" %></td>
+                            <td class="px-4 py-3"><%= df.format(r.getPercentage()) %>%</td>
+                        </tr>
                         <% } %>
                         </tbody>
                     </table>
