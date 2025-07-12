@@ -14,7 +14,7 @@ public class UserSQLDao implements UserDAO {
 
     @Override
     public void addUser(User user) {
-        String sql = "INSERT INTO users (name, email, pass_hash, passed_quizzes, is_admin, is_banned, quiz_created_count, quiz_taken_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (name, email, pass_hash, passed_quizzes, is_admin, is_banned, created_at, quiz_created_count, quiz_taken_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, user.getName());
             stmt.setString(2, user.getEmail());
@@ -22,8 +22,9 @@ public class UserSQLDao implements UserDAO {
             stmt.setInt(4, user.getPassedQuizzes());
             stmt.setBoolean(5, user.getIfAdmin());
             stmt.setBoolean(6, user.getIfBanned());
-            stmt.setInt(7, user.getQuizCreatedCount());
-            stmt.setInt(8, user.getQuizTakenCount());
+            stmt.setTimestamp(7, user.getCreatedAt());
+            stmt.setInt(8, user.getQuizCreatedCount());
+            stmt.setInt(9, user.getQuizTakenCount());
             stmt.executeUpdate();
             System.out.println("User added successfully");
         } catch (SQLException e) {
@@ -83,21 +84,25 @@ public class UserSQLDao implements UserDAO {
     @Override
     public ArrayList<User> getFriends(long userId) {
         ArrayList<User> friends = new ArrayList<>();
-        String sql = "SELECT u.* FROM users u " +
+        String sql = "SELECT DISTINCT u.* FROM users u " +
                      "JOIN friendships f ON (f.user_id1 = u.id OR f.user_id2 = u.id) " +
                      "WHERE (f.user_id1 = ? OR f.user_id2 = ?) AND u.id != ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, userId);
             stmt.setLong(2, userId);
             stmt.setLong(3, userId);
+            System.out.println("UserSQLDao.getFriends: Executing query for userId=" + userId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    friends.add(mapUser(rs));
+                    User friend = mapUser(rs);
+                    friends.add(friend);
+                    System.out.println("UserSQLDao.getFriends: Found friend: " + friend.getName() + " (ID: " + friend.getId() + ")");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println("UserSQLDao.getFriends: Total friends found: " + friends.size());
         return friends;
     }
 
@@ -176,6 +181,20 @@ public class UserSQLDao implements UserDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public void removeFriendship(long userId1, long userId2) {
+        String sql = "DELETE FROM friendships WHERE (user_id1 = ? AND user_id2 = ?) OR (user_id1 = ? AND user_id2 = ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, userId1);
+            stmt.setLong(2, userId2);
+            stmt.setLong(3, userId2);
+            stmt.setLong(4, userId1);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private User mapUser(ResultSet rs) throws SQLException {

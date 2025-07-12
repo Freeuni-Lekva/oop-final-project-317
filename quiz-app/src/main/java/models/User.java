@@ -24,6 +24,7 @@ public class User {
         this.passedQuizzes = passedQuizzes;
         this.isAdmin = isAdmin;
         this.isBanned = isBanned;
+        this.createdAt = createdAt;
         this.quizCreatedCount = quizCreatedCount;
         this.quizTakenCount = quizTakenCount;
     }
@@ -36,6 +37,7 @@ public class User {
         this.passedQuizzes = passedQuizzes;
         this.isAdmin = isAdmin;
         this.isBanned = isBanned;
+        this.createdAt = new Timestamp(System.currentTimeMillis());
         this.quizCreatedCount = 0;
         this.quizTakenCount = 0;
     }
@@ -73,8 +75,10 @@ public class User {
     public long getId() {return  userId;}
 
     public Timestamp getCreatedAt() { return createdAt; }
+    
+    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
 
-    public void setQuizCreatedCount(Timestamp createdAt) { this.createdAt = createdAt; }
+    public void setQuizCreatedCount(int quizCreatedCount) { this.quizCreatedCount = quizCreatedCount; }
     public void increaseQuizCreatedCount() {this.quizCreatedCount++;}
     public int getQuizCreatedCount() { return quizCreatedCount; }
 

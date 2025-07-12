@@ -25,4 +25,6 @@ public interface UserDAO {
     ArrayList<User> searchUsers(String searchTerm, int limit);
 
     boolean checkIfFriends(long userId1, long userId2);
+    
+    void removeFriendship(long userId1, long userId2);
 }

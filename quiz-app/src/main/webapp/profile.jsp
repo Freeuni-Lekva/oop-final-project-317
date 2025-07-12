@@ -148,7 +148,7 @@ body {
                 <span class="text-slate-700 font-medium">Recent Quizzes</span>
             </div>
 
-            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3">
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='friends'">
                 <div class="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
                     <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
@@ -252,7 +252,7 @@ body {
                                 <svg class="w-4 h-4 mr-1 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
-                                Member since <%= request.getAttribute("userCreatedAt") != null ? request.getAttribute("userCreatedAt") : "" %>
+                                Member since <%= request.getAttribute("userCreatedAt") != null ? request.getAttribute("userCreatedAt") : "Unknown" %>
                             </div>
                         </div>
                     </div>
@@ -292,7 +292,7 @@ body {
                 </div>
 
                 <!-- Friends -->
-                <div class="stat-card-3 rounded-2xl p-6 card-hover">
+                <div class="stat-card-3 rounded-2xl p-6 card-hover cursor-pointer" onclick="window.location.href='friends'">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                             <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
