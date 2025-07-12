@@ -141,6 +141,13 @@
                                         Accept
                                     </button>
                                 </form>
+                                <form action="friendship" method="POST" class="inline">
+                                    <input type="hidden" name="action" value="reject">
+                                    <input type="hidden" name="notificationId" value="<%= notification.getId() %>">
+                                    <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                                        Reject
+                                    </button>
+                                </form>
                             <% } %>
                             <% if (Notification.CHALLENGE_NOTIFICATION.equals(notification.getQuestionType())) {
                                    long quizId = 0;

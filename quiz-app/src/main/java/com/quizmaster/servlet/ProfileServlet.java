@@ -75,6 +75,7 @@ public class ProfileServlet extends HttpServlet {
             // 3) Friends list
             UserSQLDao userSqlDao = new UserSQLDao(connection);
             ArrayList<User> friendsList = userSqlDao.getFriends(profileUserId);
+            System.out.println("ProfileServlet: Found " + (friendsList != null ? friendsList.size() : 0) + " friends for user " + profileUserId);
             request.setAttribute("friendsList", friendsList);
 
             // 4) Achievements / Notifications
@@ -86,7 +87,15 @@ public class ProfileServlet extends HttpServlet {
             request.setAttribute("profileUser", profileUser);
             request.setAttribute("isOwnProfile", isOwnProfile);
             request.setAttribute("userEmail", profileUser.getEmail());
-            request.setAttribute("userCreatedAt", profileUser.getCreatedAt());
+            
+            // Format the date to show only date, not time
+            if (profileUser.getCreatedAt() != null) {
+                java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MMM dd, yyyy");
+                String formattedDate = dateFormat.format(profileUser.getCreatedAt());
+                request.setAttribute("userCreatedAt", formattedDate);
+            } else {
+                request.setAttribute("userCreatedAt", "Unknown");
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -291,7 +300,6 @@ public class ProfileServlet extends HttpServlet {
                 request.setAttribute("error", "Failed to update profile");
             }
         }
-
         response.sendRedirect(request.getContextPath() + "/profile");
     }
 }

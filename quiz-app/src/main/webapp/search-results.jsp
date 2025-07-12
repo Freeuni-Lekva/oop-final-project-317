@@ -68,7 +68,7 @@
                 <span class="text-slate-700 font-medium">Recent Quizzes</span>
             </div>
 
-            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='friends'">
+            <div class="sidebar-item p-3 rounded-lg cursor-pointer flex items-center space-x-3" onclick="window.location.href='user-profile?id=' + userId">
                 <div class="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
                     <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 919.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
@@ -248,102 +248,173 @@
                         </div>
                     </div>
                     <% } %>
-                </div>
-            </div>
-            <% } %>
+                    <% } %>
 
-            <!-- User Results Section -->
-            <% if (userResults != null && !userResults.isEmpty()) { %>
-            <div class="mb-8">
-                <div class="flex items-center mb-4">
-                    <svg class="w-6 h-6 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
-                    </svg>
-                    <h2 class="text-2xl font-bold text-slate-700">Users (<%= userResults.size() %>)</h2>
-                </div>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    <% for (User foundUser : userResults) { %>
-                    <div class="bg-white rounded-2xl p-6 border border-gray-200 card-hover cursor-pointer" onclick="window.location.href='profile?userId=<%= foundUser.getId() %>'">
-                        <div class="text-center">
-                            <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center">
-                                <span class="text-white text-xl font-bold"><%= foundUser.getName().substring(0, 1).toUpperCase() %></span>
-                            </div>
-                            
-                            <h3 class="text-lg font-bold text-slate-700 mb-1"><%= foundUser.getName() %></h3>
-                            <p class="text-slate-500 text-sm mb-3"><%= foundUser.getEmail() %></p>
-                            
-                            <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 mb-4">
-                                <div class="bg-gray-50 rounded-lg p-2">
-                                    <div class="font-semibold text-slate-700"><%= foundUser.getQuizCreatedCount() %></div>
-                                    <div>Quizzes Created</div>
+                    <!-- User Results Section -->
+                    <% if (userResults != null && !userResults.isEmpty()) { %>
+                    <div class="mb-8">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-6 h-6 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                            </svg>
+                            <h2 class="text-2xl font-bold text-slate-700">Users (<%= userResults.size() %>)</h2>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            <% for (User foundUser : userResults) { %>
+                            <div class="bg-white rounded-2xl p-6 border border-gray-200 card-hover cursor-pointer user-card"
+                                 data-user-id="<%= foundUser.getId() %>"
+                                 onclick="redirectToProfile(<%= foundUser.getId() %>)">
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                        <span class="text-white text-xl font-bold"><%= foundUser.getName().substring(0, 1).toUpperCase() %></span>
+                                    </div>
+
+                                    <h3 class="text-lg font-bold text-slate-700 mb-1"><%= foundUser.getName() %></h3>
+                                    <p class="text-slate-500 text-sm mb-3"><%= foundUser.getEmail() %></p>
+
+                                    <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 mb-4">
+                                        <div class="bg-gray-50 rounded-lg p-2">
+                                            <div class="font-semibold text-slate-700"><%= foundUser.getQuizCreatedCount() %></div>
+                                            <div>Quizzes Created</div>
+                                        </div>
+                                        <div class="bg-gray-50 rounded-lg p-2">
+                                            <div class="font-semibold text-slate-700"><%= foundUser.getQuizTakenCount() %></div>
+                                            <div>Quizzes Taken</div>
+                                        </div>
+                                    </div>
+
+                                    <% if (foundUser.getIfAdmin()) { %>
+                                    <span class="inline-block bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full font-medium mb-2">Admin</span>
+                                    <% } %>
+
+                                    <div class="text-center">
+                                        <span class="text-blue-600 text-sm font-medium hover:underline">View Profile</span>
+                                    </div>
                                 </div>
-                                <div class="bg-gray-50 rounded-lg p-2">
-                                    <div class="font-semibold text-slate-700"><%= foundUser.getQuizTakenCount() %></div>
-                                    <div>Quizzes Taken</div>
-                                </div>
                             </div>
-                            
-                            <% if (foundUser.getIfAdmin()) { %>
-                            <span class="inline-block bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full font-medium mb-2">Admin</span>
                             <% } %>
-                            
-                            <div class="text-center">
-                                <span class="text-blue-600 text-sm font-medium hover:underline">View Profile</span>
-                            </div>
                         </div>
                     </div>
                     <% } %>
+
+                    <!-- No Results Message -->
+                    <% if (searchTerm != null && ((quizResults == null || quizResults.isEmpty()) && (userResults == null || userResults.isEmpty()))) { %>
+                    <div class="text-center py-16">
+                        <div class="w-24 h-24 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-slate-700 mb-2">No Results Found</h3>
+                        <p class="text-slate-500 mb-6">We couldn't find any quizzes or users matching "<%= searchTerm %>"</p>
+                        <div class="space-x-4">
+                            <a href="popular-quizzes" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                </svg>
+                                Browse Popular Quizzes
+                            </a>
+                            <a href="recents" class="inline-flex items-center px-6 py-3 bg-gray-100 border border-gray-200 rounded-xl text-slate-700 hover:bg-gray-200 transition-colors">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                Recent Quizzes
+                            </a>
+                        </div>
+                    </div>
+                    <% } %>
+
+                    <% } %>
                 </div>
             </div>
-            <% } %>
-
-            <!-- No Results Message -->
-            <% if (searchTerm != null && ((quizResults == null || quizResults.isEmpty()) && (userResults == null || userResults.isEmpty()))) { %>
-            <div class="text-center py-16">
-                <div class="w-24 h-24 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-semibold text-slate-700 mb-2">No Results Found</h3>
-                <p class="text-slate-500 mb-6">We couldn't find any quizzes or users matching "<%= searchTerm %>"</p>
-                <div class="space-x-4">
-                    <a href="popular-quizzes" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                        Browse Popular Quizzes
-                    </a>
-                    <a href="recents" class="inline-flex items-center px-6 py-3 bg-gray-100 border border-gray-200 rounded-xl text-slate-700 hover:bg-gray-200 transition-colors">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        Recent Quizzes
-                    </a>
-                </div>
-            </div>
-            <% } %>
-
-            <% } %>
         </div>
-    </div>
-</div>
 
-<script>
-// Auto-focus search input
-document.getElementById('searchInput').focus();
+        <script>
+            document.getElementById('searchInput').focus();
 
-// Handle Enter key in search form
-document.getElementById('searchInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        if (this.value.trim()) {
-            window.location.href = 'search?q=' + encodeURIComponent(this.value.trim());
-        }
-    }
-});
-</script>
+            // Handle Enter key in search form
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (this.value.trim()) {
+                        window.location.href = 'search?q=' + encodeURIComponent(this.value.trim());
+                    }
+                }
+            });
 
-</body>
-</html> 
+            function redirectToProfile(userId) {
+                try {
+                    if (userId && userId > 0) {
+                        window.location.href = 'user-profile?id=' + userId;
+                    } else {
+                        console.error('Invalid user ID:', userId);
+                        alert('Unable to load user profile. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error redirecting to profile:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const userCards = document.querySelectorAll('.user-card');
+
+                userCards.forEach(function(card) {
+                    card.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            const userId = this.getAttribute('data-user-id');
+                            if (userId) {
+                                redirectToProfile(userId);
+                            }
+                        }
+                    });
+                    card.setAttribute('tabindex', '0');
+                });
+            });
+        </script>
+
+        <style>
+            .user-card {
+                transition: all 0.2s ease;
+            }
+
+            .user-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .user-card:focus {
+                outline: 2px solid #3b82f6;
+                outline-offset: 2px;
+            }
+
+            .user-card:active {
+                transform: translateY(0);
+            }
+
+            .card-hover:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .notification-pulse {
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.05);
+                }
+                100% {
+                    transform: scale(1);
+                }
+            }
+        </style>
+
+    </body>
+</html>

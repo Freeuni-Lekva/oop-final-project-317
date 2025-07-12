@@ -36,9 +36,8 @@ public class FriendshipServlet extends HttpServlet {
             NotificationDAO notificationDAO = (NotificationDAO) request.getServletContext().getAttribute("notificationDAO");
 
             try {
-                // Add friendship
+                // Add friendship (only one record needed due to unique constraint)
                 userDAO.addFriendship(currentUser.getId(), fromUserId);
-                userDAO.addFriendship(fromUserId, currentUser.getId());
 
                 // Delete the notification
                 notificationDAO.deleteNotification(notificationId);
@@ -48,6 +47,23 @@ public class FriendshipServlet extends HttpServlet {
             } catch (Exception e) {
                 e.printStackTrace();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error accepting friend request");
+            }
+        } else if ("reject".equals(action)) {
+            // Get parameters
+            long notificationId = Long.parseLong(request.getParameter("notificationId"));
+
+            // Get DAOs
+            NotificationDAO notificationDAO = (NotificationDAO) request.getServletContext().getAttribute("notificationDAO");
+
+            try {
+                // Delete the notification (reject the request)
+                notificationDAO.deleteNotification(notificationId);
+
+                // Redirect back to notifications page
+                response.sendRedirect("notifications");
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error rejecting friend request");
             }
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
